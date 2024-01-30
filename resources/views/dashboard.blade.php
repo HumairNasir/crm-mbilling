@@ -85,5 +85,124 @@
             <div id="saleschart"></div>
         </div>
     </div>
+    <div class="sales-record-main dental-offices-main">
+        <div class="top-representatives">
+            <div class="region-map">
+                <div class="sales-by-region dental-offices">
+                    <h3>Dental Offices</h3>
+                </div>
+                <div class="category-search search-employee">
+                    <select name="cats" id="categpries">
+                        <option value="" disabled selected>Sorted by</option>
+                        <option value="dummy1">Dummy1</option>
+                        <option value="dummy1">Dummy1</option>
+                        <option value="dummy1">Dummy1</option>
+                        <option value="dummy1">Dummy1</option>
+                    </select>
+                </div>
+                <div class="search-main search-employee">
+                    <input type="search" name="search" id="search" placeholder="Search...">
+                    <img src="../images/search.svg" alt="">
+                </div>
+            </div>
+            <div class="category-table-main">
+                <table class="category-table">
+                    <tbody>
+                        <tr>
+                            <td><img src="../images/img.svg" alt=""></td>
+                            <td class="dental-office-name">
+                                <h5>Heath Care Dental</h5>
+                            </td>
+                            <td><span>Cold</span></td>
+                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        </tr>
+                        <tr>
+                            <td><img src="../images/img.svg" alt=""></td>
+                            <td class="dental-office-name">
+                                <h5>Heath Care Dental</h5>
+                            </td>
+                            <td><span>Cold</span></td>
+                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        </tr>
+                        <tr>
+                            <td><img src="../images/img.svg" alt=""></td>
+                            <td class="dental-office-name">
+                                <h5>Heath Care Dental</h5>
+                            </td>
+                            <td><span>Cold</span></td>
+                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        </tr>
+                        <tr>
+                            <td><img src="../images/img.svg" alt=""></td>
+                            <td class="dental-office-name">
+                                <h5>Heath Care Dental</h5>
+                            </td>
+                            <td><span>Cold</span></td>
+                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        </tr>
+                        <tr>
+                            <td><img src="../images/img.svg" alt=""></td>
+                            <td class="dental-office-name">
+                                <h5>Heath Care Dental</h5>
+                            </td>
+                            <td><span>Cold</span></td>
+                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        </tr>
+                        <tr>
+                            <td><img src="../images/img.svg" alt=""></td>
+                            <td class="dental-office-name">
+                                <h5>Heath Care Dental</h5>
+                            </td>
+                            <td><span>Cold</span></td>
+                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        </tr>
+                        <tr>
+                            <td><img src="../images/img.svg" alt=""></td>
+                            <td class="dental-office-name">
+                                <h5>Heath Care Dental</h5>
+                            </td>
+                            <td><span>Cold</span></td>
+                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        </tr>
+                        <tr>
+                            <td><img src="../images/img.svg" alt=""></td>
+                            <td class="dental-office-name">
+                                <h5>Heath Care Dental</h5>
+                            </td>
+                            <td><span>Cold</span></td>
+                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        </tr>
+                        <tr>
+                            <td><img src="../images/img.svg" alt=""></td>
+                            <td class="dental-office-name">
+                                <h5>Heath Care Dental</h5>
+                            </td>
+                            <td><span>Cold</span></td>
+                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        </tr>
+                        <tr>
+                            <td><img src="../images/img.svg" alt=""></td>
+                            <td class="dental-office-name">
+                                <h5>Heath Care Dental</h5>
+                            </td>
+                            <td><span>Cold</span></td>
+                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="sales-record">
+            <div class="sales-resp">
+                <div>
+                    <h4>Sales Record</h4>
+                </div>
+                <div>
+                    <img src="../images/filter.svg" alt="" class="filter">
+                </div>
+            </div>
+            <div id="subscription-bar"></div>
+        </div>
+    </div>
 </div>
 @endsection
