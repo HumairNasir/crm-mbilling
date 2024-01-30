@@ -16,6 +16,7 @@
     @include('partials.sidebar')
     @yield('content')
 </div>
+    @include('partials.footer')
 @include('partials.scripts')
 @yield('scripts')
 </body>
