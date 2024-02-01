@@ -1,7 +1,7 @@
 <header>
     <div>
         <div class="sitelogo">
-            <img src="../images/logo-header.svg" alt="">
+            <a href="{{ url('/') }}"><img src="../images/logo-header.svg" alt=""></a>
         </div>
         <div class="search-main">
             <input type="search" name="search" id="search" placeholder="Search...">

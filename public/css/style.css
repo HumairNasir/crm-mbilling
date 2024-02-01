@@ -82,7 +82,7 @@ body img,
     align-items: center;
     color: #535353;
     text-decoration: none;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 400;
 }
 
@@ -176,7 +176,8 @@ body img,
     font-weight: 700;
 }
 
-.sales-resp h4 {
+.sales-resp h4,
+.new-followup-table-main .graph-section-icons h4 {
     font-size: 16px;
     color: #4d4d4d !important;
 }
@@ -282,7 +283,8 @@ body img,
     float: right;
 }
 
-.email-button button {
+.email-button button,
+.new-followup-table button {
     border: 1px solid #717171;
     border-radius: 10px;
     padding: 5px 10px;
@@ -517,6 +519,74 @@ body img,
     border-bottom: 2px solid #d9d9d9 !important;
 }
 
+.new-followup-table tbody tr {
+    font-size: 18px;
+    color: #000;
+    font-weight: 500;
+}
+
+.new-followup-table {
+    overflow-y: scroll;
+    height: 420px;
+}
+
+.map-images {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.map-images img {
+    width: 100%;
+}
+
+.new-followup-table table {
+    width: 100%;
+}
+
+.new-followup-table tr td {
+    padding: 10px;
+}
+
+.new-followup-table a {
+    float: right;
+}
+
+.new-followup-table thead tr td {
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.new-followup-table-main > div:first-of-type {
+    width: 42% !important;
+}
+
+.new-followup-table-main .wd-sm {
+    width: 29% !important;
+}
+
+.new-followup-table-main .graph-section-icons {
+    align-items: center;
+}
+
+.new-followup-table-main .activities {
+    font-weight: 500;
+    color: #000;
+    /* text-align: right; */
+    margin: 0px;
+}
+
+.activities-won {
+    font-size: 32px;
+    color: #000;
+    font-weight: 700;
+}
+
+.chart-groups {
+    /* display: flex; */
+    margin-bottom: 20px;
+}
+
 @media (min-width: 576px) {
     .form-office-modal-dialog {
         max-width: 700px !important;
@@ -679,6 +749,10 @@ body img,
     }
     .form-office-main > div:not(.text-area-parent) {
         width: 100%;
+    }
+    .new-followup-table-main > div:first-of-type,
+    .new-followup-table-main .wd-sm {
+        width: 100% !important;
     }
 }
 
