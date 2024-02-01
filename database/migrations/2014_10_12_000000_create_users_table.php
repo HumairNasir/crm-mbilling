@@ -18,9 +18,18 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('address')->nullable();
+            $table->unsignedBigInteger('country_manager_id')->nullable();
+            $table->unsignedBigInteger('regional_manager_id')->nullable();
+            $table->unsignedBigInteger('state_manager_id')->nullable();
+            $table->unsignedBigInteger('region_id')->nullable();
+            $table->unsignedBigInteger('state_id')->nullable();
+            $table->unsignedBigInteger('territory_id')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

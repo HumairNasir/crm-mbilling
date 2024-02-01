@@ -15,7 +15,12 @@ class CreateStatesTable extends Migration
     {
         Schema::create('states', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('latitude')->nullable();
+            $table->string('longitude')->nullable();
+            $table->unsignedBigInteger('region_id')->nullable();
             $table->timestamps();
+            $table->foreign('region_id')->references('id')->on('regions')->onDelete('set null');
         });
     }
 
