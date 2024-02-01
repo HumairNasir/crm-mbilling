@@ -106,7 +106,7 @@
 
         $.ajax({
             type: 'GET',
-            url: '/get_currentYear_sales',
+            url: '/get_top_sales',
             dataType: 'json',
             success: function (res) {
                 var data = res;
@@ -119,47 +119,48 @@
 
         // Monthly sales for sales rep
 
-        var options = {
-            series: [{
-                name: "Sale",
-                data: [0, 300, 350, 900, 600, 1000, 850, 400, 500, 800, 10000, 600, 800]
-            }],
-            chart: {
-                height: 350,
-                type: 'line',
-                zoom: {
+        function updateChart(monthNames, totalSales) {
+            var options = {
+                series: [{
+                    name: "Sale",
+                    data: totalSales
+                }],
+                chart: {
+                    height: 350,
+                    type: 'line',
+                    zoom: {
+                        enabled: false
+                    },
+                },
+                colors: ["#424242"],
+                markers: {
+                    size: 4,
+                    colors: ["#000"],
+                },
+                dataLabels: {
                     enabled: false
                 },
-            },
-            colors: ["#424242"],
-            markers: {
-                size: 4,
-                colors: ["#000"],
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                curve: 'smooth'
-            },
-            title: {
-                text: 'Product Trends by Month',
-                align: 'left'
-            },
-            grid: {
-                row: {
-                    colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                    opacity: 0.5
+                stroke: {
+                    curve: 'smooth'
                 },
-            },
-            xaxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            }
-        };
+                title: {
+                    text: 'Product Trends by Month',
+                    align: 'left'
+                },
+                grid: {
+                    row: {
+                        colors: ['#f3f3f3', 'transparent'],
+                        opacity: 0.5
+                    },
+                },
+                xaxis: {
+                    categories: monthNames
+                }
+            };
 
-        var chart = new ApexCharts(document.querySelector("#saleschart"), options);
-        chart.render();
-
+            var chart = new ApexCharts(document.querySelector("#saleschart"), options);
+            chart.render();
+        }
         $.ajax({
             type: 'GET',
             url: '/get_monthly_sales',
@@ -167,20 +168,17 @@
             success: function (res) {
                 var data = res;
 
-                // Extract the month names and sales values from the data
-                var monthNames = data.map(item => item.month);
-                var salesValues = data.map(item => item.total_sales);
-
-                chart.updateSeries([{
-                    data: salesValues
-                }]);
-
-
-                chart.updateOptions({
-                    xaxis: {
-                        categories: monthNames
-                    }
+                // Extract month names and total sales values from the data
+                var monthNames = data.map(function (item) {
+                    return item.month;
                 });
+
+                var totalSales = data.map(function (item) {
+                    return item.total_sales;
+                });
+
+                // Call the updateChart function with the extracted data
+                updateChart(monthNames, totalSales);
             },
             error: function (msg) {
                 console.error('Error:', msg);
@@ -188,6 +186,92 @@
         });
 
         // Weekly sales for stateManager
+
+        var options = {
+            series: [
+                {
+                    name: 'Last Month',
+                    data: [] // Leave this empty initially
+                },
+                {
+                    name: 'This Month',
+                    data: [] // Leave this empty initially
+                }
+            ],
+            chart: {
+                type: 'bar',
+                height: 265
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: true,
+                    dataLabels: {
+                        position: 'top',
+                    },
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                offsetX: -6,
+                style: {
+                    fontSize: '12px',
+                    colors: ['#fff']
+                }
+            },
+            stroke: {
+                show: true,
+                width: 1,
+                colors: ['#fff']
+            },
+            tooltip: {
+                shared: true,
+                intersect: false
+            },
+            xaxis: {
+                categories: [], // Leave this empty initially
+            },
+        };
+
+        var chart = new ApexCharts(document.querySelector("#barchart"), options);
+        chart.render();
+
+        $.ajax({
+            type: 'GET',
+            url: '/get_weekly_sales',
+            dataType: 'json',
+            success: function (res) {
+                var data = res;
+
+                // Extract the data for Last Month and This Month
+                var lastMonthData = [];
+                var thisMonthData = [];
+
+                data.forEach(function (weekData) {
+                    lastMonthData.push(weekData.previous_week.total_sales);
+                    thisMonthData.push(weekData.current_week.total_sales);
+                });
+
+                // Update the chart options with the extracted data
+                chart.updateOptions({
+                    series: [
+                        {
+                            name: 'Last Month',
+                            data: lastMonthData
+                        },
+                        {
+                            name: 'This Month',
+                            data: thisMonthData
+                        }
+                    ],
+                    xaxis: {
+                        categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4']
+                    }
+                });
+            },
+            error: function (msg) {
+                console.error('Error:', msg);
+            },
+        });
 
     });
 </script>

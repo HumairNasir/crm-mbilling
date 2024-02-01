@@ -1,51 +1,5 @@
 var options = {
     series: [{
-        name: 'Last Month',
-        data: [44, 55, 41, 64]
-    }, {
-        name: 'This Month',
-        data: [53, 32, 33, 52]
-    }],
-    chart: {
-        type: 'bar',
-        height: 265
-    },
-    plotOptions: {
-        bar: {
-            horizontal: true,
-            dataLabels: {
-                position: 'top',
-            },
-        }
-    },
-    dataLabels: {
-        enabled: true,
-        offsetX: -6,
-        style: {
-            fontSize: '12px',
-            colors: ['#fff']
-        }
-    },
-    stroke: {
-        show: true,
-        width: 1,
-        colors: ['#fff']
-    },
-    tooltip: {
-        shared: true,
-        intersect: false
-    },
-    xaxis: {
-        categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-    },
-};
-
-var chart = new ApexCharts(document.querySelector("#barchart"), options);
-chart.render();
-
-
-var options = {
-    series: [{
         name: 'Standard',
         data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
     }, {

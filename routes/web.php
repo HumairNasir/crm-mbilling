@@ -21,9 +21,11 @@ Route::get('/', [AdminController::class, 'index'])->name('dashboard');
 
 Route::get('/get_response', [AdminController::class, 'get_response'])->name('get_response');
 
-Route::get('/get_currentYear_sales', [AdminController::class, 'get_currentYear_sales'])->name('get_currentYear_sales');
+Route::get('/get_top_sales', [AdminController::class, 'get_top_sales'])->name('get_top_sales');
 
 Route::get('/get_monthly_sales', [AdminController::class, 'get_monthly_sales'])->name('get_monthly_sales');
+
+Route::get('/get_weekly_sales', [AdminController::class, 'get_weekly_sales'])->name('get_weekly_sales');
 
 });
 
