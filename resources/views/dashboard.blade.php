@@ -1,5 +1,6 @@
 @extends('layouts.backend')
 @section('content')
+<?php $assets_url= config('constants.assets_url'); ?>
 <div class="content-main">
     <div class="dashboard">
         <h3>Dashboard</h3>
@@ -7,20 +8,20 @@
     <div class="sales-main-graph">
         <div class="wd-sm">
             <div class="graph-section-icons">
-                <img src="../images/calendar.svg" alt="" class="calendar">
-                <img src="../images/filter.svg" alt="" class="filter">
+                <img src="{{$assets_url}}/images/calendar.svg" alt="" class="calendar">
+                <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
             </div>
-            <p class="sales-year">Year 2024 Sales</p>
-            <p class="sales-amount">$230,181</p>
+            <p class="sales-year">Year {{$year = date("Y")}} Sales</p>
+            <p class="sales-amount">${{$total_sale}}</p>
         </div>
         <div class="wd-sm">
             <div class="sales-resp">
                 <div>
                     <h4>Sales Response</h4>
                     <p>This Year</p>
-                    <h3>4192</h3>
+                    <h3>{{$total_sale_count}}</h3>
                 </div>
-                <div> <img src="../images/filter.svg" alt="" class="filter">
+                <div> <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
                 </div>
             </div>
             <div id="donutchart"></div>
@@ -30,7 +31,7 @@
                 <div>
                     <h4>Sales by Month</h4>
                 </div>
-                <div><img src="../images/filter.svg" alt="" class="filter"></div>
+                <div><img src="{{$assets_url}}/images/filter.svg" alt="" class="filter"></div>
             </div>
             <div id="barchart"></div>
         </div>
@@ -42,10 +43,10 @@
             </div>
             <div class="search-main">
                 <input type="search" name="search" id="search" placeholder="Search...">
-                <img src="../images/search.svg" alt="">
+                <img src="{{$assets_url}}/images/search.svg" alt="">
             </div>
             <div>
-                <img src="../images/filter.svg" alt="" class="filter">
+                <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
             </div>
         </div>
         <div class="map-vectors">
@@ -65,13 +66,13 @@
                 </div>
                 <div class="search-main search-employee">
                     <input type="search" name="search" id="search" placeholder="Search...">
-                    <img src="../images/search.svg" alt="">
+                    <img src="{{$assets_url}}/images/search.svg" alt="">
                 </div>
                 <div class="filter-employee">
-                    <img src="../images/filter.svg" alt="" class="filter">
+                    <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
                 </div>
             </div>
-            <div id="employeehart"></div>
+            <div id="employeeChart"></div>
         </div>
         <div class="sales-record">
             <div class="sales-resp">
@@ -79,7 +80,7 @@
                     <h4>Sales Record</h4>
                 </div>
                 <div>
-                    <img src="../images/filter.svg" alt="" class="filter">
+                    <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
                 </div>
             </div>
             <div id="saleschart"></div>
@@ -95,99 +96,26 @@
                     <select name="cats" id="categpries">
                         <option value="" disabled selected>Sorted by</option>
                         <option value="dummy1">Dummy1</option>
-                        <option value="dummy1">Dummy1</option>
-                        <option value="dummy1">Dummy1</option>
-                        <option value="dummy1">Dummy1</option>
                     </select>
                 </div>
                 <div class="search-main search-employee">
                     <input type="search" name="search" id="search" placeholder="Search...">
-                    <img src="../images/search.svg" alt="">
+                    <img src="{{$assets_url}}/images/search.svg" alt="">
                 </div>
             </div>
             <div class="category-table-main">
                 <table class="category-table">
                     <tbody>
+                    @foreach($dental_offices as $dental_office)
                         <tr>
-                            <td><img src="../images/img.svg" alt=""></td>
+                            <td><img src="{{$assets_url}}/images/img.svg" alt=""></td>
                             <td class="dental-office-name">
-                                <h5>Heath Care Dental</h5>
+                                <h5>{{$dental_office->name}}</h5>
                             </td>
-                            <td><span>Cold</span></td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                            <td><span>{{$dental_office->receptive}}</span></td>
+                            <td class="email-button"><a href="mailto:{{$dental_office->contact_person}}"><button><img src="{{$assets_url}}/images/email.svg" alt="">Email</button></a></td>
                         </tr>
-                        <tr>
-                            <td><img src="../images/img.svg" alt=""></td>
-                            <td class="dental-office-name">
-                                <h5>Heath Care Dental</h5>
-                            </td>
-                            <td><span>Cold</span></td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                        </tr>
-                        <tr>
-                            <td><img src="../images/img.svg" alt=""></td>
-                            <td class="dental-office-name">
-                                <h5>Heath Care Dental</h5>
-                            </td>
-                            <td><span>Cold</span></td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                        </tr>
-                        <tr>
-                            <td><img src="../images/img.svg" alt=""></td>
-                            <td class="dental-office-name">
-                                <h5>Heath Care Dental</h5>
-                            </td>
-                            <td><span>Cold</span></td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                        </tr>
-                        <tr>
-                            <td><img src="../images/img.svg" alt=""></td>
-                            <td class="dental-office-name">
-                                <h5>Heath Care Dental</h5>
-                            </td>
-                            <td><span>Cold</span></td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                        </tr>
-                        <tr>
-                            <td><img src="../images/img.svg" alt=""></td>
-                            <td class="dental-office-name">
-                                <h5>Heath Care Dental</h5>
-                            </td>
-                            <td><span>Cold</span></td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                        </tr>
-                        <tr>
-                            <td><img src="../images/img.svg" alt=""></td>
-                            <td class="dental-office-name">
-                                <h5>Heath Care Dental</h5>
-                            </td>
-                            <td><span>Cold</span></td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                        </tr>
-                        <tr>
-                            <td><img src="../images/img.svg" alt=""></td>
-                            <td class="dental-office-name">
-                                <h5>Heath Care Dental</h5>
-                            </td>
-                            <td><span>Cold</span></td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                        </tr>
-                        <tr>
-                            <td><img src="../images/img.svg" alt=""></td>
-                            <td class="dental-office-name">
-                                <h5>Heath Care Dental</h5>
-                            </td>
-                            <td><span>Cold</span></td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                        </tr>
-                        <tr>
-                            <td><img src="../images/img.svg" alt=""></td>
-                            <td class="dental-office-name">
-                                <h5>Heath Care Dental</h5>
-                            </td>
-                            <td><span>Cold</span></td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                        </tr>
+                    @endforeach
                     </tbody>
                 </table>
             </div>
@@ -198,7 +126,7 @@
                     <h4>Sales Record</h4>
                 </div>
                 <div>
-                    <img src="../images/filter.svg" alt="" class="filter">
+                    <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
                 </div>
             </div>
             <div id="subscription-bar"></div>
