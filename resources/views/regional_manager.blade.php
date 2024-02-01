@@ -2,7 +2,7 @@
       @extends('layouts.backend')
 @section('content')
 <div class="content-main dental-office-content">
-    <h3>Dental Offices</h3>
+    <h3>Reginoal Managers</h3>
  <div class="">
             <div class="dental-office-parent">
                 <div class="search-main search-employee">
@@ -19,7 +19,7 @@
                     </select>
                 </div>
 <div class="add-dental-button">
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Add Dental Office</button>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Add Regional Manager</button>
 </div>
             </div>
             <div class="dental-table-main">
@@ -209,7 +209,7 @@
   <div class="modal-dialog form-office-modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Add Dental Office</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle">Add Regional Manager</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -294,7 +294,7 @@
   <div class="modal-dialog form-office-modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle3">Edit Dental Office</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle3">Edit Regional Manager</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

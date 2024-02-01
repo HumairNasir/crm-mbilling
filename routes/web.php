@@ -33,3 +33,19 @@ Route::get('/get_weekly_sales', [AdminController::class, 'get_weekly_sales'])->n
 Route::get('/dental_offices', function () {
     return view('dental_offices');
 })->middleware(['auth'])->name('dental_offices');
+
+Route::get('/dashboard_home', function () {
+    return view('dashboard_home');
+})->middleware(['auth'])->name('dashboard_home');
+
+Route::get('/regional_manager', function () {
+    return view('regional_manager');
+})->middleware(['auth'])->name('regional_manager');
+
+Route::get('/area-manager', function () {
+    return view('area-manager');
+})->middleware(['auth'])->name('area-manager');
+
+Route::get('/sales-rep', function () {
+    return view('sales-rep');
+})->middleware(['auth'])->name('sales-rep');

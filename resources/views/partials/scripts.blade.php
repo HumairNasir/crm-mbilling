@@ -20,6 +20,9 @@
                         },
                     },
                 },
+                legend: {
+                            position: 'bottom',
+                        },
                 responsive: [{
                     breakpoint: 1024,
                     options: {
