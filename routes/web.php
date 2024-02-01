@@ -26,3 +26,8 @@ Route::get('/get_currentYear_sales', [AdminController::class, 'get_currentYear_s
 Route::get('/get_monthly_sales', [AdminController::class, 'get_monthly_sales'])->name('get_monthly_sales');
 
 });
+
+
+Route::get('/dental_offices', function () {
+    return view('dental_offices');
+})->middleware(['auth'])->name('dental_offices');

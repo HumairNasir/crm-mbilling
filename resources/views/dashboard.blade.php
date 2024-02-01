@@ -88,7 +88,7 @@
     </div>
     <div class="sales-record-main dental-offices-main">
         <div class="top-representatives">
-            <div class="region-map">
+            <div class="dental-office-table-main">
                 <div class="sales-by-region dental-offices">
                     <h3>Dental Offices</h3>
                 </div>
@@ -98,7 +98,7 @@
                         <option value="dummy1">Dummy1</option>
                     </select>
                 </div>
-                <div class="search-main search-employee">
+                <div class="search-main search-employee dental-search">
                     <input type="search" name="search" id="search" placeholder="Search...">
                     <img src="{{$assets_url}}/images/search.svg" alt="">
                 </div>
