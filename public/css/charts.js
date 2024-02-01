@@ -15,7 +15,7 @@ var options = {
         breakpoint: 1024,
         options: {
             chart: {
-                width: 200
+                width: 230
             },
             legend: {
                 position: 'bottom'
@@ -29,7 +29,7 @@ var options = {
                 width: 300
             },
             legend: {
-                position: 'bottom'
+                position: 'right'
             }
         }
     }

@@ -267,7 +267,8 @@ body img,
     width: 9%;
 }
 
-.category-table tr > td:first-of-type img {
+.category-table tr > td:first-of-type img,
+.dental-office-name-img img {
     padding: 8px;
     background: #eee;
     border-radius: 50%;
@@ -284,11 +285,12 @@ body img,
 .email-button button {
     border: 1px solid #717171;
     border-radius: 10px;
-    padding: 5px 15px;
+    padding: 5px 10px;
+    font-size: 15px;
 }
 
 .email-button button img {
-    margin-right: 10px;
+    margin-right: 5px;
 }
 
 .dental-offices-main > div {
@@ -329,12 +331,204 @@ body img,
     padding: 20px 0px;
 }
 
+.dental-category {
+    display: flex;
+    padding-left: 20px;
+}
+
+.add-dental-button {
+    width: 40% !important;
+}
+
+.add-dental-button button {
+    float: right;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.dental-office-dashboard {
+    overflow: hidden !important;
+}
+
+.dental-office-parent {
+    margin: 20px 0px;
+    display: flex;
+}
+
+.dental-table-main {
+    border: unset !important;
+}
+
+.dental-office-table-main {
+    display: flex;
+    align-items: center;
+}
+
+.dental-office-search {
+    background-color: unset;
+}
+
+/* .dental-office-content {
+    overflow: hidden;
+} */
+
+.dental-table-header {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.dental-table-main table {
+    background-color: #fff;
+    border: 1px solid #dddddd;
+}
+
+.dental-table-main tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+.dental-table-main td {
+    padding: 10px;
+    /* padding: 20px; */
+}
+
+.dental-office-table {
+    width: 100%;
+}
+
+.dental-office-table tr > td:first-of-type {
+    width: 6%;
+    font-weight: 600;
+    padding-left: 20px;
+}
+
+.dental-office-name-img {
+    display: flex;
+    /* width: 100%; */
+    gap: 10px;
+    align-items: center;
+}
+
+.dental-office-name-img h6 {
+    margin-top: 10px;
+}
+
+.dental-table-main .email-button a {
+    float: left !important;
+}
+
+.dental-table-main tr td:last-of-type a {
+    color: #767676;
+}
+
+.main-pagination {
+    display: flex;
+    padding: 20px 0px;
+    align-items: center;
+}
+
+.main-pagination > div:first-of-type {
+    width: 40%;
+}
+
+.pagination {
+    /* width: 60%; */
+    border-radius: 4px;
+    border: 1px solid #e4e3e4;
+    background: #fff;
+}
+
+.pagination a {
+    padding: 12px;
+    text-decoration: none;
+    /* background: #fff; */
+    font-size: 14px;
+    color: #767676;
+}
+
+.pagination a:hover,
+.pagination a:active {
+    background: #eee;
+    color: #1d1d1d;
+    font-weight: 600;
+}
+
+.form-office-main {
+    display: flex;
+    gap: 7%;
+    padding: 0px 20px;
+    flex-wrap: wrap;
+}
+
+.form-office-main > div:not(.text-area-parent) {
+    width: 46.5%;
+}
+
+.form-office-main > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-office-main label {
+    margin-top: 15px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.form-office-main input,
+.form-office-main textarea {
+    border: 1px solid #eee;
+    border-radius: 4px;
+    /* font-size: 14px; */
+    padding: 10px;
+}
+
+.form-office-modal-footer {
+    justify-content: center !important;
+    border: none !important;
+}
+
+.form-office-modal-footer button {
+    background: #eee;
+    border: none;
+    color: #000;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 0px;
+    width: 50%;
+}
+
+.text-area-parent {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.description-textarea {
+    height: 150px;
+    resize: none;
+}
+
+.form-office-modal-dialog .close:focus {
+    outline: none !important;
+}
+
+.form-office-modal-dialog .modal-header {
+    border-bottom: 2px solid #d9d9d9 !important;
+}
+
+@media (min-width: 576px) {
+    .form-office-modal-dialog {
+        max-width: 700px !important;
+    }
+}
+
 @media screen and (max-width: 1024px) and (min-width: 767px) {
     .search-main {
         width: 61.7%;
     }
     .search-main > input {
-        width: 40%;
+        width: 40% !important;
         float: right;
     }
     .header-notifications {
@@ -346,6 +540,9 @@ body img,
     .page-content {
         height: unset !important;
         flex-direction: column;
+    }
+    .sidebar span {
+        font-size: 15px !important;
     }
     .page-content > div {
         width: 100%;
@@ -367,6 +564,10 @@ body img,
     .dental-office-name h5 {
         font-size: 16px !important;
     }
+    .sidebar,
+    .content-main {
+        padding: 20px 10px 20px 20px !important;
+    }
 }
 
 @media screen and (max-width: 767px) {
@@ -374,18 +575,19 @@ body img,
         width: 30%;
     }
     .search-main {
-        width: 40%;
+        width: 40% !important;
     }
     .search-main > input {
         width: 100%;
     }
     .header-notifications {
         width: 30%;
+        gap: 5px !important;
     }
-    .sidebar,
+    /* .sidebar,
     .content-main {
         padding: 20px 10px 20px 20px !important;
-    }
+    } */
     .sales-main-graph,
     .sales-record-main {
         flex-direction: column;
@@ -398,10 +600,10 @@ body img,
         width: 100%;
     }
     .sales-by-region {
-        width: 46%;
+        width: 46% !important;
     }
     .region-map > div:last-of-type {
-        width: 14%;
+        width: 14% !important;
     }
     .map-vectors > svg {
         width: 80%;
@@ -409,6 +611,74 @@ body img,
     .map-vectors > svg:last-of-type {
         right: 37px;
         bottom: 177px;
+    }
+    .sales-by-region h3 {
+        font-size: 16px !important;
+    }
+    .add-dental-button button {
+        font-size: 14px;
+    }
+    .add-dental-button {
+        width: 47% !important;
+        /* margin-top: 20px; */
+    }
+    .dental-office-table-main {
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    .category-search {
+        width: 45% !important;
+    }
+    .category-search select {
+        float: right;
+    }
+    .dental-search {
+        width: 100% !important;
+    }
+    .email-button button {
+        display: flex;
+        align-items: center;
+    }
+    .dental-table-main tr td:last-of-type a {
+        font-size: 14px;
+    }
+    .dental-office-parent {
+        flex-wrap: wrap !important;
+        gap: 20px;
+    }
+    .dental-office-parent > div:first-of-type {
+        width: 100% !important;
+    }
+    .dental-category {
+        width: 47% !important;
+        padding-left: 0px;
+    }
+    .dp-none {
+        display: none;
+    }
+    .dental-office-name-img h6 {
+        font-size: 13px !important;
+    }
+    .dental-office-name h5 {
+        font-size: 13px !important;
+        padding-top: 20px;
+        padding-left: 10px;
+    }
+    .category-table tr > td:first-of-type {
+        padding-top: 20px;
+    }
+    .main-pagination {
+        gap: 15px;
+        flex-direction: column;
+    }
+    .main-pagination > div {
+        width: unset !important;
+    }
+    .form-office-main {
+        flex-direction: column;
+    }
+    .form-office-main > div:not(.text-area-parent) {
+        width: 100%;
     }
 }
 
