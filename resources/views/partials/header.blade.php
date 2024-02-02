@@ -11,7 +11,7 @@
             <img src="../images/notifications.svg" alt="">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <img src="../images/img.svg" alt="Logout" style="cursor: pointer;" onclick="event.preventDefault(); this.closest('form').submit();">
+                <img src="../images/logout.svg" alt="Logout" style="cursor: pointer;" onclick="event.preventDefault(); this.closest('form').submit();">
             </form>
         </div>
     </div>

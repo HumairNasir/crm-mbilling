@@ -278,7 +278,6 @@
 
     });
 </script>
-// salesRep active won chart
 <script>
 $(document).ready(function () {
 

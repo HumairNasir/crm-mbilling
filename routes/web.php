@@ -19,6 +19,8 @@ Route::group(['middleware' => 'auth'], function () {
 
 Route::get('/', [AdminController::class, 'index'])->name('dashboard');
 
+Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+
 Route::get('/get_response', [AdminController::class, 'get_response'])->name('get_response');
 
 Route::get('/get_top_sales', [AdminController::class, 'get_top_sales'])->name('get_top_sales');
