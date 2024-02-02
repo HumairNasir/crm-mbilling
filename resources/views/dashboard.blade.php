@@ -5,37 +5,101 @@
     <div class="dashboard">
         <h3>Dashboard</h3>
     </div>
-    <div class="sales-main-graph">
-        <div class="wd-sm">
-            <div class="graph-section-icons">
-                <img src="{{$assets_url}}/images/calendar.svg" alt="" class="calendar">
-                <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
-            </div>
-            <p class="sales-year">Year {{$year = date("Y")}} Sales</p>
-            <p class="sales-amount">${{$total_sale}}</p>
-        </div>
-        <div class="wd-sm">
-            <div class="sales-resp">
-                <div>
-                    <h4>Sales Response</h4>
-                    <p>This Year</p>
-                    <h3>{{$total_sale_count}}</h3>
+    @if(Auth::user()->roles[0]->name == 'SalesRepresentative')
+        <div class="sales-record-main new-followup-table-main">
+            <div class="">
+                <div class="region-map">
+                    <div class="sales-by-region representativesales">
+                        <h3>Dental offices contacted this week</h3>
+                    </div>
+                    <div class="search-main search-employee">
+                        <input type="search" name="search" id="search" placeholder="Search...">
+                        <img src="{{$assets_url}}/images/search.svg" alt="">
+                    </div>
+                    <div class="filter-employee">
+                        <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
+                    </div>
                 </div>
-                <div> <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
+                <div class="new-followup-table">
+                    <table>
+                        <thead>
+                        <tr>
+                            <td>#</td>
+                            <td colspan="2">Name</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($contacted_dental_offices as $contacted_dental_office)
+                            <tr>
+                                <td>{{$contacted_dental_office->id}}</td>
+                                <td>{{$contacted_dental_office->name}}</td>
+                                <td><a href="#"><button>Follow up</button></a></td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div id="donutchart"></div>
-        </div>
-        <div class="wd-bg">
-            <div class="sales-resp">
-                <div>
-                    <h4>Sales by Month</h4>
+            <div class="wd-sm">
+                <div class="sales-resp">
+                    <div>
+                        <h4>Sales Response</h4>
+                        <p>This Year</p>
+                        <h3>{{$total_sale_count}}</h3>
+                    </div>
+                    <div> <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
+                    </div>
                 </div>
-                <div><img src="{{$assets_url}}/images/filter.svg" alt="" class="filter"></div>
+                <div id="donutchart"></div>
             </div>
-            <div id="barchart"></div>
+            <div class="wd-sm">
+                <div class="graph-section-icons">
+                    <h4>Capturing by month</h4>
+                    <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
+                </div>
+                <div class="chart-groups">
+                    <div id="guagechart"></div>
+                    <div id="guage_chart"></div>
+                    <div id="guages_charts"></div>
+{{--                    <div id="simplepie"></div>--}}
+                </div>
+                <p class="activities">Activities Won</p>
+                <p class="activities-won">{{$active_won}}</p>
+            </div>
         </div>
-    </div>
+    @else
+        <div class="sales-main-graph">
+            <div class="wd-sm">
+                <div class="graph-section-icons">
+                    <img src="{{$assets_url}}/images/calendar.svg" alt="" class="calendar">
+                    <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
+                </div>
+                <p class="sales-year">Year {{$year = date("Y")}} Sales</p>
+                <p class="sales-amount">${{$total_sale}}</p>
+            </div>
+            <div class="wd-sm">
+                <div class="sales-resp">
+                    <div>
+                        <h4>Sales Response</h4>
+                        <p>This Year</p>
+                        <h3>{{$total_sale_count}}</h3>
+                    </div>
+                    <div> <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
+                    </div>
+                </div>
+                <div id="donutchart"></div>
+            </div>
+            <div class="wd-bg">
+                <div class="sales-resp">
+                    <div>
+                        <h4>Sales by Month</h4>
+                    </div>
+                    <div><img src="{{$assets_url}}/images/filter.svg" alt="" class="filter"></div>
+                </div>
+                <div id="barchart"></div>
+            </div>
+        </div>
+    @endif
     <div class="region-map-main">
         <div class="region-map">
             <div class="sales-by-region">

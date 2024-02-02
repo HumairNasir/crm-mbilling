@@ -27,6 +27,12 @@ Route::get('/get_monthly_sales', [AdminController::class, 'get_monthly_sales'])-
 
 Route::get('/get_weekly_sales', [AdminController::class, 'get_weekly_sales'])->name('get_weekly_sales');
 
+Route::get('/get_reschedule_sales', [AdminController::class, 'get_reschedule_sales'])->name('get_reschedule_sales');
+
+Route::get('/get_schedule_sales', [AdminController::class, 'get_schedule_sales'])->name('get_schedule_sales');
+
+Route::get('/get_won_sales', [AdminController::class, 'get_won_sales'])->name('get_won_sales');
+
 });
 
 

@@ -18,6 +18,9 @@ class AdminController extends Controller
         $total_sale = '';
         $total_sale_count = '';
         $dental_offices = '';
+        $contacted_dental_offices = '';
+        $active_won = '';
+
         if (Auth::user()->roles[0]->name == 'CountryManager'){
 
             $total_sale = Sale::all()->sum('sale_value');
@@ -65,9 +68,13 @@ class AdminController extends Controller
 
             $dental_offices = DentalOffice::all();
 
+            $week_start = now()->startOfWeek()->format('Y-m-d');
+            $week_end = now()->endOfWeek()->format('Y-m-d');
+            $contacted_dental_offices = DentalOffice::where('sales_rep_id', Auth::user()->id)->where('contact_date', '>=', $week_start)->where('contact_date', '<=', $week_end)->get();
+            $active_won = DentalOffice::where('sales_rep_id', Auth::user()->id)->where('purchase_product', 'Yes')->count('id');
         }
 
-        return view('dashboard', compact('total_sale','total_sale_count', 'dental_offices'));
+        return view('dashboard', compact('total_sale','total_sale_count', 'dental_offices', 'contacted_dental_offices','active_won'));
     }
 
     public function get_response()
@@ -476,4 +483,50 @@ class AdminController extends Controller
         return response()->json($weeklySales);
 
     }
+
+    public function get_won_sales(){
+
+        $totalRecords = DentalOffice::where('sales_rep_id', Auth::user()->id)->count();
+        $won_closed = DentalOffice::where('sales_rep_id', Auth::user()->id)->where('purchase_product', 'Yes')->count();
+
+        $percentage_contact_won = ($won_closed / $totalRecords) * 100;
+
+        $data = intval($percentage_contact_won);
+
+        return response()->json($data);
+    }
+
+    public function get_reschedule_sales(){
+
+        $totalRecords = DentalOffice::where('sales_rep_id', Auth::user()->id)->count();
+        $reschedule = DentalOffice::where('sales_rep_id', Auth::user()->id)
+            ->where('purchase_product', null)
+            ->whereNotNull('follow_up_date')
+            ->whereNotNull('contact_date')
+            ->count();
+
+        $percentage_contact_reschedule = ($reschedule / $totalRecords) * 100;
+
+        $data = intval($percentage_contact_reschedule);
+
+
+        return response()->json($data);
+    }
+
+    public function get_schedule_sales(){
+
+        $totalRecords = DentalOffice::where('sales_rep_id', Auth::user()->id)->count();
+        $contact_schedule = DentalOffice::where('sales_rep_id', Auth::user()->id)
+            ->where('purchase_product', null)
+            ->whereNull('follow_up_date')
+            ->whereNotNull('contact_date')
+            ->count();
+
+        $percentage_contact_schedule = ($contact_schedule / $totalRecords) * 100;
+
+        $data = intval($percentage_contact_schedule);
+
+        return response()->json($data);
+    }
+
 }

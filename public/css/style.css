@@ -527,7 +527,7 @@ body img,
 
 .new-followup-table {
     overflow-y: scroll;
-    height: 420px;
+    /*height: 420px;*/
 }
 
 .map-images {
