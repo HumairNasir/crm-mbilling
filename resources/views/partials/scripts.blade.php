@@ -83,6 +83,11 @@
                 },
                 yaxis: {
                     max: 100000,
+                    labels: {
+                        formatter: function (value) {
+                            return '$' + value;
+                        }
+                    }
                 },
                 plotOptions: {
                     bar: {
@@ -91,10 +96,7 @@
                 },
                 colors: ['#00E396'],
                 dataLabels: {
-                    enabled: true,
-                    formatter: function (val) {
-                        return '$' + val;
-                    },
+                    enabled: false,
                 },
                 legend: {
                     show: true,
@@ -161,6 +163,14 @@
                 },
                 xaxis: {
                     categories: monthNames
+                },
+                yaxis: {
+                    max: 1000000,
+                    labels: {
+                        formatter: function (value) {
+                            return '$' + value;
+                        }
+                    }
                 }
             };
 
@@ -197,11 +207,11 @@
             series: [
                 {
                     name: 'Last Month',
-                    data: [] // Leave this empty initially
+                    data: []
                 },
                 {
                     name: 'This Month',
-                    data: [] // Leave this empty initially
+                    data: []
                 }
             ],
             chart: {
@@ -217,14 +227,11 @@
                 }
             },
             dataLabels: {
-                enabled: true,
+                enabled: false,
                 offsetX: -6,
                 style: {
                     fontSize: '12px',
                     colors: ['#fff']
-                },
-                formatter: function (val) {
-                    return '$' + val;
                 },
             },
             stroke: {
@@ -238,7 +245,20 @@
             },
             xaxis: {
                 categories: [],
+                max: 100000,
+                labels: {
+                    formatter: function (value) {
+                        return '$' + value;
+                    }
+                }
             },
+            tooltip: {
+                y: {
+                    formatter: function (value) {
+                        return '$' + value;
+                    }
+                }
+            }
         };
 
         var chart = new ApexCharts(document.querySelector("#barchart"), options);
