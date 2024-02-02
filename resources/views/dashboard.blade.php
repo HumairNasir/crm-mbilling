@@ -43,8 +43,7 @@
             <div class="wd-sm">
                 <div class="sales-resp">
                     <div>
-                        <h4>Sales Response</h4>
-                        <p>This Year</p>
+                        <h3 class="sales-year">Total Sales</h3>
                         <h3>{{$total_sale_count}}</h3>
                     </div>
                     <div> <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
@@ -75,14 +74,16 @@
                     <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
                 </div>
                 <p class="sales-year">Year {{$year = date("Y")}} Sales</p>
-                <p class="sales-amount">${{$total_sale}}</p>
+                <p class="sales-amount">${{number_format($total_sale)}}</p>
+                <div>
+                    <p class="sales-year">Total Sales</p>
+                    <p class="sales-amount">{{$total_sale_count}}</p>
+                </div>
             </div>
             <div class="wd-sm">
                 <div class="sales-resp">
                     <div>
-                        <h4>Sales Response</h4>
-                        <p>This Year</p>
-                        <h3>{{$total_sale_count}}</h3>
+                        <h4>Dental Offices Response</h4>
                     </div>
                     <div> <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
                     </div>
@@ -92,7 +93,7 @@
             <div class="wd-bg">
                 <div class="sales-resp">
                     <div>
-                        <h4>Sales by Month</h4>
+                        <h4>Sales by Money</h4>
                     </div>
                     <div><img src="{{$assets_url}}/images/filter.svg" alt="" class="filter"></div>
                 </div>
@@ -103,7 +104,15 @@
     <div class="region-map-main">
         <div class="region-map">
             <div class="sales-by-region">
-                <h3>Sales by Region 9</h3>
+                @if(Auth::user()->roles[0]->name == 'CountryManager')
+                    <h3>Sales by Country</h3>
+                @elseif(Auth::user()->roles[0]->name == 'RegionalManager')
+                    <h3>Sales by Region</h3>
+                @elseif(Auth::user()->roles[0]->name == 'AreaManager')
+                    <h3>Sales by Area</h3>
+                @else
+                    <h3>Sales by Sales Rep</h3>
+                @endif
             </div>
             <div class="search-main">
                 <input type="search" name="search" id="search" placeholder="Search...">
@@ -134,7 +143,7 @@
         <div class="top-representatives">
             <div class="region-map">
                 <div class="sales-by-region representativesales">
-                    <h3>Sales Record of top Representatives</h3>
+                    <h3>Top Sales Representatives</h3>
                 </div>
                 <div class="search-main search-employee">
                     <input type="search" name="search" id="search" placeholder="Search...">
@@ -195,7 +204,7 @@
         <div class="sales-record">
             <div class="sales-resp">
                 <div>
-                    <h4>Sales Record</h4>
+                    <h4>User Engagement Trends</h4>
                 </div>
                 <div>
                     <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">

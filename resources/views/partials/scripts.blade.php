@@ -91,7 +91,10 @@
                 },
                 colors: ['#00E396'],
                 dataLabels: {
-                    enabled: false
+                    enabled: true,
+                    formatter: function (val) {
+                        return '$' + val;
+                    },
                 },
                 legend: {
                     show: true,
@@ -147,7 +150,7 @@
                     curve: 'smooth'
                 },
                 title: {
-                    text: 'Product Trends by Month',
+                    text: 'Total Sales by Month',
                     align: 'left'
                 },
                 grid: {
@@ -219,7 +222,10 @@
                 style: {
                     fontSize: '12px',
                     colors: ['#fff']
-                }
+                },
+                formatter: function (val) {
+                    return '$' + val;
+                },
             },
             stroke: {
                 show: true,
@@ -231,7 +237,7 @@
                 intersect: false
             },
             xaxis: {
-                categories: [], // Leave this empty initially
+                categories: [],
             },
         };
 

@@ -20,24 +20,25 @@ class AdminController extends Controller
         $dental_offices = '';
         $contacted_dental_offices = '';
         $active_won = '';
+        $currentYear = Carbon::now()->year;
 
         if (Auth::user()->roles[0]->name == 'CountryManager'){
 
-            $total_sale = Sale::all()->sum('sale_value');
+            $total_sale = Sale::whereYear('created_at', $currentYear)->sum('sale_value');
 
-            $total_sale_count = Sale::all()->count('id');
+            $total_sale_count = Sale::whereYear('created_at', $currentYear)->count('id');
 
             $dental_offices = DentalOffice::all();
 
         }elseif (Auth::user()->roles[0]->name == 'RegionalManager'){
 
-            $total_sale = Sale::whereIn('sales_rep_id', function($query) {
+            $total_sale = Sale::whereYear('created_at', $currentYear)->whereIn('sales_rep_id', function($query) {
                 $query->select('id')
                     ->from('users')
                     ->where('regional_manager_id', Auth::user()->id);
             })->sum('sale_value');
 
-            $total_sale_count = Sale::whereIn('sales_rep_id', function($query) {
+            $total_sale_count = Sale::whereYear('created_at', $currentYear)->whereIn('sales_rep_id', function($query) {
                 $query->select('id')
                     ->from('users')
                     ->where('regional_manager_id', Auth::user()->id);
@@ -47,13 +48,13 @@ class AdminController extends Controller
 
         }elseif(Auth::user()->roles[0]->name == 'AreaManager'){
 
-            $total_sale = Sale::whereIn('sales_rep_id', function($query) {
+            $total_sale = Sale::whereYear('created_at', $currentYear)->whereIn('sales_rep_id', function($query) {
                 $query->select('id')
                     ->from('users')
                     ->where('state_manager_id', Auth::user()->id);
             })->sum('sale_value');
 
-            $total_sale_count = Sale::whereIn('sales_rep_id', function($query) {
+            $total_sale_count = Sale::whereYear('created_at', $currentYear)->whereIn('sales_rep_id', function($query) {
                 $query->select('id')
                     ->from('users')
                     ->where('state_manager_id', Auth::user()->id);
@@ -63,8 +64,8 @@ class AdminController extends Controller
 
         }elseif (Auth::user()->roles[0]->name == 'SalesRepresentative'){
 
-            $total_sale = Sale::where('sales_rep_id',Auth::user()->id)->sum('sale_value');
-            $total_sale_count = Sale::where('sales_rep_id',Auth::user()->id)->count('id');
+            $total_sale = Sale::where('sales_rep_id',Auth::user()->id)->whereYear('created_at', $currentYear)->sum('sale_value');
+            $total_sale_count = Sale::where('sales_rep_id',Auth::user()->id)->whereYear('created_at', $currentYear)->count('id');
 
             $dental_offices = DentalOffice::all();
 

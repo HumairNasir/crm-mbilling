@@ -25,146 +25,146 @@
             <div class="dental-table-main">
                 <table class="dental-office-table">
                     <thead class="dental-table-header">
-                        <tr>
-                            <td class="dp-none">#</td>
-                            <td>Name</td>
-                            <td>Email</td>
-                            <td class="dp-none">Phone</td>
-                            <td class="dp-none">Address</td>
-                            <td>Action</td>
-                        </tr>
+                    <tr>
+                        <td class="dp-none">#</td>
+                        <td>Name</td>
+                        <td>Email</td>
+                        <td class="dp-none">Phone</td>
+                        <td class="dp-none">Address</td>
+                        <td>Action</td>
+                    </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="dp-none">1</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Health Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>+199999999</span></td>
-                            <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
-                            <td class="action-icons">
-                              <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                              <img src="../images/trash.svg" alt="" title="Delete">
-                            </td>
-                          </tr>
-                        <tr>
-                            <td class="dp-none">1</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Health Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>+199999999</span></td>
-                            <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
-                            <td class="action-icons">
-                                <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                                <img src="../images/trash.svg" alt="" title="Delete">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="dp-none">1</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Health Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>+199999999</span></td>
-                            <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
-                            <td class="action-icons">
-                                <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                                <img src="../images/trash.svg" alt="" title="Delete">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="dp-none">1</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Health Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>+199999999</span></td>
-                            <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
-                            <td class="action-icons">
-                                <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                                <img src="../images/trash.svg" alt="" title="Delete">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="dp-none">1</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Health Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>+199999999</span></td>
-                            <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
-                            <td class="action-icons">
-                                <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                                <img src="../images/trash.svg" alt="" title="Delete">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="dp-none">1</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Health Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>+199999999</span></td>
-                            <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
-                            <td class="action-icons">
-                                <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                                <img src="../images/trash.svg" alt="" title="Delete">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="dp-none">1</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Health Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>+199999999</span></td>
-                            <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
-                            <td class="action-icons">
-                                <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                                <img src="../images/trash.svg" alt="" title="Delete">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="dp-none">1</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Health Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>+199999999</span></td>
-                            <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
-                            <td class="action-icons">
-                                <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                                <img src="../images/trash.svg" alt="" title="Delete">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="dp-none">1</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Health Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>+199999999</span></td>
-                            <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
-                            <td class="action-icons">
-                                <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                                <img src="../images/trash.svg" alt="" title="Delete">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="dp-none">1</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Health Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>+199999999</span></td>
-                            <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
-                            <td class="action-icons">
-                                <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                                <img src="../images/trash.svg" alt="" title="Delete">
-                            </td>
-                        </tr>
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
+                        </td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
+                        <td class="action-icons">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
+                        </td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
+                        <td class="action-icons">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
+                        </td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
+                        <td class="action-icons">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
+                        </td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
+                        <td class="action-icons">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
+                        </td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
+                        <td class="action-icons">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
+                        </td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
+                        <td class="action-icons">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
+                        </td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
+                        <td class="action-icons">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
+                        </td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
+                        <td class="action-icons">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
+                        </td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
+                        <td class="action-icons">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
+                        </td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
+                        <td class="action-icons">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
