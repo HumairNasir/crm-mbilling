@@ -83,6 +83,11 @@
                 },
                 yaxis: {
                     max: 100000,
+                    labels: {
+                        formatter: function (value) {
+                            return '$' + value;
+                        }
+                    }
                 },
                 plotOptions: {
                     bar: {
@@ -91,7 +96,7 @@
                 },
                 colors: ['#00E396'],
                 dataLabels: {
-                    enabled: false
+                    enabled: false,
                 },
                 legend: {
                     show: true,
@@ -109,7 +114,7 @@
 
         $.ajax({
             type: 'GET',
-            url: '/get_currentYear_sales',
+            url: '/get_top_sales',
             dataType: 'json',
             success: function (res) {
                 var data = res;
@@ -122,47 +127,56 @@
 
         // Monthly sales for sales rep
 
-        var options = {
-            series: [{
-                name: "Sale",
-                data: [0, 300, 350, 900, 600, 1000, 850, 400, 500, 800, 10000, 600, 800]
-            }],
-            chart: {
-                height: 350,
-                type: 'line',
-                zoom: {
+        function updateChart(monthNames, totalSales) {
+            var options = {
+                series: [{
+                    name: "Sale",
+                    data: totalSales
+                }],
+                chart: {
+                    height: 350,
+                    type: 'line',
+                    zoom: {
+                        enabled: false
+                    },
+                },
+                colors: ["#424242"],
+                markers: {
+                    size: 4,
+                    colors: ["#000"],
+                },
+                dataLabels: {
                     enabled: false
                 },
-            },
-            colors: ["#424242"],
-            markers: {
-                size: 4,
-                colors: ["#000"],
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                curve: 'smooth'
-            },
-            title: {
-                text: 'Product Trends by Month',
-                align: 'left'
-            },
-            grid: {
-                row: {
-                    colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                    opacity: 0.5
+                stroke: {
+                    curve: 'smooth'
                 },
-            },
-            xaxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            }
-        };
+                title: {
+                    text: 'Total Sales by Month',
+                    align: 'left'
+                },
+                grid: {
+                    row: {
+                        colors: ['#f3f3f3', 'transparent'],
+                        opacity: 0.5
+                    },
+                },
+                xaxis: {
+                    categories: monthNames
+                },
+                yaxis: {
+                    max: 1000000,
+                    labels: {
+                        formatter: function (value) {
+                            return '$' + value;
+                        }
+                    }
+                }
+            };
 
-        var chart = new ApexCharts(document.querySelector("#saleschart"), options);
-        chart.render();
-
+            var chart = new ApexCharts(document.querySelector("#saleschart"), options);
+            chart.render();
+        }
         $.ajax({
             type: 'GET',
             url: '/get_monthly_sales',
@@ -170,20 +184,17 @@
             success: function (res) {
                 var data = res;
 
-                // Extract the month names and sales values from the data
-                var monthNames = data.map(item => item.month);
-                var salesValues = data.map(item => item.total_sales);
-
-                chart.updateSeries([{
-                    data: salesValues
-                }]);
-
-
-                chart.updateOptions({
-                    xaxis: {
-                        categories: monthNames
-                    }
+                // Extract month names and total sales values from the data
+                var monthNames = data.map(function (item) {
+                    return item.month;
                 });
+
+                var totalSales = data.map(function (item) {
+                    return item.total_sales;
+                });
+
+                // Call the updateChart function with the extracted data
+                updateChart(monthNames, totalSales);
             },
             error: function (msg) {
                 console.error('Error:', msg);
@@ -192,5 +203,441 @@
 
         // Weekly sales for stateManager
 
+        var options = {
+            series: [
+                {
+                    name: 'Last Month',
+                    data: []
+                },
+                {
+                    name: 'This Month',
+                    data: []
+                }
+            ],
+            chart: {
+                type: 'bar',
+                height: 265
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: true,
+                    dataLabels: {
+                        position: 'top',
+                    },
+                }
+            },
+            dataLabels: {
+                enabled: false,
+                offsetX: -6,
+                style: {
+                    fontSize: '12px',
+                    colors: ['#fff']
+                },
+            },
+            stroke: {
+                show: true,
+                width: 1,
+                colors: ['#fff']
+            },
+            tooltip: {
+                shared: true,
+                intersect: false
+            },
+            xaxis: {
+                categories: [],
+                max: 100000,
+                labels: {
+                    formatter: function (value) {
+                        return '$' + value;
+                    }
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function (value) {
+                        return '$' + value;
+                    }
+                }
+            }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#barchart"), options);
+        chart.render();
+
+        $.ajax({
+            type: 'GET',
+            url: '/get_weekly_sales',
+            dataType: 'json',
+            success: function (res) {
+                var data = res;
+
+                // Extract the data for Last Month and This Month
+                var lastMonthData = [];
+                var thisMonthData = [];
+
+                data.forEach(function (weekData) {
+                    lastMonthData.push(weekData.previous_week.total_sales);
+                    thisMonthData.push(weekData.current_week.total_sales);
+                });
+
+                // Update the chart options with the extracted data
+                chart.updateOptions({
+                    series: [
+                        {
+                            name: 'Last Month',
+                            data: lastMonthData
+                        },
+                        {
+                            name: 'This Month',
+                            data: thisMonthData
+                        }
+                    ],
+                    xaxis: {
+                        categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4']
+                    }
+                });
+            },
+            error: function (msg) {
+                console.error('Error:', msg);
+            },
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        function updateChart(totalOrders) {
+
+            var predefinedMaxValue = 1000;
+            var maxValue = Math.max(predefinedMaxValue, totalOrders);
+
+            var options = {
+                chart: {
+                    height: 250,
+                    type: 'radialBar',
+                },
+                plotOptions: {
+                    radialBar: {
+                        hollow: {
+                            margin: 0,
+                            size: '70%',
+                            background: '#fff',
+                            image: undefined,
+                            imageOffsetX: 0,
+                            imageOffsetY: 0,
+                            position: 'front',
+                            dropShadow: {
+                                enabled: false,
+                                top: 0,
+                                left: 0,
+                                blur: 3,
+                                opacity: 0.5
+                            }
+                        },
+                        dataLabels: {
+                            showOn: 'always',
+                            name: {
+                                offsetY: -10,
+                                show: true,
+                                color: '#888',
+                                fontSize: '16px'
+                            },
+                            value: {
+                                color: '#111',
+                                fontSize: '30px',
+                                show: true,
+                                formatter: function (val) {
+                                    return totalOrders;
+                                }
+                            }
+                        }
+                    }
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shade: 'dark',
+                        type: 'horizontal',
+                        shadeIntensity: 0.5,
+                        gradientToColors: ['#FFD700'],
+                        inverseColors: true,
+                        opacityFrom: 1,
+                        opacityTo: 1,
+                        stops: [0, 100]
+                    }
+                },
+                series: [totalOrders],
+                labels: ['Total Sales'],
+                stroke: {
+                    lineCap: 'round'
+                },
+                max: maxValue,
+                responsive: [{
+                    breakpoint: 400,
+                    options: {
+                        chart: {
+                            height: 350
+                        }
+                    }
+                }]
+            };
+
+            var chart = new ApexCharts(document.querySelector("#circular-chart"), options);
+            chart.render();
+        }
+
+        $.ajax({
+            type: 'GET',
+            url: '/get_total_sale',
+            dataType: 'json',
+            success: function (res) {
+                updateChart(res.count);
+            },
+            error: function (msg) {
+                console.error('Error:', msg);
+            },
+        });
+    });
+</script>
+<script>
+$(document).ready(function () {
+
+    var options = {
+        series: [],
+        chart: {
+            type: 'radialBar',
+            offsetY: -20,
+            width: 230,
+            sparkline: {
+                enabled: true
+            },
+        },
+        plotOptions: {
+            radialBar: {
+                startAngle: -90,
+                endAngle: 90,
+                track: {
+                    background: "#e7e7e7",
+                    strokeWidth: '97%',
+                    margin: 5,
+                    dropShadow: {
+                        enabled: true,
+                        top: 2,
+                        left: 0,
+                        color: '#999',
+                        opacity: 1,
+                        blur: 2
+                    }
+                },
+                dataLabels: {
+                    name: {
+                        show: false
+                    },
+                    value: {
+                        offsetY: -2,
+                        fontSize: '22px'
+                    }
+                }
+            }
+        },
+        grid: {
+            padding: {
+                top: -10
+            }
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shade: 'light',
+                shadeIntensity: 0.4,
+                inverseColors: false,
+                opacityFrom: 1,
+                opacityTo: 1,
+                stops: [0, 50, 53, 91]
+            },
+        },
+        labels: ['Average Results'],
+    };
+
+    var chart = new ApexCharts(document.querySelector("#guagechart"), options);
+    chart.render();
+
+    $.ajax({
+        type: 'GET',
+        url: '/get_won_sales',
+        dataType: 'json',
+        success: function (res) {
+            options.series = [res];
+
+
+            chart.updateSeries(options.series);
+
+            chart.render();
+        },
+        error: function (msg) {
+            console.error('Error:', msg);
+        },
+    });
+});
+</script>
+<script>
+    $(document).ready(function () {
+
+        var options = {
+            series: [],
+            chart: {
+                type: 'radialBar',
+                offsetY: -20,
+                width: 230,
+                sparkline: {
+                    enabled: true
+                }
+            },
+            plotOptions: {
+                radialBar: {
+                    startAngle: -90,
+                    endAngle: 90,
+                    track: {
+                        background: "#e7e7e7",
+                        strokeWidth: '97%',
+                        margin: 5,
+                        dropShadow: {
+                            enabled: true,
+                            top: 2,
+                            left: 0,
+                            color: '#999',
+                            opacity: 1,
+                            blur: 2
+                        }
+                    },
+                    dataLabels: {
+                        name: {
+                            show: false
+                        },
+                        value: {
+                            offsetY: -2,
+                            fontSize: '22px'
+                        }
+                    }
+                }
+            },
+            grid: {
+                padding: {
+                    top: -10
+                }
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'light',
+                    shadeIntensity: 0.4,
+                    inverseColors: false,
+                    opacityFrom: 1,
+                    opacityTo: 1,
+                    stops: [0, 50, 53, 91]
+                },
+            },
+            labels: ['Average Results'],
+        };
+
+        var chart = new ApexCharts(document.querySelector("#guage_chart"), options);
+        chart.render();
+
+        $.ajax({
+            type: 'GET',
+            url: '/get_schedule_sales',
+            dataType: 'json',
+            success: function (res) {
+                options.series = [res];
+
+
+                chart.updateSeries(options.series);
+
+                chart.render();
+            },
+            error: function (msg) {
+                console.error('Error:', msg);
+            },
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+
+        var options = {
+            series: [],
+            chart: {
+                type: 'radialBar',
+                offsetY: -20,
+                width: 230,
+                sparkline: {
+                    enabled: true
+                }
+            },
+            plotOptions: {
+                radialBar: {
+                    startAngle: -90,
+                    endAngle: 90,
+                    track: {
+                        background: "#e7e7e7",
+                        strokeWidth: '97%',
+                        margin: 5,
+                        dropShadow: {
+                            enabled: true,
+                            top: 2,
+                            left: 0,
+                            color: '#999',
+                            opacity: 1,
+                            blur: 2
+                        }
+                    },
+                    dataLabels: {
+                        name: {
+                            show: false
+                        },
+                        value: {
+                            offsetY: -2,
+                            fontSize: '22px'
+                        }
+                    }
+                }
+            },
+            grid: {
+                padding: {
+                    top: -10
+                }
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'light',
+                    shadeIntensity: 0.4,
+                    inverseColors: false,
+                    opacityFrom: 1,
+                    opacityTo: 1,
+                    stops: [0, 50, 53, 91]
+                },
+            },
+            labels: ['Average Results'],
+        };
+
+        var chart = new ApexCharts(document.querySelector("#guages_charts"), options);
+        chart.render();
+
+        $.ajax({
+            type: 'GET',
+            url: '/get_reschedule_sales',
+            dataType: 'json',
+            success: function (res) {
+                options.series = [res];
+
+
+                chart.updateSeries(options.series);
+
+                chart.render();
+            },
+            error: function (msg) {
+                console.error('Error:', msg);
+            },
+        });
     });
 </script>

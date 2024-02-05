@@ -1,8 +1,8 @@
-       
+
       @extends('layouts.backend')
 @section('content')
 <div class="content-main dental-office-content">
-    <h3>Reginoal Managers</h3>
+    <h3>Regional Managers</h3>
  <div class="">
             <div class="dental-office-parent">
                 <div class="search-main search-employee">
@@ -25,168 +25,146 @@
             <div class="dental-table-main">
                 <table class="dental-office-table">
                     <thead class="dental-table-header">
-                        <tr>
-                            <td class="dp-none">#</td>
-                            <td>Office Name</td>
-                            <td>Email</td>
-                            <td class="dp-none">Response</td>
-                            <td class="dp-none">Territory</td>
-                            <td class="dp-none">Sales Person</td>
-                            <td>Note</td>
-                            <td>Action</td>
-                        </tr>
+                    <tr>
+                        <td class="dp-none">#</td>
+                        <td>Name</td>
+                        <td>Email</td>
+                        <td class="dp-none">Phone</td>
+                        <td class="dp-none">Address</td>
+                        <td>Action</td>
+                    </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="dp-none">1</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Heath Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>Cold</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td><a href="#" data-toggle="modal" data-target="#exampleModalCenter2"><img src="../images/pencil-square.svg" alt="" data-toggle="tooltip" data-placement="top" title="Add Note"></a></td>
-                        <td class="action-icons">
-                          <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                          <img src="../images/trash.svg" alt="" title="Delete">
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
                         </td>
-                          </tr>
-                                                <tr>
-                            <td class="dp-none">2</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Heath Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>Cold</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td><a href="#" data-toggle="modal" data-target="#exampleModalCenter2"><img src="../images/pencil-square.svg" alt="" data-toggle="tooltip" data-placement="top" title="Add Note"></a></td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
                         <td class="action-icons">
-                          <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                          <img src="../images/trash.svg" alt="" title="Delete">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
                         </td>
-                          </tr>
-                                                <tr>
-                            <td class="dp-none">3</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Heath Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>Cold</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td><a href="#" data-toggle="modal" data-target="#exampleModalCenter2"><img src="../images/pencil-square.svg" alt="" data-toggle="tooltip" data-placement="top" title="Add Note"></a></td>
+                    </tr>
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
+                        </td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
                         <td class="action-icons">
-                          <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                          <img src="../images/trash.svg" alt="" title="Delete">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
                         </td>
-                          </tr>
-                                                <tr>
-                            <td class="dp-none">4</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Heath Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>Cold</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td><a href="#" data-toggle="modal" data-target="#exampleModalCenter2"><img src="../images/pencil-square.svg" alt="" data-toggle="tooltip" data-placement="top" title="Add Note"></a></td>
+                    </tr>
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
+                        </td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
                         <td class="action-icons">
-                          <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                          <img src="../images/trash.svg" alt="" title="Delete">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
                         </td>
-                          </tr>
-                                                <tr>
-                            <td class="dp-none">5</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Heath Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>Cold</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td><a href="#" data-toggle="modal" data-target="#exampleModalCenter2"><img src="../images/pencil-square.svg" alt="" data-toggle="tooltip" data-placement="top" title="Add Note"></a></td>
+                    </tr>
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
+                        </td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
                         <td class="action-icons">
-                          <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                          <img src="../images/trash.svg" alt="" title="Delete">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
                         </td>
-                          </tr>
-                                                <tr>
-                            <td class="dp-none">6</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Heath Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>Cold</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td><a href="#" data-toggle="modal" data-target="#exampleModalCenter2"><img src="../images/pencil-square.svg" alt="" data-toggle="tooltip" data-placement="top" title="Add Note"></a></td>
+                    </tr>
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
+                        </td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
                         <td class="action-icons">
-                          <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                          <img src="../images/trash.svg" alt="" title="Delete">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
                         </td>
-                          </tr>
-                                                <tr>
-                            <td class="dp-none">7</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Heath Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>Cold</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td><a href="#" data-toggle="modal" data-target="#exampleModalCenter2"><img src="../images/pencil-square.svg" alt="" data-toggle="tooltip" data-placement="top" title="Add Note"></a></td>
+                    </tr>
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
+                        </td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
                         <td class="action-icons">
-                          <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                          <img src="../images/trash.svg" alt="" title="Delete">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
                         </td>
-                          </tr>
-                                                <tr>
-                            <td class="dp-none">8</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Heath Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>Cold</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td><a href="#" data-toggle="modal" data-target="#exampleModalCenter2"><img src="../images/pencil-square.svg" alt="" data-toggle="tooltip" data-placement="top" title="Add Note"></a></td>
+                    </tr>
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
+                        </td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
                         <td class="action-icons">
-                          <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                          <img src="../images/trash.svg" alt="" title="Delete">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
                         </td>
-                          </tr>
-                                                <tr>
-                            <td class="dp-none">9</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Heath Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>Cold</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td><a href="#" data-toggle="modal" data-target="#exampleModalCenter2"><img src="../images/pencil-square.svg" alt="" data-toggle="tooltip" data-placement="top" title="Add Note"></a></td>
+                    </tr>
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
+                        </td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
                         <td class="action-icons">
-                          <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                          <img src="../images/trash.svg" alt="" title="Delete">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
                         </td>
-                          </tr>
-                                                <tr>
-                            <td class="dp-none">10</td>
-                            <td class="dental-office-name-img">
-                                <img src="../images/img.svg" alt=""><h6>Heath Care Dental</h6>
-                            </td>
-                            <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
-                            <td class="dp-none"><span>Cold</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td class="dp-none"><span>Name</span></td>
-                            <td><a href="#" data-toggle="modal" data-target="#exampleModalCenter2"><img src="../images/pencil-square.svg" alt="" data-toggle="tooltip" data-placement="top" title="Add Note"></a></td>
+                    </tr>
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
+                        </td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
                         <td class="action-icons">
-                          <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
-                          <img src="../images/trash.svg" alt="" title="Delete">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
                         </td>
-                          </tr>
+                    </tr>
+                    <tr>
+                        <td class="dp-none">1</td>
+                        <td class="dental-office-name-img">
+                            <img src="../images/img.svg" alt=""><h6>Sarah Jane</h6>
+                        </td>
+                        <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">Email</button></a></td>
+                        <td class="dp-none"><span>+199999999</span></td>
+                        <td class="dp-none"><span>1600 Amphitheatre Parkway</span></td>
+                        <td class="action-icons">
+                            <img src="../images/pencil.svg" alt="" title="Edit" data-toggle="modal" data-target="#exampleModalCenter3">
+                            <img src="../images/trash.svg" alt="" title="Delete">
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>

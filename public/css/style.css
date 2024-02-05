@@ -101,13 +101,33 @@ body img,
 
 .page-content {
     display: flex;
-    height: 76vh;
+    height: 80vh;
+}
+
+.year_sale{
+    font-size: 28px;
+    font-weight: 500;
+    color: #8c8c8c;
+}
+
+.response_drop{
+    height: calc(2em + 0.75rem + 2px) !important;
+    border: 1px solid #eee !important;
+}
+
+.sign_in{
+    color: #ffffff;
+    background-color: #2563eb !important;
+}
+
+.active_item{
+    color: #133763;
 }
 
 .content-main {
     width: 82%;
     background: #f8f9fa;
-    padding: 40px;
+    padding: 5px 40px 40px 40px;
     overflow-y: scroll;
 }
 
@@ -527,7 +547,7 @@ body img,
 
 .new-followup-table {
     overflow-y: scroll;
-    height: 420px;
+    /*height: 420px;*/
 }
 
 .map-images {

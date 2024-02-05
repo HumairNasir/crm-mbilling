@@ -19,11 +19,23 @@ Route::group(['middleware' => 'auth'], function () {
 
 Route::get('/', [AdminController::class, 'index'])->name('dashboard');
 
+Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+
 Route::get('/get_response', [AdminController::class, 'get_response'])->name('get_response');
 
-Route::get('/get_currentYear_sales', [AdminController::class, 'get_currentYear_sales'])->name('get_currentYear_sales');
+Route::get('/get_top_sales', [AdminController::class, 'get_top_sales'])->name('get_top_sales');
 
 Route::get('/get_monthly_sales', [AdminController::class, 'get_monthly_sales'])->name('get_monthly_sales');
+
+Route::get('/get_weekly_sales', [AdminController::class, 'get_weekly_sales'])->name('get_weekly_sales');
+
+Route::get('/get_reschedule_sales', [AdminController::class, 'get_reschedule_sales'])->name('get_reschedule_sales');
+
+Route::get('/get_schedule_sales', [AdminController::class, 'get_schedule_sales'])->name('get_schedule_sales');
+
+Route::get('/get_won_sales', [AdminController::class, 'get_won_sales'])->name('get_won_sales');
+
+Route::get('/get_total_sale', [AdminController::class, 'get_total_sale'])->name('get_total_sale');
 
 });
 
@@ -43,6 +55,10 @@ Route::get('/regional_manager', function () {
 Route::get('/area-manager', function () {
     return view('area-manager');
 })->middleware(['auth'])->name('area-manager');
+
+Route::get('/clients', function () {
+    return view('client');
+})->middleware(['auth'])->name('clients');
 
 Route::get('/sales-rep', function () {
     return view('sales-rep');
