@@ -301,7 +301,101 @@
                 console.error('Error:', msg);
             },
         });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        function updateChart(totalOrders) {
 
+            var predefinedMaxValue = 1000;
+            var maxValue = Math.max(predefinedMaxValue, totalOrders);
+
+            var options = {
+                chart: {
+                    height: 250,
+                    type: 'radialBar',
+                },
+                plotOptions: {
+                    radialBar: {
+                        hollow: {
+                            margin: 0,
+                            size: '70%',
+                            background: '#fff',
+                            image: undefined,
+                            imageOffsetX: 0,
+                            imageOffsetY: 0,
+                            position: 'front',
+                            dropShadow: {
+                                enabled: false,
+                                top: 0,
+                                left: 0,
+                                blur: 3,
+                                opacity: 0.5
+                            }
+                        },
+                        dataLabels: {
+                            showOn: 'always',
+                            name: {
+                                offsetY: -10,
+                                show: true,
+                                color: '#888',
+                                fontSize: '16px'
+                            },
+                            value: {
+                                color: '#111',
+                                fontSize: '30px',
+                                show: true,
+                                formatter: function (val) {
+                                    return totalOrders;
+                                }
+                            }
+                        }
+                    }
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shade: 'dark',
+                        type: 'horizontal',
+                        shadeIntensity: 0.5,
+                        gradientToColors: ['#FFD700'],
+                        inverseColors: true,
+                        opacityFrom: 1,
+                        opacityTo: 1,
+                        stops: [0, 100]
+                    }
+                },
+                series: [totalOrders],
+                labels: ['Total Sales'],
+                stroke: {
+                    lineCap: 'round'
+                },
+                max: maxValue,
+                responsive: [{
+                    breakpoint: 400,
+                    options: {
+                        chart: {
+                            height: 350
+                        }
+                    }
+                }]
+            };
+
+            var chart = new ApexCharts(document.querySelector("#circular-chart"), options);
+            chart.render();
+        }
+
+        $.ajax({
+            type: 'GET',
+            url: '/get_total_sale',
+            dataType: 'json',
+            success: function (res) {
+                updateChart(res.count);
+            },
+            error: function (msg) {
+                console.error('Error:', msg);
+            },
+        });
     });
 </script>
 <script>
