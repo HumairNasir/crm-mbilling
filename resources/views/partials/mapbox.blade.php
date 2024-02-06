@@ -21,7 +21,7 @@
         </div>
     </div>
     <div class="map-vectors">
-        <img src="{{$assets_url}}/images/Map(1).png" alt="" class="">
+        <img src="{{$assets_url}}/images/Map.png" alt="" class="">
     </div>
 </div>
 @endif

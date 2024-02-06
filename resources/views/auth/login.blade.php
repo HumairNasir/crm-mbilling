@@ -12,10 +12,10 @@
         <!-- Validation Errors -->
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-        <h1 class="text-center text-2xl font-bold">Kriss Crm</h3>
+        <h3 class="text-center text-2xl font-bold">Kriss CRM</h3>
         <p class="text-center text-lg">Sign In</p>
 
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" id="myForm" action="{{ route('login') }}">
             @csrf
 
             <!-- Email Address -->
@@ -63,7 +63,7 @@
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <x-button class="ml-3 sign_in">
+                <x-button class="ml-3 sign_in" onclick="disableButton(this)">
                     {{ __('Sign In') }}
                 </x-button>
             </div>

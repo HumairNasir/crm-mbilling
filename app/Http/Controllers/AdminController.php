@@ -78,6 +78,41 @@ class AdminController extends Controller
         return view('dashboard', compact('total_sale','total_sale_count', 'dental_offices', 'contacted_dental_offices','active_won'));
     }
 
+    public function dental_offices()
+    {
+
+        return view('dental_offices');
+
+    }
+
+    public function regional_manager()
+    {
+
+        return view('regional_manager');
+
+    }
+
+    public function area_manager()
+    {
+
+        return view('area-manager');
+
+    }
+
+    public function clients()
+    {
+
+        return view('client');
+
+    }
+
+    public function sales_rep()
+    {
+
+        return view('sales-rep');
+
+    }
+
     public function get_response()
     {
         $data = '';

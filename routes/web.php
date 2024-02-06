@@ -21,6 +21,16 @@ Route::get('/', [AdminController::class, 'index'])->name('dashboard');
 
 Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 
+Route::get('/dental_offices', [AdminController::class, 'dental_offices'])->name('dental_offices');
+
+Route::get('/regional_manager', [AdminController::class, 'regional_manager'])->name('regional_manager');
+
+Route::get('/area_manager', [AdminController::class, 'area_manager'])->name('area_manager');
+
+Route::get('/clients', [AdminController::class, 'clients'])->name('clients');
+
+Route::get('/sales_rep', [AdminController::class, 'sales_rep'])->name('sales_rep');
+
 Route::get('/get_response', [AdminController::class, 'get_response'])->name('get_response');
 
 Route::get('/get_top_sales', [AdminController::class, 'get_top_sales'])->name('get_top_sales');
