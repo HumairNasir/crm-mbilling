@@ -172,6 +172,7 @@
                 },
                 yaxis: {
                     max: 5000,
+                    min: 0,
                     labels: {
                         formatter: function (value) {
                             return '$' + value;
