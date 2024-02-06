@@ -35,6 +35,8 @@ Route::get('/get_schedule_sales', [AdminController::class, 'get_schedule_sales']
 
 Route::get('/get_won_sales', [AdminController::class, 'get_won_sales'])->name('get_won_sales');
 
+Route::get('/get_total_sale', [AdminController::class, 'get_total_sale'])->name('get_total_sale');
+
 });
 
 
@@ -53,6 +55,10 @@ Route::get('/regional_manager', function () {
 Route::get('/area-manager', function () {
     return view('area-manager');
 })->middleware(['auth'])->name('area-manager');
+
+Route::get('/clients', function () {
+    return view('client');
+})->middleware(['auth'])->name('clients');
 
 Route::get('/sales-rep', function () {
     return view('sales-rep');

@@ -1,3 +1,4 @@
+@if(Auth::user()->roles[0]->name == 'CountryManager' || Auth::user()->roles[0]->name == 'CountryManager')
 <script>
     console.clear();
 </script>
@@ -107,3 +108,5 @@
     });
 
 </script>
+
+@endif

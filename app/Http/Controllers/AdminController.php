@@ -490,7 +490,7 @@ class AdminController extends Controller
         $totalRecords = DentalOffice::where('sales_rep_id', Auth::user()->id)->count();
         $won_closed = DentalOffice::where('sales_rep_id', Auth::user()->id)->where('purchase_product', 'Yes')->count();
 
-        $percentage_contact_won = ($won_closed / $totalRecords) * 100;
+        $percentage_contact_won = ($totalRecords > 0) ? ($won_closed / $totalRecords) * 100 : 0;
 
         $data = intval($percentage_contact_won);
 
@@ -506,7 +506,7 @@ class AdminController extends Controller
             ->whereNotNull('contact_date')
             ->count();
 
-        $percentage_contact_reschedule = ($reschedule / $totalRecords) * 100;
+        $percentage_contact_reschedule = ($totalRecords > 0) ? ($reschedule / $totalRecords) * 100 : 0;
 
         $data = intval($percentage_contact_reschedule);
 
@@ -523,10 +523,63 @@ class AdminController extends Controller
             ->whereNotNull('contact_date')
             ->count();
 
-        $percentage_contact_schedule = ($contact_schedule / $totalRecords) * 100;
+        $percentage_contact_schedule = ($totalRecords > 0) ? ($contact_schedule / $totalRecords) * 100 : 0;
 
         $data = intval($percentage_contact_schedule);
 
+        return response()->json($data);
+    }
+
+    public function get_total_sale()
+    {
+
+        $total_sale_count = '';
+        $total_sale = '';
+        $currentYear = Carbon::now()->year;
+
+        if (Auth::user()->roles[0]->name == 'CountryManager'){
+
+            $total_sale = Sale::count('id');
+
+            $total_sale_count = Sale::whereYear('created_at', $currentYear)->count('id');
+
+        }elseif (Auth::user()->roles[0]->name == 'RegionalManager'){
+
+            $total_sale = Sale::where('regional_manager_id', Auth::user()->id)->count('id');
+
+            $total_sale_count = Sale::whereYear('created_at', $currentYear)->whereIn('sales_rep_id', function($query) {
+                $query->select('id')
+                    ->from('users')
+                    ->where('regional_manager_id', Auth::user()->id);
+            })->count('id');
+
+
+
+        }elseif(Auth::user()->roles[0]->name == 'AreaManager'){
+
+            $total_sale = Sale::where('state_manager_id', Auth::user()->id)->count('id');
+
+            $total_sale_count = Sale::whereYear('created_at', $currentYear)->whereIn('sales_rep_id', function($query) {
+                $query->select('id')
+                    ->from('users')
+                    ->where('state_manager_id', Auth::user()->id);
+            })->count('id');
+
+
+
+        }elseif (Auth::user()->roles[0]->name == 'SalesRepresentative'){
+
+            $total_sale = Sale::where('sales_rep_id', Auth::user()->id)->count('id');
+            $total_sale_count = Sale::where('sales_rep_id',Auth::user()->id)->whereYear('created_at', $currentYear)->count('id');
+
+        }
+
+        $percentage= ($total_sale_count / $total_sale) * 100;
+
+        $data = [
+            'percentage_value' => $percentage,
+            'count' => $total_sale_count
+        ];
         return response()->json($data);
     }
 

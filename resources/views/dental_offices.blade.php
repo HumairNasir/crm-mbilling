@@ -1,4 +1,4 @@
-       
+
       @extends('layouts.backend')
 @section('content')
 <div class="content-main dental-office-content">
@@ -10,7 +10,7 @@
                     <img src="../images/search.svg" alt="">
                 </div>
                 <div class="category-search search-employee dental-category">
-                    <select name="cats" id="categpries">
+                    <select name="cats" id="categories">
                         <option value="" disabled selected>Sorted by</option>
                         <option value="dummy1">Dummy1</option>
                         <option value="dummy1">Dummy1</option>
@@ -268,7 +268,12 @@
             </div>
             <div>
               <label for="sale-rep">How receptive the dental office is to sale</label>
-              <input type="text" name="sale-rep" placeholder="Cold">
+                <select class="form-control response_drop" name="sale-rep" id="categories">
+                    <option value="" disabled selected>Select Response</option>
+                    <option value="cold">Cold</option>
+                    <option value="hot">Hot</option>
+                    <option value="warm">Warm</option>
+                </select>
               <label for="followup">Follow up date</label>
               <input type="text" name="followup" placeholder="12/02/2024">
               <label for="contact-person">Contact person</label>

@@ -26,16 +26,24 @@
     </body>
     <script>
         function togglePasswordVisibility(inputId) {
-            var passwordInput = document.getElementById(inputId);
-            var eyeIcon = passwordInput.nextElementSibling.querySelector('.eye-svg');
-    
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                eyeIcon.classList.add('slash-eye'); // You may need to define this class for a crossed eye icon
+            const passwordInput = document.getElementById(inputId);
+            const eyeSvg = document.querySelector('.eye-svg');
+            const eyeHideSvg = document.querySelector('.eye-hide');
+
+            if (passwordInput && eyeSvg && eyeHideSvg) {
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    eyeSvg.style.display = 'none';
+                    eyeHideSvg.style.display = 'block';
+                } else {
+                    passwordInput.type = 'password';
+                    eyeSvg.style.display = 'block';
+                    eyeHideSvg.style.display = 'none';
+                }
             } else {
-                passwordInput.type = 'password';
-                eyeIcon.classList.remove('slash-eye');
+                console.error('One or more elements not found. Check class names and HTML structure.');
             }
+
         }
     </script>
 </html>

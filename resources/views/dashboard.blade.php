@@ -69,21 +69,20 @@
     @else
         <div class="sales-main-graph">
             <div class="wd-sm">
-                <div class="graph-section-icons">
-                    <img src="{{$assets_url}}/images/calendar.svg" alt="" class="calendar">
-                    <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
+                <div class="sales-resp">
+                    <div>
+                        <span class="year_sale">{{$year = date("Y")}} Sales</span>
+                        <h3>${{number_format($total_sale)}}</h3>
+                    </div>
+                    <div> <img src="{{$assets_url}}/images/calen.svg" alt="" class="filter">
+                    </div>
                 </div>
-                <p class="sales-year">Year {{$year = date("Y")}} Sales</p>
-                <p class="sales-amount">${{number_format($total_sale)}}</p>
-                <div>
-                    <p class="sales-year">Total Sales</p>
-                    <p class="sales-amount">{{$total_sale_count}}</p>
-                </div>
+                <div id="circular-chart"></div>
             </div>
             <div class="wd-sm">
                 <div class="sales-resp">
                     <div>
-                        <h4>Dental Offices Response</h4>
+                        <h4>Response</h4>
                     </div>
                     <div> <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
                     </div>
@@ -93,7 +92,7 @@
             <div class="wd-bg">
                 <div class="sales-resp">
                     <div>
-                        <h4>Sales by Money</h4>
+                        <h4>Revenue by Week</h4>
                     </div>
                     <div><img src="{{$assets_url}}/images/filter.svg" alt="" class="filter"></div>
                 </div>
@@ -139,7 +138,8 @@
                 <div class="category-search search-employee">
                     <select name="cats" id="categpries">
                         <option value="" disabled selected>Sorted by</option>
-                        <option value="dummy1">Dummy1</option>
+                        <option value="dummy1">All</option>
+                        <option value="dummy1">Recently Added</option>
                     </select>
                 </div>
                 <div class="search-main search-employee dental-search">
