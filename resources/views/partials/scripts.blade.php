@@ -85,7 +85,7 @@
                     categories: storeNames,
                 },
                 yaxis: {
-                    max: 100000,
+                    max: 5000,
                     labels: {
                         formatter: function (value) {
                             return '$' + value;
@@ -171,7 +171,7 @@
                     categories: monthNames
                 },
                 yaxis: {
-                    max: 1000000,
+                    max: 5000,
                     labels: {
                         formatter: function (value) {
                             return '$' + value;
@@ -254,7 +254,7 @@
             },
             xaxis: {
                 categories: [],
-                max: 100000,
+                max: 5000,
                 labels: {
                     formatter: function (value) {
                         return '$' + value;
@@ -280,16 +280,16 @@
                 dataType: 'json',
                 success: function (res) {
                     var data = res;
-    
+
                     // Extract the data for Last Month and This Month
                     var lastMonthData = [];
                     var thisMonthData = [];
-    
+
                     data.forEach(function (weekData) {
                         lastMonthData.push(weekData.previous_week.total_sales);
                         thisMonthData.push(weekData.current_week.total_sales);
                     });
-    
+
                     // Update the chart options with the extracted data
                     chart.updateOptions({
                         series: [
@@ -483,10 +483,10 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (res) {
                 options.series = [res];
-    
-    
+
+
                 chart.updateSeries(options.series);
-    
+
                 chart.render();
             },
             error: function (msg) {
@@ -651,10 +651,10 @@ $(document).ready(function () {
                 dataType: 'json',
                 success: function (res) {
                     options.series = [res];
-    
-    
+
+
                     chart.updateSeries(options.series);
-    
+
                     chart.render();
                 },
                 error: function (msg) {
