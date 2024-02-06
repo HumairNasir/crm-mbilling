@@ -47,8 +47,11 @@
                     }],
             };
 
-            var chart = new ApexCharts(document.querySelector("#donutchart"), options);
-            chart.render();
+            var donutchart = document.querySelector("#donutchart")
+            if(donutchart){
+                var chart = new ApexCharts(donutchart, options);
+                chart.render();
+            }
         }
         $.ajax({
             type: 'GET',
@@ -58,7 +61,7 @@
                 renderDonutChart(res);
             },
             error: function (msg) {
-                console.error('Error:', msg);
+                console.log('Error:', msg);
             },
         });
 
@@ -108,8 +111,11 @@
                 }
             };
 
-            var chart = new ApexCharts(document.querySelector("#employeeChart"), options);
-            chart.render();
+            var employeeChart = document.querySelector("#employeeChart")
+            if(employeeChart){
+                var chart = new ApexCharts(employeeChart, options);
+                chart.render();
+            }
         }
 
         $.ajax({
@@ -121,7 +127,7 @@
                 renderBarChart(data);
             },
             error: function (msg) {
-                console.error('Error:', msg);
+                console.log('Error:', msg);
             },
         });
 
@@ -174,8 +180,12 @@
                 }
             };
 
-            var chart = new ApexCharts(document.querySelector("#saleschart"), options);
-            chart.render();
+            var saleschart = document.querySelector("#saleschart")
+            if(saleschart){
+                var chart = new ApexCharts(saleschart, options);
+                chart.render();
+            }
+
         }
         $.ajax({
             type: 'GET',
@@ -197,7 +207,7 @@
                 updateChart(monthNames, totalSales);
             },
             error: function (msg) {
-                console.error('Error:', msg);
+                console.log('Error:', msg);
             },
         });
 
@@ -261,46 +271,49 @@
             }
         };
 
-        var chart = new ApexCharts(document.querySelector("#barchart"), options);
-        chart.render();
+        var barchart = document.querySelector("#barchart")
+        if(barchart){
+            var chart = new ApexCharts(barchart, options);
+            chart.render();
 
-        $.ajax({
-            type: 'GET',
-            url: '/get_weekly_sales',
-            dataType: 'json',
-            success: function (res) {
-                var data = res;
+            $.ajax({
+                type: 'GET',
+                url: '/get_weekly_sales',
+                dataType: 'json',
+                success: function (res) {
+                    var data = res;
 
-                // Extract the data for Last Month and This Month
-                var lastMonthData = [];
-                var thisMonthData = [];
+                    // Extract the data for Last Month and This Month
+                    var lastMonthData = [];
+                    var thisMonthData = [];
 
-                data.forEach(function (weekData) {
-                    lastMonthData.push(weekData.previous_week.total_sales);
-                    thisMonthData.push(weekData.current_week.total_sales);
-                });
+                    data.forEach(function (weekData) {
+                        lastMonthData.push(weekData.previous_week.total_sales);
+                        thisMonthData.push(weekData.current_week.total_sales);
+                    });
 
-                // Update the chart options with the extracted data
-                chart.updateOptions({
-                    series: [
-                        {
-                            name: 'Last Month',
-                            data: lastMonthData
-                        },
-                        {
-                            name: 'This Month',
-                            data: thisMonthData
+                    // Update the chart options with the extracted data
+                    chart.updateOptions({
+                        series: [
+                            {
+                                name: 'Last Month',
+                                data: lastMonthData
+                            },
+                            {
+                                name: 'This Month',
+                                data: thisMonthData
+                            }
+                        ],
+                        xaxis: {
+                            categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4']
                         }
-                    ],
-                    xaxis: {
-                        categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4']
-                    }
-                });
-            },
-            error: function (msg) {
-                console.error('Error:', msg);
-            },
-        });
+                    });
+                },
+                error: function (msg) {
+                    console.log('Error:', msg);
+                },
+            });
+        }
 
     });
 </script>
@@ -364,25 +377,28 @@ $(document).ready(function () {
         labels: ['Average Results'],
     };
 
-    var chart = new ApexCharts(document.querySelector("#guagechart"), options);
-    chart.render();
+    var guagechart = document.querySelector("#guagechart")
+    if(guagechart){
+        var chart = new ApexCharts(guagechart, options);
+        chart.render();
+        $.ajax({
+            type: 'GET',
+            url: '/get_won_sales',
+            dataType: 'json',
+            success: function (res) {
+                options.series = [res];
+    
+    
+                chart.updateSeries(options.series);
+    
+                chart.render();
+            },
+            error: function (msg) {
+                console.log('Error:', msg);
+            },
+        });
+    }
 
-    $.ajax({
-        type: 'GET',
-        url: '/get_won_sales',
-        dataType: 'json',
-        success: function (res) {
-            options.series = [res];
-
-
-            chart.updateSeries(options.series);
-
-            chart.render();
-        },
-        error: function (msg) {
-            console.error('Error:', msg);
-        },
-    });
 });
 </script>
 <script>
@@ -445,25 +461,28 @@ $(document).ready(function () {
             labels: ['Average Results'],
         };
 
-        var chart = new ApexCharts(document.querySelector("#guage_chart"), options);
-        chart.render();
+        var guage_chart = document.querySelector("#guage_chart")
+        if(guage_chart){
+            var chart = new ApexCharts(guage_chart, options);
+            chart.render();
+            $.ajax({
+                type: 'GET',
+                url: '/get_schedule_sales',
+                dataType: 'json',
+                success: function (res) {
+                    options.series = [res];
 
-        $.ajax({
-            type: 'GET',
-            url: '/get_schedule_sales',
-            dataType: 'json',
-            success: function (res) {
-                options.series = [res];
 
+                    chart.updateSeries(options.series);
 
-                chart.updateSeries(options.series);
+                    chart.render();
+                },
+                error: function (msg) {
+                    console.log('Error:', msg);
+                },
+            });
+        }
 
-                chart.render();
-            },
-            error: function (msg) {
-                console.error('Error:', msg);
-            },
-        });
     });
 </script>
 <script>
@@ -525,25 +544,27 @@ $(document).ready(function () {
             },
             labels: ['Average Results'],
         };
+        var guages_charts = document.querySelector("#guages_charts")
+        if(guages_charts){
+            var chart = new ApexCharts(guages_charts, options);
+            chart.render();
+            $.ajax({
+                type: 'GET',
+                url: '/get_reschedule_sales',
+                dataType: 'json',
+                success: function (res) {
+                    options.series = [res];
+    
+    
+                    chart.updateSeries(options.series);
+    
+                    chart.render();
+                },
+                error: function (msg) {
+                    console.log('Error:', msg);
+                },
+            });
+        }
 
-        var chart = new ApexCharts(document.querySelector("#guages_charts"), options);
-        chart.render();
-
-        $.ajax({
-            type: 'GET',
-            url: '/get_reschedule_sales',
-            dataType: 'json',
-            success: function (res) {
-                options.series = [res];
-
-
-                chart.updateSeries(options.series);
-
-                chart.render();
-            },
-            error: function (msg) {
-                console.error('Error:', msg);
-            },
-        });
     });
 </script>

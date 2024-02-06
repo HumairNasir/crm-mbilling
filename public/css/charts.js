@@ -50,8 +50,11 @@ var options = {
     },
 };
 
-var chart = new ApexCharts(document.querySelector("#subscription-bar"), options);
-chart.render();
+var subscription_bar = document.querySelector("#subscription-bar")
+if(subscription_bar){
+    var chart = new ApexCharts(subscription_bar, options);
+    chart.render();
+}
 
 var options = {
     series: [33, 33, 34],
@@ -73,5 +76,8 @@ var options = {
     }]
 };
 
-var chart = new ApexCharts(document.querySelector("#simplepie"), options);
-chart.render();
+var simplepie = document.querySelector("#simplepie")
+if(simplepie){
+    var chart = new ApexCharts(simplepie, options);
+    chart.render();
+}
