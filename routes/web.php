@@ -47,6 +47,8 @@ Route::get('/get_won_sales', [AdminController::class, 'get_won_sales'])->name('g
 
 Route::get('/get_total_sale', [AdminController::class, 'get_total_sale'])->name('get_total_sale');
 
+Route::get('/get_subscriptions_sale', [AdminController::class, 'get_subscriptions_sale'])->name('get_subscriptions_sale');
+
 });
 
 
