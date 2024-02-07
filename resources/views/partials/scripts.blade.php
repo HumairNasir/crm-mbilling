@@ -371,7 +371,7 @@
                         shade: 'dark',
                         type: 'horizontal',
                         shadeIntensity: 0.5,
-                        gradientToColors: ['#FFD700'],
+                        gradientToColors: ['#008FFB'],
                         inverseColors: true,
                         opacityFrom: 1,
                         opacityTo: 1,
