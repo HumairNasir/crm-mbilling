@@ -24,7 +24,7 @@
     </div>
     <div class="map-vectors mt-3">
 
-        <div id="map" class="w-100" style="height:40rem"></div>
+        <div id="map" class="w-100" style="height:30rem"></div>
 
         <!-- @if(Auth::user()->roles[0]->name == 'CountryManager')
             <img src="{{$assets_url}}/images/Map.png" alt="">
@@ -54,9 +54,12 @@
         center: [-98, 39],
         zoom: 4,
         maxBounds: [
-            [-170, 18],
-            [-65, 72]
+            [-125, 22], // Southwest coordinates (longitude, latitude)
+            [-88, 60] // Northeast coordinates (longitude, latitude)
+        //     [-170, 18],
+        //     [-65, 72]
         ]
+        
     });
 
     let hoveredPolygonId = null;
