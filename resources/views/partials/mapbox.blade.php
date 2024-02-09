@@ -24,7 +24,7 @@
     </div>
     <div class="map-vectors">
 
-        <div id="map" class="w-100" style="height:30rem"></div>
+        <div id="map" class="w-100" style="height:40rem"></div>
 
         <!-- @if(Auth::user()->roles[0]->name == 'CountryManager')
             <img src="{{$assets_url}}/images/Map.png" alt="">
@@ -74,12 +74,12 @@
             'source': 'states',
             'layout': {},
             'paint': {
-                'fill-color': '#627BC1',
+                'fill-color': '#133763',
                 'fill-opacity': [
                     'case',
                     ['boolean', ['feature-state', 'hover'], false],
-                    0.7,
-                    0.1
+                    0.2,
+                    0.01
                 ]
             }
         });
@@ -90,7 +90,7 @@
             'source': 'states',
             'layout': {},
             'paint': {
-                'line-color': '#627BC1',
+                'line-color': '#ddd',
                 'line-width': 1
             }
         });
@@ -130,15 +130,21 @@
             }
 
             const stateGeometry = e.features[0].geometry;
+            console.log(stateGeometry.coordinates,"stateProperties.STATE_NAME");
             if (stateGeometry && stateGeometry.coordinates && stateGeometry.coordinates[0]) {
-                const bounds = stateGeometry.coordinates[0].reduce((bounds, coord) => {
-                    return bounds.extend(coord);
-                }, new mapboxgl.LngLatBounds(stateGeometry.coordinates[0][0], stateGeometry
-                    .coordinates[0][0]));
+                // Check if it's a 3D array (contains nested arrays)
+                const is3DArray = Array.isArray(stateGeometry.coordinates[0][0][0]);
 
-                map.fitBounds(bounds, {
-                    padding: 0
-                });
+                // Create bounds based on the type of array
+                const bounds = is3DArray
+                    ? stateGeometry.coordinates.reduce((outerBounds, polygon) => {
+                        return polygon.reduce((polyBounds, ring) => {
+                            return ring.reduce((innerBounds, coord) => innerBounds.extend(coord), polyBounds);
+                        }, outerBounds);
+                    }, new mapboxgl.LngLatBounds(stateGeometry.coordinates[0][0][0], stateGeometry.coordinates[0][0][0]))
+                    : stateGeometry.coordinates[0].reduce((polyBounds, coord) => polyBounds.extend(coord), new mapboxgl.LngLatBounds(stateGeometry.coordinates[0][0], stateGeometry.coordinates[0][0]));
+
+                map.fitBounds(bounds, { padding: 20 });
 
                 // Clear previously added city-borders layer
                 map.getLayer('city-borders') && map.removeLayer('city-borders');
@@ -155,23 +161,11 @@
                     }
                 });
 
-                // Add a layer for the clicked state
-                map.addLayer({
-                    'id': 'clicked-state-fill',
-                    'type': 'fill',
-                    'source': 'clicked-state-fill',
-                    'layout': {},
-                    'paint': {
-                        'fill-color': '#133763',
-                        'fill-opacity': 0.1
-                    }
-                });
-
                 const cityDataEndpoint = '{{$assets_url}}/mapJson/gadm41_USA_2.json';
                 const cityDataResponse = await fetch(cityDataEndpoint);
                 const cityData = await cityDataResponse.json();
                 const filteredFeatures = cityData.features.filter((feature) => {
-                    return feature.properties.NAME_1 === stateProperties.STATE_NAME;
+                    return (feature.properties.NAME_1).replace(" ", "") === (stateProperties.STATE_NAME).replace(" ", "");
                 });
 
                 // Add a source for city boundaries of the selected state
@@ -196,12 +190,12 @@
                 });
 
                 // Add hover effect on city polygons
-                map.on('mousemove', 'city-borders', (e) => {
-                    if (e.features.length > 0) {
-                        const newHoveredPolygonId = e.features[0].id;
+            map.on('mousemove', 'city-borders', (e) => {
+                if (e.features.length > 0) {
+                    const newHoveredPolygonId = e.features[0].id || e.features[0].properties.index;
 
-                        if (hoveredPolygonId !== null && hoveredPolygonId !==
-                            newHoveredPolygonId) {
+                    if (newHoveredPolygonId) {
+                        if (hoveredPolygonId !== null && hoveredPolygonId !== newHoveredPolygonId) {
                             map.setFeatureState({
                                 source: 'city-borders',
                                 id: hoveredPolygonId
@@ -219,25 +213,29 @@
                             hover: true
                         });
                     }
-                });
+                }else{
+                    console.log('NOT 1');
+                }
+            });
 
-                // Remove hover effect when leaving city polygons
-                map.on('mouseleave', 'city-borders', () => {
-                    if (hoveredPolygonId !== null) {
-                        map.setFeatureState({
-                            source: 'city-borders',
-                            id: hoveredPolygonId
-                        }, {
-                            hover: false
-                        });
-                    }
+            // Remove hover effect when leaving city polygons
+            map.on('mouseleave', 'city-borders', () => {
+                if (hoveredPolygonId !== null) {
+                    map.setFeatureState({
+                        source: 'city-borders',
+                        id: hoveredPolygonId
+                    }, {
+                        hover: false
+                    });
                     hoveredPolygonId = null;
-                });
+                }else{
+                    console.log('NOT 1222');
+                }
+            });
+            }else{
+                console.log('HERE');
             }
         });
-
-
-
 
         map.on('mouseleave', 'state-fills', () => {
             if (hoveredPolygonId !== null) {
