@@ -39,7 +39,7 @@
                         <td class="dp-none"><span>Name</span></td>
                     </tr>
                     <tr>
-                        <td class="dp-none">1</td>
+                        <td class="dp-none">2</td>
                         <td class="dental-office-name-img">
                             <img src="../images/img.svg" alt=""><h6>Health Care Dental</h6>
                         </td>
@@ -49,7 +49,7 @@
                         <td class="dp-none"><span>Name</span></td>
                     </tr>
                     <tr>
-                        <td class="dp-none">1</td>
+                        <td class="dp-none">3</td>
                         <td class="dental-office-name-img">
                             <img src="../images/img.svg" alt=""><h6>Health Care Dental</h6>
                         </td>
@@ -59,7 +59,7 @@
                         <td class="dp-none"><span>Name</span></td>
                     </tr>
                     <tr>
-                        <td class="dp-none">1</td>
+                        <td class="dp-none">4</td>
                         <td class="dental-office-name-img">
                             <img src="../images/img.svg" alt=""><h6>Health Care Dental</h6>
                         </td>
@@ -69,7 +69,7 @@
                         <td class="dp-none"><span>Name</span></td>
                     </tr>
                     <tr>
-                        <td class="dp-none">1</td>
+                        <td class="dp-none">5</td>
                         <td class="dental-office-name-img">
                             <img src="../images/img.svg" alt=""><h6>Health Care Dental</h6>
                         </td>
@@ -79,7 +79,7 @@
                         <td class="dp-none"><span>Name</span></td>
                     </tr>
                     <tr>
-                        <td class="dp-none">1</td>
+                        <td class="dp-none">6</td>
                         <td class="dental-office-name-img">
                             <img src="../images/img.svg" alt=""><h6>Health Care Dental</h6>
                         </td>
@@ -89,7 +89,7 @@
                         <td class="dp-none"><span>Name</span></td>
                     </tr>
                     <tr>
-                        <td class="dp-none">1</td>
+                        <td class="dp-none">7</td>
                         <td class="dental-office-name-img">
                             <img src="../images/img.svg" alt=""><h6>Health Care Dental</h6>
                         </td>
@@ -99,7 +99,7 @@
                         <td class="dp-none"><span>Name</span></td>
                     </tr>
                     <tr>
-                        <td class="dp-none">1</td>
+                        <td class="dp-none">8</td>
                         <td class="dental-office-name-img">
                             <img src="../images/img.svg" alt=""><h6>Health Care Dental</h6>
                         </td>
@@ -109,7 +109,7 @@
                         <td class="dp-none"><span>Name</span></td>
                     </tr>
                     <tr>
-                        <td class="dp-none">1</td>
+                        <td class="dp-none">9</td>
                         <td class="dental-office-name-img">
                             <img src="../images/img.svg" alt=""><h6>Health Care Dental</h6>
                         </td>
@@ -119,7 +119,7 @@
                         <td class="dp-none"><span>Name</span></td>
                     </tr>
                     <tr>
-                        <td class="dp-none">1</td>
+                        <td class="dp-none">10</td>
                         <td class="dental-office-name-img">
                             <img src="../images/img.svg" alt=""><h6>Health Care Dental</h6>
                         </td>

@@ -231,50 +231,6 @@
 
 <!-- Modal 2 -->
 
-<div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle2" aria-hidden="true">
-  <div class="modal-dialog form-office-modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle2">Add Note</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form action="">
-          <div class="form-office-main">
-            <div>
-              <label for="contact-way">How they were contacted</label>
-              <input type="tel" name="contact-way" placeholder="Phone">
-              <label for="product-purchase">Did the dental office purchese the product</label>
-              <input type="text" name="product-purchase" placeholder="No">
-              <label for="contact-date">Contact date</label>
-              <input type="text" name="contact-date" placeholder="01/01/2024">
-            </div>
-            <div>
-              <label for="sale-rep">How receptive the dental office is to sale</label>
-              <input type="text" name="sale-rep" placeholder="Cold">
-              <label for="followup">Follow up date</label>
-              <input type="text" name="followup" placeholder="12/02/2024">
-              <label for="contact-person">Contact person</label>
-              <input type="text" name="contact-person" placeholder="John Morgan">
-            </div>
-            <div class="text-area-parent">
-              <label for="description">Description</label>
-              <textarea name="description" class="description-textarea" cols="30" rows="10"></textarea>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer form-office-modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Save</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal 3 -->
-
 <div class="modal fade" id="exampleModalCenter3" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle3" aria-hidden="true">
   <div class="modal-dialog form-office-modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
