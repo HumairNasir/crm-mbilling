@@ -85,17 +85,11 @@ class AdminController extends Controller
 
     }
 
-    public function regional_manager()
-    {
-
-        return view('regional_manager');
-
-    }
+   
 
     public function area_manager()
     {
 
-        return view('area-manager');
 
     }
 
