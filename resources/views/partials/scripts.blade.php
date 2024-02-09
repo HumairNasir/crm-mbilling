@@ -5,7 +5,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         function renderDonutChart(data) {
             var options = {
                 series: data.series,
@@ -21,19 +21,19 @@
                     },
                 },
                 legend: {
-                            position: 'bottom',
-                        },
+                    position: 'bottom',
+                },
                 responsive: [{
-                    breakpoint: 1024,
-                    options: {
-                        chart: {
-                            width: 200,
-                        },
-                        legend: {
-                            position: 'bottom',
+                        breakpoint: 1024,
+                        options: {
+                            chart: {
+                                width: 200,
+                            },
+                            legend: {
+                                position: 'bottom',
+                            },
                         },
                     },
-                },
                     {
                         breakpoint: 767,
                         options: {
@@ -44,20 +44,24 @@
                                 position: 'bottom',
                             },
                         },
-                    }],
+                    }
+                ],
             };
 
-            var chart = new ApexCharts(document.querySelector("#donutchart"), options);
-            chart.render();
+            var donutchart = document.querySelector("#donutchart")
+            if (donutchart) {
+                var chart = new ApexCharts(donutchart, options);
+                chart.render();
+            }
         }
         $.ajax({
             type: 'GET',
             url: '/get_response',
             dataType: 'json',
-            success: function (res) {
+            success: function(res) {
                 renderDonutChart(res);
             },
-            error: function (msg) {
+            error: function(msg) {
                 console.error('Error:', msg);
             },
         });
@@ -82,9 +86,9 @@
                     categories: storeNames,
                 },
                 yaxis: {
-                    max: 100000,
+                    max: 5000,
                     labels: {
-                        formatter: function (value) {
+                        formatter: function(value) {
                             return '$' + value;
                         }
                     }
@@ -108,19 +112,22 @@
                 }
             };
 
-            var chart = new ApexCharts(document.querySelector("#employeeChart"), options);
-            chart.render();
+            var employeeChart = document.querySelector("#employeeChart")
+            if (employeeChart) {
+                var chart = new ApexCharts(employeeChart, options);
+                chart.render();
+            }
         }
 
         $.ajax({
             type: 'GET',
             url: '/get_top_sales',
             dataType: 'json',
-            success: function (res) {
+            success: function(res) {
                 var data = res;
                 renderBarChart(data);
             },
-            error: function (msg) {
+            error: function(msg) {
                 console.error('Error:', msg);
             },
         });
@@ -165,38 +172,42 @@
                     categories: monthNames
                 },
                 yaxis: {
-                    max: 1000000,
+                    max: 5000,
+                    min: 0,
                     labels: {
-                        formatter: function (value) {
+                        formatter: function(value) {
                             return '$' + value;
                         }
                     }
                 }
             };
 
-            var chart = new ApexCharts(document.querySelector("#saleschart"), options);
-            chart.render();
+            var saleschart = document.querySelector("#saleschart")
+            if (saleschart) {
+                var chart = new ApexCharts(saleschart, options);
+                chart.render();
+            }
         }
         $.ajax({
             type: 'GET',
             url: '/get_monthly_sales',
             dataType: 'json',
-            success: function (res) {
+            success: function(res) {
                 var data = res;
 
                 // Extract month names and total sales values from the data
-                var monthNames = data.map(function (item) {
+                var monthNames = data.map(function(item) {
                     return item.month;
                 });
 
-                var totalSales = data.map(function (item) {
+                var totalSales = data.map(function(item) {
                     return item.total_sales;
                 });
 
                 // Call the updateChart function with the extracted data
                 updateChart(monthNames, totalSales);
             },
-            error: function (msg) {
+            error: function(msg) {
                 console.error('Error:', msg);
             },
         });
@@ -204,8 +215,7 @@
         // Weekly sales for stateManager
 
         var options = {
-            series: [
-                {
+            series: [{
                     name: 'Last Month',
                     data: []
                 },
@@ -245,66 +255,68 @@
             },
             xaxis: {
                 categories: [],
-                max: 100000,
+                max: 5000,
                 labels: {
-                    formatter: function (value) {
+                    formatter: function(value) {
                         return '$' + value;
                     }
                 }
             },
             tooltip: {
                 y: {
-                    formatter: function (value) {
+                    formatter: function(value) {
                         return '$' + value;
                     }
                 }
             }
         };
 
-        var chart = new ApexCharts(document.querySelector("#barchart"), options);
-        chart.render();
+        var barchart = document.querySelector("#barchart")
+        if (barchart) {
+            var chart = new ApexCharts(barchart, options);
+            chart.render();
+            $.ajax({
+                type: 'GET',
+                url: '/get_weekly_sales',
+                dataType: 'json',
+                success: function(res) {
+                    var data = res;
 
-        $.ajax({
-            type: 'GET',
-            url: '/get_weekly_sales',
-            dataType: 'json',
-            success: function (res) {
-                var data = res;
+                    // Extract the data for Last Month and This Month
+                    var lastMonthData = [];
+                    var thisMonthData = [];
 
-                // Extract the data for Last Month and This Month
-                var lastMonthData = [];
-                var thisMonthData = [];
+                    data.forEach(function(weekData) {
+                        lastMonthData.push(weekData.previous_week.total_sales);
+                        thisMonthData.push(weekData.current_week.total_sales);
+                    });
 
-                data.forEach(function (weekData) {
-                    lastMonthData.push(weekData.previous_week.total_sales);
-                    thisMonthData.push(weekData.current_week.total_sales);
-                });
-
-                // Update the chart options with the extracted data
-                chart.updateOptions({
-                    series: [
-                        {
-                            name: 'Last Month',
-                            data: lastMonthData
-                        },
-                        {
-                            name: 'This Month',
-                            data: thisMonthData
+                    // Update the chart options with the extracted data
+                    chart.updateOptions({
+                        series: [{
+                                name: 'Last Month',
+                                data: lastMonthData
+                            },
+                            {
+                                name: 'This Month',
+                                data: thisMonthData
+                            }
+                        ],
+                        xaxis: {
+                            categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4']
                         }
-                    ],
-                    xaxis: {
-                        categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4']
-                    }
-                });
-            },
-            error: function (msg) {
-                console.error('Error:', msg);
-            },
-        });
+                    });
+                },
+                error: function(msg) {
+                    console.error('Error:', msg);
+                },
+            });
+        }
+
     });
 </script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         function updateChart(totalOrders) {
 
             var predefinedMaxValue = 1000;
@@ -345,7 +357,7 @@
                                 color: '#111',
                                 fontSize: '30px',
                                 show: true,
-                                formatter: function (val) {
+                                formatter: function(val) {
                                     return totalOrders;
                                 }
                             }
@@ -381,106 +393,234 @@
                 }]
             };
 
-            var chart = new ApexCharts(document.querySelector("#circular-chart"), options);
-            chart.render();
+            var circular = document.querySelector("#circular-chart")
+            if (circular) {
+                var chart = new ApexCharts(circular, options);
+                chart.render();
+            }
         }
 
         $.ajax({
             type: 'GET',
             url: '/get_total_sale',
             dataType: 'json',
-            success: function (res) {
+            success: function(res) {
                 updateChart(res.count);
             },
-            error: function (msg) {
+            error: function(msg) {
                 console.error('Error:', msg);
             },
         });
     });
 </script>
 <script>
-$(document).ready(function () {
+    $(document).ready(function() {
 
-    var options = {
-        series: [],
-        chart: {
-            type: 'radialBar',
-            offsetY: -20,
-            width: 230,
-            sparkline: {
-                enabled: true
-            },
-        },
-        plotOptions: {
-            radialBar: {
-                startAngle: -90,
-                endAngle: 90,
-                track: {
-                    background: "#e7e7e7",
-                    strokeWidth: '97%',
-                    margin: 5,
-                    dropShadow: {
-                        enabled: true,
-                        top: 2,
-                        left: 0,
-                        color: '#999',
-                        opacity: 1,
-                        blur: 2
-                    }
+        var options = {
+            series: [],
+            chart: {
+                type: 'radialBar',
+                offsetY: -20,
+                width: 230,
+                sparkline: {
+                    enabled: true
                 },
-                dataLabels: {
-                    name: {
-                        show: false
+            },
+            plotOptions: {
+                radialBar: {
+                    startAngle: -90,
+                    endAngle: 90,
+                    track: {
+                        background: "#e7e7e7",
+                        strokeWidth: '97%',
+                        margin: 5,
+                        dropShadow: {
+                            enabled: true,
+                            top: 2,
+                            left: 0,
+                            color: '#999',
+                            opacity: 1,
+                            blur: 2
+                        }
                     },
-                    value: {
-                        offsetY: -2,
-                        fontSize: '22px'
+                    dataLabels: {
+                        name: {
+                            show: false
+                        },
+                        value: {
+                            offsetY: -2,
+                            fontSize: '22px'
+                        }
                     }
                 }
-            }
-        },
-        grid: {
-            padding: {
-                top: -10
-            }
-        },
-        fill: {
-            type: 'gradient',
-            gradient: {
-                shade: 'light',
-                shadeIntensity: 0.4,
-                inverseColors: false,
-                opacityFrom: 1,
-                opacityTo: 1,
-                stops: [0, 50, 53, 91]
             },
-        },
-        labels: ['Average Results'],
-    };
+            grid: {
+                padding: {
+                    top: -10
+                }
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'light',
+                    shadeIntensity: 0.4,
+                    inverseColors: false,
+                    opacityFrom: 1,
+                    opacityTo: 1,
+                    stops: [0, 50, 53, 91]
+                },
+            },
+            labels: ['Average Results'],
+        };
 
-    var chart = new ApexCharts(document.querySelector("#guagechart"), options);
-    chart.render();
+        var guagechart1 = document.querySelector("#guagechart");
+        if (guagechart1) {
+            var chart1 = new ApexCharts(guagechart1, options);
+            chart1.render();
+            $.ajax({
+                type: 'GET',
+                url: '/get_won_sales',
+                dataType: 'json',
+                success: function(res) {
+                    var options1 = [res];
+                    chart1.updateSeries(options1);
+                    chart1.render();
+                },
+                error: function(msg) {
+                    console.error('Error:', msg);
+                },
+            });
+        }
 
-    $.ajax({
-        type: 'GET',
-        url: '/get_won_sales',
-        dataType: 'json',
-        success: function (res) {
-            options.series = [res];
+        var guagechart2 = document.querySelector("#guagechart2");
+        if (guagechart2) {
+            var chart2 = new ApexCharts(guagechart2, options);
+            chart2.render();
+            $.ajax({
+                type: 'GET',
+                url: '/get_won_sales',
+                dataType: 'json',
+                success: function(res) {
+                    var options2 = [res];
+                    chart2.updateSeries(options2);
+                    chart2.render();
+                },
+                error: function(msg) {
+                    console.error('Error:', msg);
+                },
+            });
+        }
+
+        var guagechart3 = document.querySelector("#guagechart3");
+        if (guagechart3) {
+            var chart3 = new ApexCharts(guagechart3, options);
+            chart3.render();
+            $.ajax({
+                type: 'GET',
+                url: '/get_won_sales',
+                dataType: 'json',
+                success: function(res) {
+                    var options3 = [res];
+                    chart3.updateSeries(options3);
+                    chart3.render();
+                },
+                error: function(msg) {
+                    console.error('Error:', msg);
+                },
+            });
+        }
 
 
-            chart.updateSeries(options.series);
 
+
+    });
+</script>
+<script>
+    $(document).ready(function() {
+
+        var options = {
+            series: [],
+            chart: {
+                type: 'radialBar',
+                offsetY: -20,
+                width: 230,
+                sparkline: {
+                    enabled: true
+                }
+            },
+            plotOptions: {
+                radialBar: {
+                    startAngle: -90,
+                    endAngle: 90,
+                    track: {
+                        background: "#e7e7e7",
+                        strokeWidth: '97%',
+                        margin: 5,
+                        dropShadow: {
+                            enabled: true,
+                            top: 2,
+                            left: 0,
+                            color: '#999',
+                            opacity: 1,
+                            blur: 2
+                        }
+                    },
+                    dataLabels: {
+                        name: {
+                            show: false
+                        },
+                        value: {
+                            offsetY: -2,
+                            fontSize: '22px'
+                        }
+                    }
+                }
+            },
+            grid: {
+                padding: {
+                    top: -10
+                }
+            },
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'light',
+                    shadeIntensity: 0.4,
+                    inverseColors: false,
+                    opacityFrom: 1,
+                    opacityTo: 1,
+                    stops: [0, 50, 53, 91]
+                },
+            },
+            labels: ['Average Results'],
+        };
+
+
+        var guage_chart = document.querySelector("#guage_chart")
+        if (guage_chart) {
+            var chart = new ApexCharts(guage_chart, options);
             chart.render();
-        },
-        error: function (msg) {
-            console.error('Error:', msg);
-        },
+            $.ajax({
+                type: 'GET',
+                url: '/get_schedule_sales',
+                dataType: 'json',
+                success: function(res) {
+                    options.series = [res];
+
+
+                    chart.updateSeries(options.series);
+
+                    chart.render();
+                },
+                error: function(msg) {
+                    console.error('Error:', msg);
+                },
+            });
+        }
     });
-});
 </script>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
 
         var options = {
             series: [],
@@ -539,105 +679,54 @@ $(document).ready(function () {
             labels: ['Average Results'],
         };
 
-        var chart = new ApexCharts(document.querySelector("#guage_chart"), options);
-        chart.render();
+        var guages_charts = document.querySelector("#guages_charts")
+        if (guages_charts) {
+            var chart = new ApexCharts(guages_charts, options);
+            chart.render();
+            $.ajax({
+                type: 'GET',
+                url: '/get_reschedule_sales',
+                dataType: 'json',
+                success: function(res) {
+                    options.series = [res];
 
-        $.ajax({
-            type: 'GET',
-            url: '/get_schedule_sales',
-            dataType: 'json',
-            success: function (res) {
-                options.series = [res];
 
+                    chart.updateSeries(options.series);
 
-                chart.updateSeries(options.series);
-
-                chart.render();
-            },
-            error: function (msg) {
-                console.error('Error:', msg);
-            },
+                    chart.render();
+                },
+                error: function(msg) {
+                    console.error('Error:', msg);
+                },
+            });
+        }
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $(".burger-menu-button").click(function() {
+            $(".sidebar").animate({
+                left: "0%"
+            }, 500);
+            $(".sidebar-overlay").animate({
+                right: "0%"
+            }, 500);
         });
-    });
-</script>
-<script>
-    $(document).ready(function () {
-
-        var options = {
-            series: [],
-            chart: {
-                type: 'radialBar',
-                offsetY: -20,
-                width: 230,
-                sparkline: {
-                    enabled: true
-                }
-            },
-            plotOptions: {
-                radialBar: {
-                    startAngle: -90,
-                    endAngle: 90,
-                    track: {
-                        background: "#e7e7e7",
-                        strokeWidth: '97%',
-                        margin: 5,
-                        dropShadow: {
-                            enabled: true,
-                            top: 2,
-                            left: 0,
-                            color: '#999',
-                            opacity: 1,
-                            blur: 2
-                        }
-                    },
-                    dataLabels: {
-                        name: {
-                            show: false
-                        },
-                        value: {
-                            offsetY: -2,
-                            fontSize: '22px'
-                        }
-                    }
-                }
-            },
-            grid: {
-                padding: {
-                    top: -10
-                }
-            },
-            fill: {
-                type: 'gradient',
-                gradient: {
-                    shade: 'light',
-                    shadeIntensity: 0.4,
-                    inverseColors: false,
-                    opacityFrom: 1,
-                    opacityTo: 1,
-                    stops: [0, 50, 53, 91]
-                },
-            },
-            labels: ['Average Results'],
-        };
-
-        var chart = new ApexCharts(document.querySelector("#guages_charts"), options);
-        chart.render();
-
-        $.ajax({
-            type: 'GET',
-            url: '/get_reschedule_sales',
-            dataType: 'json',
-            success: function (res) {
-                options.series = [res];
-
-
-                chart.updateSeries(options.series);
-
-                chart.render();
-            },
-            error: function (msg) {
-                console.error('Error:', msg);
-            },
+        $(".sidebar-overlay").click(function() {
+            $(".sidebar").animate({
+                left: "-100%"
+            }, 500);
+            $(".sidebar-overlay").animate({
+                right: "-100%"
+            }, 500);
+        });
+        $(".overlay-close").click(function() {
+            $(".sidebar").animate({
+                left: "-100%"
+            }, 500);
+            $(".sidebar-overlay").animate({
+                right: "-100%"
+            }, 500);
         });
     });
 </script>

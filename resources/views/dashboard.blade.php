@@ -100,43 +100,7 @@
             </div>
         </div>
     @endif
-    @if(Auth::user()->roles[0]->name == 'CountryManager')
-    <div class="region-map-main">
-        <div class="region-map">
-            <div class="sales-by-region">
-                    <h3>Sales by Country</h3>
-            </div>
-            <div class="search-main">
-                <input type="search" name="search" id="search" placeholder="Search...">
-                <img src="{{$assets_url}}/images/search.svg" alt="">
-            </div>
-            <div>
-                <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
-            </div>
-        </div>
-        <div class="map-vectors">
-            <img src="{{$assets_url}}/images/Map.png" alt="">
-        </div>
-    </div>
-    @elseif(Auth::user()->roles[0]->name == 'CountryManager')
-    <div class="region-map-main">
-            <div class="region-map">
-                <div class="sales-by-region">
-                    <h3>Sales by Country</h3>
-                </div>
-                <div class="search-main">
-                    <input type="search" name="search" id="search" placeholder="Search...">
-                    <img src="{{$assets_url}}/images/search.svg" alt="">
-                </div>
-                <div>
-                    <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
-                </div>
-            </div>
-            <div class="map-vectors">
-                <img src="{{$assets_url}}/images/Map(1).png" alt="">
-            </div>
-        </div>
-    @endif
+    @include('partials.mapbox')
     <div class="sales-record-main">
         <div class="top-representatives">
             <div class="region-map">
