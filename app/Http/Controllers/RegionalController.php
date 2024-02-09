@@ -27,17 +27,17 @@ class RegionalController extends Controller
             ->get();
         $region_list = Region::all();
 
-    
+
 
         if ($regional_managers->isEmpty()) {
             // Handle case when no regional managers are found
             return redirect()->back()->with('error', 'No regional managers found.');
         }
-    
-  
+
+
         return view('regional_manager', compact('regional_managers','region_list'));
     }
-    
+
 
     /**
      * Show the form for creating a new resource.
@@ -67,12 +67,12 @@ class RegionalController extends Controller
             'region' => 'required|numeric', // Assuming region is numeric
             'password' => 'required', // Assuming region is numeric
         ];
-    
+
         $validator = Validator::make($request->all(), $rules);
 
         // Check if validation fails
         if ($validator->fails()) {
-           
+
             $errorsArray = [];
 
             foreach ($validator->errors()->toArray() as $field => $errors) {
@@ -81,12 +81,12 @@ class RegionalController extends Controller
                     return ucfirst($error);
                 }, $errors);
             }
-            
+
             // Return the validation errors
             return response()->json(['errors' => $errorsArray]);
-            
+
         }
-    
+
         $user = new User();
         $user->name = $request->input('name');
         $user->email = $request->input('email');
@@ -96,7 +96,7 @@ class RegionalController extends Controller
         $user->country_manager_id = Auth::user()->id;
         $user->region_id = $request->input('region');
         $user->password = Hash::make($request->input('password'));
-        
+
         // Save the user
         $user->save();
         $user_id = $user->id; // Retrieve the ID of the saved user
@@ -108,7 +108,7 @@ class RegionalController extends Controller
     }
 
 
-    
+
     /**
      * Display the specified resource.
      *
@@ -148,7 +148,7 @@ class RegionalController extends Controller
                 'region_id' => $user_region_id,
                 'user_id' => $user_id,
             ];
-            
+
             // Return the array as a JSON response
             return response()->json($userData);
 
@@ -170,7 +170,7 @@ class RegionalController extends Controller
 
         if($user){
              // Validate the request data
-          
+
             $rules = [
                 'name' => 'required|string|max:255',
                 'email' => 'required|email',
@@ -178,24 +178,24 @@ class RegionalController extends Controller
                 'address' => 'required|string|max:255',
                 'region' => 'required|numeric', // Assuming region is numeric
             ];
-        
+
             $validator = Validator::make($request->all(), $rules);
-    
+
             // Check if validation fails
             if ($validator->fails()) {
-               
+
                 $errorsArray = [];
-    
+
                 foreach ($validator->errors()->toArray() as $field => $errors) {
                     // Create an array for each field containing the error messages
                     $errorsArray[$field] = array_map(function($error) {
                         return ucfirst($error);
                     }, $errors);
                 }
-                
+
                 // Return the validation errors
                 return response()->json(['errors' => $errorsArray]);
-                
+
             }
 
             // Update user details
@@ -226,23 +226,23 @@ class RegionalController extends Controller
     {
         // Find the user
         $user = User::find($id);
-    
+
         // Check if the user exists
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
-    
+
         // Check if the associated record exists in model_has_roles table
         $recordExists = DB::table('model_has_roles')->where('model_id', $id)->exists();
-    
+
         if ($recordExists) {
             // Delete the associated record from model_has_roles table
             DB::table('model_has_roles')->where('model_id', $id)->delete();
         }
-    
+
         // Delete the user
         $user->delete();
-    
+
         return response()->json(['message' => 'User and associated records deleted successfully'], 200);
     }
 }
