@@ -33,7 +33,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                
+
                 @foreach ($regional_managers as $manager)
                     @php
                         $name = !empty($manager->name) ? $manager->name : "-";
@@ -61,7 +61,7 @@
                                             <img src="../images/pencil.svg" alt="" title="Edit" data-id="{{ $manager->id }}" class="edit-manager-btn">
                                         </button>
                                 </form>
-                            
+
                                 <form action="{{ route('regional_manager.destroy', $manager->id) }}" method="POST" id="delete-form-{{ $manager->id }}" class="delete-form m-0">
                                     @csrf
                                     @method('DELETE')
@@ -75,7 +75,7 @@
                 @endforeach
 
 
-                
+
                 </tbody>
             </table>
         </div>
@@ -122,24 +122,24 @@
                         </select>
                         <span class=" country-error text-danger"></span>
 
-                        
+
                         <label for="name">Password</label>
                         <input type="password" name="password" placeholder="*******">
                         <span class=" password-error text-danger"></span>
 
                     </div>
-              
+
                     <div>
                         <label for="name">Phone</label>
                         <input type="number" name="phone" placeholder="+123 456 789">
                         <span class=" phone-error text-danger"></span>
 
-                   
+
                         <label for="name">Address</label>
                         <input type="text" name="address" placeholder="Address">
                         <span class=" address-error text-danger"></span>
 
-                        
+
                         <label for="region">Region</label>
                         <select name="region" id="region">
                             <option value="">Select Region</option>
@@ -153,7 +153,7 @@
                 </div>
             </div>
             <div class="modal-footer form-office-modal-footer">
-                <button type="submit" class="btn btn-primary" >Add Office</button>
+                <button type="submit" class="btn btn-primary" >Add Regional Manager</button>
              </div>
         </form>
     </div>
@@ -243,19 +243,19 @@
                         <span class=" password-error text-danger"></span>
 
                     </div>
-              
+
                     <div>
-                     
+
                         <label for="name">Phone</label>
                         <input type="number" name="phone" id="edt-phone" placeholder="+123 456 789">
                         <span class=" phone-error text-danger"></span>
 
-                   
+
                         <label for="name">Address</label>
                         <input type="text" name="address" id="edt-address" placeholder="Address">
                         <span class=" address-error text-danger"></span>
 
-                        
+
                         <label for="region">Region</label>
                         <select name="region" id="edt-region">
                             <option value="">Select Region</option>
@@ -265,17 +265,17 @@
                         </select>
                         <span class=" region-error text-danger"></span>
 
- 
+
                     </div>
                 </div>
 
             </div>
             <div class="modal-footer form-office-modal-footer">
-                <button type="submit" class="btn btn-primary update-btn" data-id="">Update Mamager</button>
+                <button type="submit" class="btn btn-primary update-btn" data-id="">Update Regional Manager</button>
              </div>
         </form>
       </div>
-    
+
     </div>
   </div>
 </div>
@@ -295,9 +295,9 @@
             clearErrors();
 
             $.ajax({
-                url: "{{ route('regional_manager.store') }}",  
-                method: 'POST',  
-                data: formData,  
+                url: "{{ route('regional_manager.store') }}",
+                method: 'POST',
+                data: formData,
                 success: function(response) {
                     var errors = response.errors;
                     if(errors){
@@ -307,11 +307,11 @@
                                 // Get the field name
                                 var fieldName = field;
 
-                                var errorMessage = errors[field][0]; 
+                                var errorMessage = errors[field][0];
 
                                 $('.' + fieldName + '-error').text(errorMessage).show();
                             }
-                            
+
                         }
 
                     } else {
@@ -326,11 +326,11 @@
         });
 
         $('.edit-manager-btn').click(function() {
-            var managerId = $(this).data('id');    
+            var managerId = $(this).data('id');
             clearErrors();
-        
+
             $.ajax({
- 
+
                 url: '/edit-manager/' + managerId,
                 type: 'GET',
                 success: function(response) {
@@ -340,7 +340,7 @@
                     $('#edit-regional-manager #edt-phone').val(response.phone);
                     $('#edit-regional-manager #edt-email').val(response.email);
                     $('#edit-regional-manager #edt-address').val(response.address);
-                    
+
                     var button = $('.update-btn');
                     button.attr('data-id', response.user_id);
                     regionId = response.region_id;
@@ -365,8 +365,8 @@
             e.preventDefault(); // Prevent the default form submission
 
             var userId = $(this).data('id');
-        
-              
+
+
             var formData = $('#update-regional-manager').serialize();
 
             console.log("userId");
@@ -374,9 +374,9 @@
             clearErrors();
 
             $.ajax({
-                 url: "{{ route('regional_manager.update', ':userId') }}".replace(':userId', userId),  
-                method: 'POST',  
-                data: formData,  
+                 url: "{{ route('regional_manager.update', ':userId') }}".replace(':userId', userId),
+                method: 'POST',
+                data: formData,
                 success: function(response) {
                     var errors = response.errors;
                     console.log(errors);
@@ -388,11 +388,11 @@
                                 // Get the field name
                                 var fieldName = field;
 
-                                var errorMessage = errors[field][0]; 
+                                var errorMessage = errors[field][0];
 
                                 $('.'+ fieldName + '-error').text(errorMessage).show();
                             }
-                            
+
                         }
 
                     } else {
