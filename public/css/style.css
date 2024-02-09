@@ -8,7 +8,7 @@ header {
     box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.06);
 }
 
-header > div {
+header>div {
     display: flex;
     align-items: center;
 }
@@ -62,7 +62,7 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 
 body img,
-.map-vectors > svg {
+.map-vectors>svg {
     cursor: pointer;
 }
 
@@ -131,6 +131,7 @@ body img,
     overflow-y: scroll;
 }
 
+
 /* Dashboard content area */
 
 .dashboard h3 {
@@ -144,9 +145,9 @@ body img,
     gap: 1.5%;
 }
 
-.sales-main-graph > div,
+.sales-main-graph>div,
 .region-map-main,
-.sales-record-main > div {
+.sales-record-main>div {
     background-color: #fff;
     border-radius: 4px;
     padding: 12px;
@@ -154,7 +155,7 @@ body img,
     border: 1px solid #ddd;
 }
 
-.content-main > div {
+.content-main>div {
     margin-top: 20px;
 }
 
@@ -214,6 +215,7 @@ body img,
     font-weight: 700;
 }
 
+
 /* .region-map-main {
   margin-top: 20px;
 } */
@@ -227,11 +229,11 @@ body img,
     width: 79%;
 }
 
-.region-map > div:last-of-type {
+.region-map>div:last-of-type {
     width: 5%;
 }
 
-.region-map > div:last-of-type img {
+.region-map>div:last-of-type img {
     float: right;
 }
 
@@ -245,7 +247,7 @@ body img,
     align-items: center;
 }
 
-.map-vectors > svg:last-of-type {
+.map-vectors>svg:last-of-type {
     position: relative;
     right: 47px;
     bottom: 87px;
@@ -275,7 +277,7 @@ body img,
     width: 40% !important;
 }
 
-.category-search > select {
+.category-search>select {
     padding: 5px;
     font-weight: 500;
     background: #eee;
@@ -288,11 +290,11 @@ body img,
     /* border-top: 1px solid #d4d4d4; */
 }
 
-.category-table tr > td:first-of-type {
+.category-table tr>td:first-of-type {
     width: 9%;
 }
 
-.category-table tr > td:first-of-type img,
+.category-table tr>td:first-of-type img,
 .dental-office-name-img img {
     padding: 8px;
     background: #eee;
@@ -319,11 +321,11 @@ body img,
     margin-right: 5px;
 }
 
-.dental-offices-main > div {
+.dental-offices-main>div {
     padding: 0px !important;
 }
 
-.dental-offices-main > div > div {
+.dental-offices-main>div>div {
     padding: 12px !important;
 }
 
@@ -345,6 +347,7 @@ body img,
     background: #d9d9d9;
     border-radius: 20rem;
 }
+
 
 /* ::-webkit-scrollbar-track {
   background: rgb(13, 13, 13);
@@ -401,6 +404,7 @@ body img,
     background-color: unset;
 }
 
+
 /* .dental-office-content {
     overflow: hidden;
 } */
@@ -428,7 +432,7 @@ body img,
     width: 100%;
 }
 
-.dental-office-table tr > td:first-of-type {
+.dental-office-table tr>td:first-of-type {
     width: 6%;
     font-weight: 600;
     padding-left: 20px;
@@ -459,7 +463,7 @@ body img,
     align-items: center;
 }
 
-.main-pagination > div:first-of-type {
+.main-pagination>div:first-of-type {
     width: 40%;
 }
 
@@ -492,11 +496,11 @@ body img,
     flex-wrap: wrap;
 }
 
-.form-office-main > div:not(.text-area-parent) {
+.form-office-main>div:not(.text-area-parent) {
     width: 46.5%;
 }
 
-.form-office-main > div {
+.form-office-main>div {
     display: flex;
     flex-direction: column;
 }
@@ -586,7 +590,7 @@ body img,
     font-size: 18px;
 }
 
-.new-followup-table-main > div:first-of-type {
+.new-followup-table-main>div:first-of-type {
     width: 42% !important;
 }
 
@@ -636,14 +640,14 @@ body img,
     .search-main {
         width: 61.7%;
     }
-    .search-main > input {
+    .search-main>input {
         width: 40% !important;
         float: right;
     }
     .header-notifications {
         width: 20%;
     }
-    .page-content > div {
+    .page-content>div {
         width: 100%;
     }
 }
@@ -716,7 +720,7 @@ body img,
     .overlay-close:focus {
         outline: none;
     }
-    .page-content > div.content-main {
+    .page-content>div.content-main {
         width: 100%;
     }
     .map-vectors img {
@@ -743,7 +747,7 @@ body img,
     .search-main {
         width: 40% !important;
     }
-    .search-main > input {
+    .search-main>input {
         width: 100%;
     }
     .header-notifications {
@@ -768,13 +772,13 @@ body img,
     .sales-by-region {
         width: 46% !important;
     }
-    .region-map > div:last-of-type {
+    .region-map>div:last-of-type {
         width: 14% !important;
     }
-    .map-vectors > svg {
+    .map-vectors>svg {
         width: 80%;
     }
-    .map-vectors > svg:last-of-type {
+    .map-vectors>svg:last-of-type {
         right: 37px;
         bottom: 177px;
     }
@@ -812,7 +816,7 @@ body img,
         flex-wrap: wrap !important;
         gap: 20px;
     }
-    .dental-office-parent > div:first-of-type {
+    .dental-office-parent>div:first-of-type {
         width: 100% !important;
     }
     .dental-category {
@@ -830,27 +834,28 @@ body img,
         padding-top: 20px;
         padding-left: 10px;
     }
-    .category-table tr > td:first-of-type {
+    .category-table tr>td:first-of-type {
         padding-top: 20px;
     }
     .main-pagination {
         gap: 15px;
         flex-direction: column;
     }
-    .main-pagination > div {
+    .main-pagination>div {
         width: unset !important;
     }
     .form-office-main {
         flex-direction: column;
     }
-    .form-office-main > div:not(.text-area-parent) {
+    .form-office-main>div:not(.text-area-parent) {
         width: 100%;
     }
-    .new-followup-table-main > div:first-of-type,
+    .new-followup-table-main>div:first-of-type,
     .new-followup-table-main .wd-sm {
         width: 100% !important;
     }
 }
+
 
 /* @media screen and (max-width: 400px) {
   .sidebar a {
