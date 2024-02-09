@@ -49,18 +49,18 @@
         'pk.eyJ1IjoiY2FuZGljZWhhbGxzZXR0IiwiYSI6ImNsczRydmJrbTE4cDYya3BpeWVwanRkYW8ifQ.WJrp7UCOMY1KqY5UjKCwKA';
     const map = new mapboxgl.Map({
         container: 'map',
-        // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
         style: 'mapbox://styles/mapbox/light-v11',
         projection: 'equalEarth',
-        center: [-98, 39], // Centered on the United States
-        zoom: 4, // Adjust the zoom level as needed
+        center: [-98, 39],
+        zoom: 4,
         maxBounds: [
-            [-125, 24], // Southwest bound
-            [-66, 50]   // Northeast bound
+            [-170, 18],
+            [-65, 72]
         ]
     });
 
     let hoveredPolygonId = null;
+    let isCitySelected = false
 
     map.on('load', () => {
         map.addSource('states', {
@@ -68,8 +68,6 @@
             'data': 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson'
         });
 
-        // The feature-state dependent fill-opacity expression will render the hover effect
-        // when a feature's hover state is set to true.
         map.addLayer({
             'id': 'state-fills',
             'type': 'fill',
@@ -97,8 +95,6 @@
             }
         });
 
-        // When the user moves their mouse over the state-fill layer, we'll update the
-        // feature state for the feature under the mouse.
         map.on('mousemove', 'state-fills', (e) => {
             if (e.features.length > 0) {
                 if (hoveredPolygonId !== null) {
@@ -119,12 +115,130 @@
             }
         });
 
-        map.on('click', 'state-fills', (e) => {
-            console.log(e.features[0].properties.STATE_NAME,'======> Name Of State');
-        })
+        map.on('click', 'state-fills', async (e) => {
+            const stateProperties = e.features[0].properties;
+            console.log(stateProperties.STATE_NAME, '======> Name Of State');
 
-        // When the mouse leaves the state-fill layer, update the feature state of the
-        // previously hovered feature.
+            // Clear hover effect on the clicked state
+            if (hoveredPolygonId !== null) {
+                map.setFeatureState({
+                    source: 'states',
+                    id: hoveredPolygonId
+                }, {
+                    hover: false
+                });
+            }
+
+            const stateGeometry = e.features[0].geometry;
+            if (stateGeometry && stateGeometry.coordinates && stateGeometry.coordinates[0]) {
+                const bounds = stateGeometry.coordinates[0].reduce((bounds, coord) => {
+                    return bounds.extend(coord);
+                }, new mapboxgl.LngLatBounds(stateGeometry.coordinates[0][0], stateGeometry
+                    .coordinates[0][0]));
+
+                map.fitBounds(bounds, {
+                    padding: 0
+                });
+
+                // Clear previously added city-borders layer
+                map.getLayer('city-borders') && map.removeLayer('city-borders');
+                map.getSource('city-borders') && map.removeSource('city-borders');
+                map.getLayer('clicked-state-fill') && map.removeLayer('clicked-state-fill');
+                map.getSource('clicked-state-fill') && map.removeSource('clicked-state-fill');
+
+                // Add a source for the clicked state
+                map.addSource('clicked-state-fill', {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'Feature',
+                        'geometry': stateGeometry
+                    }
+                });
+
+                // Add a layer for the clicked state
+                map.addLayer({
+                    'id': 'clicked-state-fill',
+                    'type': 'fill',
+                    'source': 'clicked-state-fill',
+                    'layout': {},
+                    'paint': {
+                        'fill-color': '#133763',
+                        'fill-opacity': 0.1
+                    }
+                });
+
+                const cityDataEndpoint = '{{$assets_url}}/mapJson/gadm41_USA_2.json';
+                const cityDataResponse = await fetch(cityDataEndpoint);
+                const cityData = await cityDataResponse.json();
+                const filteredFeatures = cityData.features.filter((feature) => {
+                    return feature.properties.NAME_1 === stateProperties.STATE_NAME;
+                });
+
+                // Add a source for city boundaries of the selected state
+                map.addSource('city-borders', {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'FeatureCollection',
+                        'features': filteredFeatures
+                    }
+                });
+
+                // Add a layer for city boundaries of the selected state
+                map.addLayer({
+                    'id': 'city-borders',
+                    'type': 'line',
+                    'source': 'city-borders',
+                    'layout': {},
+                    'paint': {
+                        'line-color': '#61d6cd',
+                        'line-width': 1
+                    }
+                });
+
+                // Add hover effect on city polygons
+                map.on('mousemove', 'city-borders', (e) => {
+                    if (e.features.length > 0) {
+                        const newHoveredPolygonId = e.features[0].id;
+
+                        if (hoveredPolygonId !== null && hoveredPolygonId !==
+                            newHoveredPolygonId) {
+                            map.setFeatureState({
+                                source: 'city-borders',
+                                id: hoveredPolygonId
+                            }, {
+                                hover: false
+                            });
+                        }
+
+                        hoveredPolygonId = newHoveredPolygonId;
+
+                        map.setFeatureState({
+                            source: 'city-borders',
+                            id: hoveredPolygonId
+                        }, {
+                            hover: true
+                        });
+                    }
+                });
+
+                // Remove hover effect when leaving city polygons
+                map.on('mouseleave', 'city-borders', () => {
+                    if (hoveredPolygonId !== null) {
+                        map.setFeatureState({
+                            source: 'city-borders',
+                            id: hoveredPolygonId
+                        }, {
+                            hover: false
+                        });
+                    }
+                    hoveredPolygonId = null;
+                });
+            }
+        });
+
+
+
+
         map.on('mouseleave', 'state-fills', () => {
             if (hoveredPolygonId !== null) {
                 map.setFeatureState({
@@ -139,20 +253,4 @@
     });
 
 </script>
-
-<!-- <script>
-    const accessToken = 'pk.eyJ1IjoiY2FuZGljZWhhbGxzZXR0IiwiYSI6ImNsczRydmJrbTE4cDYya3BpeWVwanRkYW8ifQ.WJrp7UCOMY1KqY5UjKCwKA';
-
-    var map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: [-98, 39], // Centered on the United States
-        zoom: 3, // Adjust the zoom level as needed
-        maxBounds: [
-            [-125, 24], // Southwest bound
-            [-66, 50]   // Northeast bound
-        ]
-    });
-  
-</script> -->
 @endif

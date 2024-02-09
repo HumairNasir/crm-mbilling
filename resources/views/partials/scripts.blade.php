@@ -85,7 +85,7 @@
                     categories: storeNames,
                 },
                 yaxis: {
-                    max: 100000,
+                    max: 5000,
                     labels: {
                         formatter: function (value) {
                             return '$' + value;
@@ -171,7 +171,8 @@
                     categories: monthNames
                 },
                 yaxis: {
-                    max: 1000000,
+                    max: 5000,
+                    min: 0,
                     labels: {
                         formatter: function (value) {
                             return '$' + value;
@@ -254,7 +255,7 @@
             },
             xaxis: {
                 categories: [],
-                max: 100000,
+                max: 5000,
                 labels: {
                     formatter: function (value) {
                         return '$' + value;
@@ -280,16 +281,16 @@
                 dataType: 'json',
                 success: function (res) {
                     var data = res;
-    
+
                     // Extract the data for Last Month and This Month
                     var lastMonthData = [];
                     var thisMonthData = [];
-    
+
                     data.forEach(function (weekData) {
                         lastMonthData.push(weekData.previous_week.total_sales);
                         thisMonthData.push(weekData.current_week.total_sales);
                     });
-    
+
                     // Update the chart options with the extracted data
                     chart.updateOptions({
                         series: [
@@ -370,7 +371,7 @@
                         shade: 'dark',
                         type: 'horizontal',
                         shadeIntensity: 0.5,
-                        gradientToColors: ['#FFD700'],
+                        gradientToColors: ['#008FFB'],
                         inverseColors: true,
                         opacityFrom: 1,
                         opacityTo: 1,
@@ -483,10 +484,10 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (res) {
                 options.series = [res];
-    
-    
+
+
                 chart.updateSeries(options.series);
-    
+
                 chart.render();
             },
             error: function (msg) {
@@ -651,10 +652,10 @@ $(document).ready(function () {
                 dataType: 'json',
                 success: function (res) {
                     options.series = [res];
-    
-    
+
+
                     chart.updateSeries(options.series);
-    
+
                     chart.render();
                 },
                 error: function (msg) {
@@ -662,5 +663,102 @@ $(document).ready(function () {
                 },
             });
         }
+    });
+</script>
+<script>
+    var options = {
+        series: [{
+            name: 'Standard',
+            data: []
+        }, {
+            name: 'Premium',
+            data: []
+        }],
+        chart: {
+            type: 'bar',
+            height: 350
+        },
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                columnWidth: '55%',
+                endingShape: 'rounded'
+            },
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            show: true,
+            width: 2,
+            colors: ['transparent']
+        },
+        xaxis: {
+            categories: [],
+        },
+        yaxis: {
+            title: {
+                text: 'subscriptions'
+            },
+            min: 0,
+            max: 10,
+        },
+        fill: {
+            opacity: 1
+        },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return val;
+                }
+            }
+        },
+        legend: {
+            show: true,
+            position: "top",
+            horizontalAlign: "left",
+        },
+    };
+
+    var subscription_bar = document.querySelector("#subscription-bar");
+    var chart = new ApexCharts(subscription_bar, options);
+    chart.render();
+
+    function updateChartData(categories, seriesData) {
+        chart.updateSeries([{
+            name: 'Standard',
+            data: seriesData.filter((_, i) => i % 2 === 0)
+        }, {
+            name: 'Premium',
+            data: seriesData.filter((_, i) => i % 2 !== 0)
+        }]);
+
+        chart.updateOptions({
+            xaxis: {
+                categories: categories
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $.ajax({
+            type: 'GET',
+            url: '/get_subscriptions_sale',
+            dataType: 'json',
+            success: function (res) {
+                var seriesData = [];
+                var categories = [];
+                res.forEach(function (item) {
+                    categories.push(item.month);
+                    seriesData.push(parseInt(item.standard_count));
+                    seriesData.push(parseInt(item.premium_count));
+                });
+
+                updateChartData(categories, seriesData);
+            },
+            error: function (msg) {
+                console.error('Error:', msg);
+            },
+        });
     });
 </script>

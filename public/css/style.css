@@ -84,6 +84,15 @@ body img,
     text-decoration: none;
     font-size: 16px;
     font-weight: 400;
+    background-color: transparent;
+    padding:8px 10px;
+    margin-right: 12px;
+    cursor: pointer;
+    border:1px solid transparent;
+    transition-duration:0.2s;
+    text-decoration: none !important;
+    border-radius: 8px;
+    color: #000 !important;
 }
 
 .sidebar a svg {
@@ -93,10 +102,12 @@ body img,
     box-sizing: content-box;
 }
 
-.sidebar a:hover,
-.sidebar a:active {
-    color: #000;
-    font-weight: 500;
+.sidebar a:hover{
+    border:1px solid #ddd;
+}
+
+.sidebar_active {
+    background-color: #ddd !important;
 }
 
 .page-content {
@@ -123,6 +134,8 @@ body img,
 .active_item{
     color: #133763;
 }
+
+
 
 .content-main {
     width: 82%;

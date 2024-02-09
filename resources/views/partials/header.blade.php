@@ -9,10 +9,19 @@
         </div>
         <div class="header-notifications">
             <img src="../images/notifications.svg" alt="">
-            <form method="POST" action="{{ route('logout') }}">
+            <form id="logoutForm" method="POST" action="{{ route('logout') }}">
                 @csrf
-                <img src="../images/logout.svg" alt="Logout" style="cursor: pointer;" onclick="event.preventDefault(); this.closest('form').submit();">
+                <div id="logoutButton" onclick="submitForm(this)">
+                    <img src="../images/logout.svg" alt="Logout" style="cursor: pointer;">
+                </div>
             </form>
         </div>
     </div>
 </header>
+<script>
+    function submitForm(button) {
+        button.onclick = null;
+        var form = document.getElementById('logoutForm');
+        form.submit();
+    }
+</script>

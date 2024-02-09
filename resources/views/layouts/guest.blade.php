@@ -45,5 +45,13 @@
             }
 
         }
+
+        function disableButton(button) {
+            button.disabled = true;
+            button.removeAttribute('onclick');
+            setTimeout(function() {
+                document.getElementById('myForm').submit();
+            }, 100);
+        }
     </script>
 </html>

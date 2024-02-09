@@ -21,6 +21,16 @@ Route::get('/', [AdminController::class, 'index'])->name('dashboard');
 
 Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 
+Route::get('/dental_offices', [AdminController::class, 'dental_offices'])->name('dental_offices');
+
+Route::get('/regional_manager', [AdminController::class, 'regional_manager'])->name('regional_manager');
+
+Route::get('/area_manager', [AdminController::class, 'area_manager'])->name('area_manager');
+
+Route::get('/clients', [AdminController::class, 'clients'])->name('clients');
+
+Route::get('/sales_rep', [AdminController::class, 'sales_rep'])->name('sales_rep');
+
 Route::get('/get_response', [AdminController::class, 'get_response'])->name('get_response');
 
 Route::get('/get_top_sales', [AdminController::class, 'get_top_sales'])->name('get_top_sales');
@@ -36,6 +46,8 @@ Route::get('/get_schedule_sales', [AdminController::class, 'get_schedule_sales']
 Route::get('/get_won_sales', [AdminController::class, 'get_won_sales'])->name('get_won_sales');
 
 Route::get('/get_total_sale', [AdminController::class, 'get_total_sale'])->name('get_total_sale');
+
+Route::get('/get_subscriptions_sale', [AdminController::class, 'get_subscriptions_sale'])->name('get_subscriptions_sale');
 
 });
 

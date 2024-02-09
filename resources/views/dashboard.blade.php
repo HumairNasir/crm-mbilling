@@ -71,7 +71,7 @@
             <div class="wd-sm">
                 <div class="sales-resp">
                     <div>
-                        <span class="year_sale">{{$year = date("Y")}} Sales</span>
+                        <span class="year_sale">Sales <br> {{$year = date("Y")}}</span>
                         <h3>${{number_format($total_sale)}}</h3>
                     </div>
                     <div> <img src="{{$assets_url}}/images/calen.svg" alt="" class="filter">
