@@ -52,10 +52,10 @@
         center: [-98, 39],
         zoom: 4,
         maxBounds: [
-            // [-125, 22], // Southwest coordinates (longitude, latitude)
-            // [-88, 60] // Northeast coordinates (longitude, latitude)
-            [-170, 18],
-            [-65, 72]
+            [-125, 22], // Southwest coordinates (longitude, latitude)
+            [-88, 60] // Northeast coordinates (longitude, latitude)
+            // [-170, 18],
+            // [-65, 72]
         ]
         
     });
