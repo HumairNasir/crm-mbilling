@@ -1,3 +1,3 @@
         <div class="footer-copyright">
-                <span>2024@Design with</span>
+                <span>Copyright © TxLabz 2024</span>
         </div>

@@ -612,4 +612,126 @@ class AdminController extends Controller
         return response()->json($data);
     }
 
+    public function get_subscriptions_sale()
+    {
+        $data = '';
+
+        if (Auth::user()->roles[0]->name == 'CountryManager') {
+
+            $subscribers = Sale::select(
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('SUM(CASE WHEN subscription = "Standard" THEN 1 ELSE 0 END) as standard_count'),
+                DB::raw('SUM(CASE WHEN subscription = "Premium" THEN 1 ELSE 0 END) as premium_count')
+            )
+                ->groupBy(DB::raw('MONTH(created_at)'))
+                ->get();
+
+            $data = [];
+
+            $monthNames = [
+                1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'May', 6 => 'Jun',
+                7 => 'Jul', 8 => 'Aug', 9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec',
+            ];
+
+            foreach ($subscribers as $subscriber) {
+                $monthNumber = $subscriber->month;
+                $monthName = $monthNames[$monthNumber];
+                $data[] = [
+                    'month' => $monthName,
+                    'standard_count' => $subscriber->standard_count,
+                    'premium_count' => $subscriber->premium_count,
+                ];
+            }
+
+        }elseif(Auth::user()->roles[0]->name == 'RegionalManager') {
+
+            $areaManager = User::where('regional_manager_id', Auth::user()->id)->pluck('id');
+
+            $subscribers = Sale::select(
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('SUM(CASE WHEN subscription = "Standard" THEN 1 ELSE 0 END) as standard_count'),
+                DB::raw('SUM(CASE WHEN subscription = "Premium" THEN 1 ELSE 0 END) as premium_count')
+            )
+                ->whereIn('sales_rep_id', $areaManager)
+                ->groupBy(DB::raw('MONTH(created_at)'))
+                ->get();
+
+            $data = [];
+
+            $monthNames = [
+                1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'May', 6 => 'Jun',
+                7 => 'Jul', 8 => 'Aug', 9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec',
+            ];
+
+            foreach ($subscribers as $subscriber) {
+                $monthNumber = $subscriber->month;
+                $monthName = $monthNames[$monthNumber];
+                $data[] = [
+                    'month' => $monthName,
+                    'standard_count' => $subscriber->standard_count,
+                    'premium_count' => $subscriber->premium_count,
+                ];
+            }
+        }elseif(Auth::user()->roles[0]->name == 'AreaManager') {
+
+            $areaManager = User::where('state_manager_id', Auth::user()->id)->pluck('id');
+
+            $subscribers = Sale::select(
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('SUM(CASE WHEN subscription = "Standard" THEN 1 ELSE 0 END) as standard_count'),
+                DB::raw('SUM(CASE WHEN subscription = "Premium" THEN 1 ELSE 0 END) as premium_count')
+            )
+                ->whereIn('sales_rep_id', $areaManager)
+                ->groupBy(DB::raw('MONTH(created_at)'))
+                ->get();
+
+            $data = [];
+
+            $monthNames = [
+                1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'May', 6 => 'Jun',
+                7 => 'Jul', 8 => 'Aug', 9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec',
+            ];
+
+            foreach ($subscribers as $subscriber) {
+                $monthNumber = $subscriber->month;
+                $monthName = $monthNames[$monthNumber];
+                $data[] = [
+                    'month' => $monthName,
+                    'standard_count' => $subscriber->standard_count,
+                    'premium_count' => $subscriber->premium_count,
+                ];
+            }
+        }elseif (Auth::user()->roles[0]->name == 'SalesRepresentative'){
+
+            $subscribers = Sale::select(
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('SUM(CASE WHEN subscription = "Standard" THEN 1 ELSE 0 END) as standard_count'),
+                DB::raw('SUM(CASE WHEN subscription = "Premium" THEN 1 ELSE 0 END) as premium_count')
+            )
+                ->where('sales_rep_id', Auth::user()->id)
+                ->groupBy(DB::raw('MONTH(created_at)'))
+                ->get();
+
+            $data = [];
+
+            $monthNames = [
+                1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'May', 6 => 'Jun',
+                7 => 'Jul', 8 => 'Aug', 9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec',
+            ];
+
+            foreach ($subscribers as $subscriber) {
+                $monthNumber = $subscriber->month;
+                $monthName = $monthNames[$monthNumber];
+                $data[] = [
+                    'month' => $monthName,
+                    'standard_count' => $subscriber->standard_count,
+                    'premium_count' => $subscriber->premium_count,
+                ];
+            }
+        }
+
+        return response()->json($data);
+
+    }
+
 }

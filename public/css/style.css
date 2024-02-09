@@ -8,7 +8,7 @@ header {
     box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.06);
 }
 
-header > div {
+header>div {
     display: flex;
     align-items: center;
 }
@@ -31,7 +31,7 @@ header > div {
 .search-main input {
     border: 1px solid #e9ecef;
     border-radius: 4px;
-    padding: 10px 25px 10px 10px;
+    padding: 10px 40px 10px 10px;
     width: 100%;
 }
 
@@ -62,7 +62,7 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 
 body img,
-.map-vectors > svg {
+.map-vectors>svg {
     cursor: pointer;
 }
 
@@ -112,26 +112,26 @@ body img,
 
 .page-content {
     display: flex;
-    height: 80vh;
+    height: 78vh;
 }
 
-.year_sale{
+.year_sale {
     font-size: 28px;
     font-weight: 500;
     color: #8c8c8c;
 }
 
-.response_drop{
+.response_drop {
     height: calc(2em + 0.75rem + 2px) !important;
     border: 1px solid #eee !important;
 }
 
-.sign_in{
+.sign_in {
     color: #ffffff;
     background-color: #2563eb !important;
 }
 
-.active_item{
+.active_item {
     color: #133763;
 }
 
@@ -143,6 +143,7 @@ body img,
     padding: 5px 40px 40px 40px;
     overflow-y: scroll;
 }
+
 
 /* Dashboard content area */
 
@@ -157,9 +158,9 @@ body img,
     gap: 1.5%;
 }
 
-.sales-main-graph > div,
+.sales-main-graph>div,
 .region-map-main,
-.sales-record-main > div {
+.sales-record-main>div {
     background-color: #fff;
     border-radius: 4px;
     padding: 12px;
@@ -167,7 +168,7 @@ body img,
     border: 1px solid #ddd;
 }
 
-.content-main > div {
+.content-main>div {
     margin-top: 20px;
 }
 
@@ -192,7 +193,7 @@ body img,
 }
 
 .filter {
-    height: 37px;
+    height: 32px;
 }
 
 .sales-year {
@@ -200,6 +201,10 @@ body img,
     font-weight: 500;
     color: #8c8c8c;
     margin: 15px 0px;
+}
+
+.chart-groups .apexcharts-align-center {
+    position: unset !important;
 }
 
 .sales-amount {
@@ -223,6 +228,7 @@ body img,
     font-weight: 700;
 }
 
+
 /* .region-map-main {
   margin-top: 20px;
 } */
@@ -236,11 +242,11 @@ body img,
     width: 79%;
 }
 
-.region-map > div:last-of-type {
+.region-map>div:last-of-type {
     width: 5%;
 }
 
-.region-map > div:last-of-type img {
+.region-map>div:last-of-type img {
     float: right;
 }
 
@@ -254,7 +260,7 @@ body img,
     align-items: center;
 }
 
-.map-vectors > svg:last-of-type {
+.map-vectors>svg:last-of-type {
     position: relative;
     right: 47px;
     bottom: 87px;
@@ -284,10 +290,9 @@ body img,
     width: 40% !important;
 }
 
-.category-search > select {
+.category-search>select {
     padding: 5px;
     font-weight: 500;
-    background: #eee;
     border: none;
     border-radius: 4px;
 }
@@ -297,11 +302,11 @@ body img,
     /* border-top: 1px solid #d4d4d4; */
 }
 
-.category-table tr > td:first-of-type {
+.category-table tr>td:first-of-type {
     width: 9%;
 }
 
-.category-table tr > td:first-of-type img,
+.category-table tr>td:first-of-type img,
 .dental-office-name-img img {
     padding: 8px;
     background: #eee;
@@ -328,11 +333,11 @@ body img,
     margin-right: 5px;
 }
 
-.dental-offices-main > div {
+.dental-offices-main>div {
     padding: 0px !important;
 }
 
-.dental-offices-main > div > div {
+.dental-offices-main>div>div {
     padding: 12px !important;
 }
 
@@ -355,10 +360,16 @@ body img,
     border-radius: 20rem;
 }
 
+
 /* ::-webkit-scrollbar-track {
   background: rgb(13, 13, 13);
   border-color: rgb(13, 13, 13);
 } */
+
+.form-office-modal-dialog .modal-footer button {
+    background: #007bff;
+    color: #fff;
+}
 
 .footer-copyright {
     display: flex;
@@ -405,6 +416,7 @@ body img,
     background-color: unset;
 }
 
+
 /* .dental-office-content {
     overflow: hidden;
 } */
@@ -432,7 +444,7 @@ body img,
     width: 100%;
 }
 
-.dental-office-table tr > td:first-of-type {
+.dental-office-table tr>td:first-of-type {
     width: 6%;
     font-weight: 600;
     padding-left: 20px;
@@ -463,7 +475,7 @@ body img,
     align-items: center;
 }
 
-.main-pagination > div:first-of-type {
+.main-pagination>div:first-of-type {
     width: 40%;
 }
 
@@ -496,11 +508,11 @@ body img,
     flex-wrap: wrap;
 }
 
-.form-office-main > div:not(.text-area-parent) {
+.form-office-main>div:not(.text-area-parent) {
     width: 46.5%;
 }
 
-.form-office-main > div {
+.form-office-main>div {
     display: flex;
     flex-direction: column;
 }
@@ -560,7 +572,7 @@ body img,
 
 .new-followup-table {
     overflow-y: scroll;
-    /*height: 420px;*/
+    height: 370px;
 }
 
 .map-images {
@@ -590,7 +602,7 @@ body img,
     font-size: 18px;
 }
 
-.new-followup-table-main > div:first-of-type {
+.new-followup-table-main>div:first-of-type {
     width: 42% !important;
 }
 
@@ -620,6 +632,16 @@ body img,
     margin-bottom: 20px;
 }
 
+.form-office-modal-dialog .modal-footer {
+    padding-bottom: 20px !important;
+}
+
+.burger-menu-button,
+.sidebar-overlay,
+.overlay-close {
+    display: none;
+}
+
 @media (min-width: 576px) {
     .form-office-modal-dialog {
         max-width: 700px !important;
@@ -630,12 +652,15 @@ body img,
     .search-main {
         width: 61.7%;
     }
-    .search-main > input {
+    .search-main>input {
         width: 40% !important;
         float: right;
     }
     .header-notifications {
         width: 20%;
+    }
+    .page-content>div {
+        width: 100%;
     }
 }
 
@@ -646,9 +671,6 @@ body img,
     }
     .sidebar span {
         font-size: 15px !important;
-    }
-    .page-content > div {
-        width: 100%;
     }
     .sidebar {
         flex-direction: row;
@@ -674,13 +696,70 @@ body img,
 }
 
 @media screen and (max-width: 767px) {
+    .burger-menu-button {
+        display: block;
+        background: #f8f9fa;
+        padding: 20px 30px;
+        position: absolute;
+        right: 0px;
+    }
+    .sidebar-overlay {
+        display: block;
+        position: fixed;
+        height: 100vh;
+        top: 0%;
+        width: 100%;
+        right: -100%;
+        z-index: 1;
+        background: #0000002e;
+    }
+    .overlay-close {
+        display: block;
+        border: none;
+        background: none;
+        /* color: #fff; */
+        font-size: 30px;
+        /* margin: 30px; */
+        position: absolute;
+        right: 20px;
+        top: 10px;
+    }
+    .burger-menu-button button {
+        float: right;
+        border: none;
+    }
+    .burger-menu-button button:focus,
+    .overlay-close:focus {
+        outline: none;
+    }
+    .page-content>div.content-main {
+        width: 100%;
+    }
+    .map-vectors img {
+        width: 100%;
+        padding: 20px 0px;
+    }
+    /* .sidebar {
+        display: none;
+    } */
+    .sidebar {
+        top: 0px;
+        width: 60% !important;
+        flex-direction: column;
+        position: fixed;
+        background: #fff;
+        height: 100vh;
+        z-index: 2;
+        gap: 30px;
+        left: -60%;
+    }
     .sitelogo {
         width: 30%;
     }
     .search-main {
         width: 40% !important;
     }
-    .search-main > input {
+    .search-main>input {
         width: 100%;
     }
     .header-notifications {
@@ -705,13 +784,13 @@ body img,
     .sales-by-region {
         width: 46% !important;
     }
-    .region-map > div:last-of-type {
+    .region-map>div:last-of-type {
         width: 14% !important;
     }
-    .map-vectors > svg {
+    .map-vectors>svg {
         width: 80%;
     }
-    .map-vectors > svg:last-of-type {
+    .map-vectors>svg:last-of-type {
         right: 37px;
         bottom: 177px;
     }
@@ -749,7 +828,7 @@ body img,
         flex-wrap: wrap !important;
         gap: 20px;
     }
-    .dental-office-parent > div:first-of-type {
+    .dental-office-parent>div:first-of-type {
         width: 100% !important;
     }
     .dental-category {
@@ -767,27 +846,28 @@ body img,
         padding-top: 20px;
         padding-left: 10px;
     }
-    .category-table tr > td:first-of-type {
+    .category-table tr>td:first-of-type {
         padding-top: 20px;
     }
     .main-pagination {
         gap: 15px;
         flex-direction: column;
     }
-    .main-pagination > div {
+    .main-pagination>div {
         width: unset !important;
     }
     .form-office-main {
         flex-direction: column;
     }
-    .form-office-main > div:not(.text-area-parent) {
+    .form-office-main>div:not(.text-area-parent) {
         width: 100%;
     }
-    .new-followup-table-main > div:first-of-type,
+    .new-followup-table-main>div:first-of-type,
     .new-followup-table-main .wd-sm {
         width: 100% !important;
     }
 }
+
 
 /* @media screen and (max-width: 400px) {
   .sidebar a {
@@ -807,8 +887,8 @@ form input{
     outline: none;
 }
 
-form select{
-    border: 1px solid #ddd; 
+select{
+    border: 1px solid #ddd !important; 
     outline: none;
     border-radius: 4px;
     padding: 10px;
@@ -817,7 +897,7 @@ form select{
 select {
     -webkit-appearance: none;
     -moz-appearance: none;
-    background: transparent;
+    background-color: transparent;
     background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
     background-repeat: no-repeat;
     background-position-x: 100%;

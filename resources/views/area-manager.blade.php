@@ -1,5 +1,4 @@
-
-      @extends('layouts.backend')
+@extends('layouts.backend')
 @section('content')
 <style>
     .error-field {
@@ -17,13 +16,11 @@
                 <img src="../images/search.svg" alt="">
             </div>
             <div class="category-search search-employee dental-category">
-                <select name="cats" id="categpries">
-                    <option value="" disabled selected>Sorted by</option>
-                    <option value="dummy1">Dummy1</option>
-                    <option value="dummy1">Dummy1</option>
-                    <option value="dummy1">Dummy1</option>
-                    <option value="dummy1">Dummy1</option>
-                </select>
+            <select name="cats" id="categories">
+              <option value="" disabled selected>Sorted By</option>
+              <option value="dummy1">All</option>
+              <option value="dummy1">Recently Added</option>
+            </select>
             </div>
         <div class="add-dental-button">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Add Area Manager</button>
@@ -51,29 +48,33 @@
                     @endphp
                     <tr>
                         <td class="dp-none">{{ $loop->index + 1 }}</td>
-                        <td class="dental-office-name-img">
-                            <img src="../images/img.svg" alt=""><h6>{{$name}}</h6>
+                        <td>
+                            <div class="dental-office-name-img">
+                                <img src="../images/img.svg" alt=""><h6>{{$name}}</h6>
+                            </div>
                         </td>
                         <td class="email-button"><a href=""><button><img src="../images/email.svg" alt="">{{ $email }}</button></a></td>
                         <td class="dp-none"><span>{{ $phone }}</span></td>
                         <td class="dp-none"><span>{{ $address }}</span></td>
                         <td class="action-icons">
 
+                            <div class='d-flex align-items-center'>
+                                <form action="{{ route('area_manager.edit', $manager->id) }}" method="POST" id="edit-form-{{ $manager->id }}" class="edit-form m-0">
+                                    @csrf
+                                    @method('Update')
+                                        <button class="btn"  type="button">
+                                            <img src="../images/pencil.svg" alt="" title="Edit" data-id="{{ $manager->id }}" class="edit-area-manager-btn">
+                                        </button>
+                                </form>
+                                <form action="{{ route('area_manager.destroy', $manager->id) }}" method="POST" id="delete-form-{{ $manager->id }}" class="delete-form m-0">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn delete-btn" data-id="{{ $manager->id }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Delete') }}">
+                                        <img src="../images/trash.svg" alt="">
+                                    </button>
+                                </form>
+                            </div>
                             
-                            <form action="{{ route('area_manager.edit', $manager->id) }}" method="POST" id="edit-form-{{ $manager->id }}" class="edit-form">
-                                @csrf
-                                @method('Update')
-                                    
-                                    <img src="../images/pencil.svg" alt="" title="Edit" data-id="{{ $manager->id }}" class="edit-area-manager-btn">
-
-                            </form>
-                            <form action="{{ route('area_manager.destroy', $manager->id) }}" method="POST" id="delete-form-{{ $manager->id }}" class="delete-form">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger delete-btn" data-id="{{ $manager->id }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Delete') }}">
-                                    <img src="../images/trash.svg" alt="">
-                                </button>
-                            </form>
                         </td>
                     </tr>
                 @endforeach
@@ -174,6 +175,7 @@
                 <button type="submit" class="btn btn-secondary" >Add Area Manager</button>
                 <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
             </div>
+          </div>
         </form>
       </div>
       
@@ -212,8 +214,8 @@
               <input type="text" name="contact-person" placeholder="John Morgan">
             </div>
             <div class="text-area-parent">
-                          <label for="description">Description</label>
-        <textarea name="description" class="description-textarea" cols="30" rows="10"></textarea>
+              <label for="description">Description</label>
+              <textarea name="description" class="description-textarea" cols="30" rows="10"></textarea>
             </div>
           </div>
         </form>
