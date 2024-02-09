@@ -14,7 +14,7 @@
             <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
         </div>
     </div>
-    <div class="map-vectors">
+    <div class="map-vectors mt-3">
 
         <div id="map" class="w-100" style="height:40rem"></div>
 
