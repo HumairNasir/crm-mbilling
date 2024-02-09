@@ -47,15 +47,15 @@
         'pk.eyJ1IjoiY2FuZGljZWhhbGxzZXR0IiwiYSI6ImNsczRydmJrbTE4cDYya3BpeWVwanRkYW8ifQ.WJrp7UCOMY1KqY5UjKCwKA';
     const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/light-v11',
+        style: 'mapbox://styles/candicehallsett/clsa0u23j01iu01qy1ta00wcd',
         projection: 'equalEarth',
         center: [-98, 39],
         zoom: 4,
         maxBounds: [
-            [-125, 22], // Southwest coordinates (longitude, latitude)
-            [-88, 60] // Northeast coordinates (longitude, latitude)
-        //     [-170, 18],
-        //     [-65, 72]
+            // [-125, 22], // Southwest coordinates (longitude, latitude)
+            // [-88, 60] // Northeast coordinates (longitude, latitude)
+            [-170, 18],
+            [-65, 72]
         ]
         
     });
@@ -75,7 +75,7 @@
             'source': 'states',
             'layout': {},
             'paint': {
-                'fill-color': '#133763',
+                'fill-color': '#B9B9B9',
                 'fill-opacity': [
                     'case',
                     ['boolean', ['feature-state', 'hover'], false],
@@ -185,7 +185,7 @@
                     'source': 'city-borders',
                     'layout': {},
                     'paint': {
-                        'line-color': '#61d6cd',
+                        'line-color': '#eee',
                         'line-width': 1
                     }
                 });
