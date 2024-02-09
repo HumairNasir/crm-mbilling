@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Redirect;
 
 class AreaController extends Controller
 {
@@ -280,7 +281,7 @@ class AreaController extends Controller
     
         $user->delete();
     
-        return response()->json(['message' => 'User and associated records deleted successfully'], 200);
+        return Redirect::back();
     }
 
     public function getAreas($region_id)

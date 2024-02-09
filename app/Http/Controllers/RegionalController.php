@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
-
+use Redirect;
 
 class RegionalController extends Controller
 {
@@ -243,6 +243,6 @@ class RegionalController extends Controller
         // Delete the user
         $user->delete();
 
-        return response()->json(['message' => 'User and associated records deleted successfully'], 200);
+        return Redirect::back();
     }
 }
