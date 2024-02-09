@@ -38,7 +38,7 @@ var options = {
     },
     tooltip: {
         y: {
-            formatter: function (val) {
+            formatter: function(val) {
                 return "$ " + val + " thousands"
             }
         }
@@ -51,33 +51,33 @@ var options = {
 };
 
 var subscription_bar = document.querySelector("#subscription-bar")
-if(subscription_bar){
+if (subscription_bar) {
     var chart = new ApexCharts(subscription_bar, options);
     chart.render();
 }
 
-var options = {
-    series: [33, 33, 34],
-    chart: {
-        // width: 300,
-        type: 'pie',
-    },
-    legend: {
-        position: 'bottom'
-    },
-    labels: ['Team A', 'Team B', 'Team C'],
-    responsive: [{
-        breakpoint: 480,
-        options: {
-            legend: {
-                position: 'bottom'
-            }
-        }
-    }]
-};
+// var options = {
+//     series: [33, 33, 34],
+//     chart: {
+//         // width: 300,
+//         type: 'pie',
+//     },
+//     legend: {
+//         position: 'bottom'
+//     },
+//     labels: ['Team A', 'Team B', 'Team C'],
+//     responsive: [{
+//         breakpoint: 480,
+//         options: {
+//             legend: {
+//                 position: 'bottom'
+//             }
+//         }
+//     }]
+// };
 
-var simplepie = document.querySelector("#simplepie")
-if(simplepie){
-    var chart = new ApexCharts(simplepie, options);
-    chart.render();
-}
+// var simplepie = document.querySelector("#simplepie")
+// if(simplepie){
+//     var chart = new ApexCharts(simplepie, options);
+//     chart.render();
+// }
