@@ -326,6 +326,8 @@
         $('#add-area-manager').submit(function(event) {
             event.preventDefault(); 
             var formData = $(this).serialize();
+            clearErrors();
+
             $.ajax({
                 url: "{{ route('area_manager.store') }}",  
                 method: 'POST',  
@@ -524,7 +526,8 @@
             console.log(userId);
             console.log(formData);
 
-         
+            clearErrors();
+
  
             $.ajax({
                  url: "{{ route('area_manager.update', ':userId') }}".replace(':userId', userId),  
