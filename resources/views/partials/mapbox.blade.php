@@ -14,32 +14,32 @@
             <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
         </div>
     </div>
-    <div class="map-vectors mt-3">
+    <div class="map-vectors mt-3 border">
 
         <div id="map" class="w-100" style="height:30rem"></div>
 
     </div>
 </div>
 @elseif(Auth::user()->roles[0]->name == 'RegionalManager')
-    <div class="region-map-main">
-        <div class="region-map">
-            <div class="sales-by-region">
-                <h3>Sales by Regional Manager</h3>
-            </div>
-            <div class="search-main">
-                <input type="search" name="search" id="search" placeholder="Search...">
-                <img src="{{$assets_url}}/images/search.svg" alt="">
-            </div>
-            <div>
-                <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
-            </div>
+<div class="region-map-main">
+    <div class="region-map">
+        <div class="sales-by-region">
+            <h3>Sales by Regional Manager</h3>
         </div>
-        <div class="map-vectors">
-
-            <div id="map" class="w-100" style="height:40rem"></div>
-
+        <div class="search-main">
+            <input type="search" name="search" id="search" placeholder="Search...">
+            <img src="{{$assets_url}}/images/search.svg" alt="">
+        </div>
+        <div>
+            <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
         </div>
     </div>
+    <div class="map-vectors mt-3 border">
+
+        <div id="map" class="w-100" style="height:40rem"></div>
+
+    </div>
+</div>
 @endif
 
 <script>
@@ -48,56 +48,144 @@
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/candicehallsett/clsa0u23j01iu01qy1ta00wcd',
-        projection: 'equalEarth',
+        // style:"mapbox://styles/mapbox/light-v11",
+        projection: 'albers',
         center: [-98, 39],
-        zoom: 4,
+        zoom: 3.2,
         maxBounds: [
-            [-125, 22], // Southwest coordinates (longitude, latitude)
-            [-88, 60] // Northeast coordinates (longitude, latitude)
-            // [-170, 18],
-            // [-65, 72]
+            // [-125, 22], // Southwest coordinates (longitude, latitude)
+            // [-88, 60] // Northeast coordinates (longitude, latitude)
+            [-170, 18],
+            [-65, 72]
         ]
-        
+
     });
 
     let hoveredPolygonId = null;
     let isCitySelected = false
 
     map.on('load', () => {
+        // Add source for US states geojson data
         map.addSource('states', {
             'type': 'geojson',
             'data': 'https://docs.mapbox.com/mapbox-gl-js/assets/us_states.geojson'
         });
 
+        // Define state colors
+        const stateColors = {
+            'Alabama': 'blue',
+            'Alaska': 'green',
+            'Arizona': 'goldenrod',
+            'Arkansas': 'red',
+            'California': 'blue',
+            'Colorado': 'green',
+            'Connecticut': 'goldenrod',
+            'Delaware': 'red',
+            'Florida': 'red',
+            'Georgia': 'green',
+            'Hawaii': 'goldenrod',
+            'Idaho': 'red',
+            'Illinois': 'blue',
+            'Indiana': 'green',
+            'Iowa': 'green',
+            'Kansas': 'red',
+            'Kentucky': 'blue',
+            'Louisiana': 'green',
+            'Maine': 'goldenrod',
+            'Maryland': 'red',
+            'Massachusetts': 'blue',
+            'Michigan': 'green',
+            'Minnesota': 'goldenrod',
+            'Mississippi': 'goldenrod',
+            'Missouri': 'blue',
+            'Montana': 'goldenrod',
+            'Nebraska': 'goldenrod',
+            'Nevada': 'green',
+            'New Hampshire': 'blue',
+            'New Jersey': 'green',
+            'New Mexico': 'blue',
+            'New York': 'red',
+            'North Carolina': 'blue',
+            'North Dakota': 'green',
+            'Ohio': 'goldenrod',
+            'Oklahoma': 'green',
+            'Oregon': 'blue',
+            'Pennsylvania': 'green',
+            'Rhode Island': 'goldenrod',
+            'South Carolina': 'red',
+            'South Dakota': 'blue',
+            'Tennessee': 'green',
+            'Texas': 'goldenrod',
+            'Utah': 'red',
+            'Vermont': 'blue',
+            'Virginia': 'green',
+            'Washington': 'goldenrod',
+            'West Virginia': 'red',
+            'Wisconsin': 'blue',
+            'Wyoming': 'green'
+        };
+
+
+        // Add fill layer for states with different colors
         map.addLayer({
             'id': 'state-fills',
             'type': 'fill',
             'source': 'states',
             'layout': {},
             'paint': {
-                'fill-color': '#B9B9B9',
-                'fill-opacity': [
-                    'case',
-                    ['boolean', ['feature-state', 'hover'], false],
-                    0.2,
-                    0.01
-                ]
+                'fill-color': [
+                    'match',
+                    ['get', 'STATE_NAME'],
+                    ...Object.entries(stateColors).flat(),
+                    '#5F5F5F' // Default color for other states
+                ],
+                'fill-opacity': 0.8
             }
         });
 
+        // Add line layer for state borders
         map.addLayer({
             'id': 'state-borders',
             'type': 'line',
             'source': 'states',
             'layout': {},
             'paint': {
-                'line-color': '#ddd',
+                'line-color': '#fff',
                 'line-width': 1
             }
         });
 
+        // Add symbol layer for state names
+        // map.addLayer({
+        //     'id': 'state-labels',
+        //     'type': 'symbol',
+        //     'source': 'states',
+        //     'layout': {
+        //         'text-field': ['get', 'STATE_NAME'],
+        //         'text-size': 12,
+        //         'text-anchor': 'center',
+        //         'text-allow-overlap': false,
+        //         'text-ignore-placement': true,
+        //         'text-optional': true, // Optional to prevent rendering when collisions occur
+        //         'symbol-placement': 'point',
+        //         'symbol-spacing': 100, // Adjust this value to control the distance between symbols
+        //         'symbol-sort-key': ['get', 'STATE_NAME'] // Set a sort key to control z-index
+        //     },
+        //     'paint': {
+        //         'text-color': '#000'
+        //     }
+        // });
+
+
+
+        // Set up hover effects on state fills
+        let hoveredPolygonId = null;
+
         map.on('mousemove', 'state-fills', (e) => {
             if (e.features.length > 0) {
+                const stateId = e.features[0].id;
+
+                // Set hover effect on state-fills layer
                 if (hoveredPolygonId !== null) {
                     map.setFeatureState({
                         source: 'states',
@@ -106,14 +194,68 @@
                         hover: false
                     });
                 }
-                hoveredPolygonId = e.features[0].id;
+
+                hoveredPolygonId = stateId;
+
                 map.setFeatureState({
                     source: 'states',
                     id: hoveredPolygonId
                 }, {
                     hover: true
                 });
+
+                // Set border color for state-borders layer
+                map.setPaintProperty('state-borders', 'line-color', [
+                    'case',
+                    ['boolean', ['feature-state', 'hover'], false],
+                    '#000', // Black border when hovering
+                    '#ddd' // Default border color for other states
+                ]);
             }
+        });
+
+        map.on('mouseleave', 'state-fills', () => {
+            // Reset hover effect on state-fills layer
+            if (hoveredPolygonId !== null) {
+                map.setFeatureState({
+                    source: 'states',
+                    id: hoveredPolygonId
+                }, {
+                    hover: false
+                });
+            }
+            hoveredPolygonId = null;
+
+            // Reset border color for state-borders layer
+            map.setPaintProperty('state-borders', 'line-color', '#ddd');
+        });
+
+
+
+        const popup = new mapboxgl.Popup({
+            closeButton: false,
+            closeOnClick: false
+        });
+
+        map.on('mousemove', 'state-fills', (e) => {
+            if (e.features.length > 0) {
+                const stateName = e.features[0].properties.STATE_NAME;
+
+                // Update popup content and position
+                popup.setLngLat(e.lngLat)
+                    .setHTML(
+                        `<span><svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ${stateName}</span>`
+                    )
+                    .addTo(map);
+
+                map.getCanvas().style.cursor = 'pointer';
+            }
+        });
+
+        map.on('mouseleave', 'state-fills', () => {
+            // Remove the popup on mouse leave
+            popup.remove();
+            map.getCanvas().style.cursor = '';
         });
 
         map.on('click', 'state-fills', async (e) => {
@@ -131,22 +273,8 @@
             }
 
             const stateGeometry = e.features[0].geometry;
-            console.log(stateGeometry.coordinates,"stateProperties.STATE_NAME");
+            console.log(stateGeometry.coordinates, "stateProperties.STATE_NAME");
             if (stateGeometry && stateGeometry.coordinates && stateGeometry.coordinates[0]) {
-                // Check if it's a 3D array (contains nested arrays)
-                const is3DArray = Array.isArray(stateGeometry.coordinates[0][0][0]);
-
-                // Create bounds based on the type of array
-                const bounds = is3DArray
-                    ? stateGeometry.coordinates.reduce((outerBounds, polygon) => {
-                        return polygon.reduce((polyBounds, ring) => {
-                            return ring.reduce((innerBounds, coord) => innerBounds.extend(coord), polyBounds);
-                        }, outerBounds);
-                    }, new mapboxgl.LngLatBounds(stateGeometry.coordinates[0][0][0], stateGeometry.coordinates[0][0][0]))
-                    : stateGeometry.coordinates[0].reduce((polyBounds, coord) => polyBounds.extend(coord), new mapboxgl.LngLatBounds(stateGeometry.coordinates[0][0], stateGeometry.coordinates[0][0]));
-
-                map.fitBounds(bounds, { padding: 20 });
-
                 // Clear previously added city-borders layer
                 map.getLayer('city-borders') && map.removeLayer('city-borders');
                 map.getSource('city-borders') && map.removeSource('city-borders');
@@ -162,11 +290,24 @@
                     }
                 });
 
+                // Add a layer for the clicked state
+                map.addLayer({
+                    'id': 'clicked-state-fill',
+                    'type': 'fill',
+                    'source': 'clicked-state-fill',
+                    'layout': {},
+                    'paint': {
+                        'fill-color': '#5F5F5F',
+                        'fill-opacity': 0.5,
+                    }
+                });
+
                 const cityDataEndpoint = '{{$assets_url}}/mapJson/gadm41_USA_2.json';
                 const cityDataResponse = await fetch(cityDataEndpoint);
                 const cityData = await cityDataResponse.json();
                 const filteredFeatures = cityData.features.filter((feature) => {
-                    return (feature.properties.NAME_1).replace(" ", "") === (stateProperties.STATE_NAME).replace(" ", "");
+                    return (feature.properties.NAME_1).replace(" ", "") === (stateProperties
+                        .STATE_NAME).replace(" ", "");
                 });
 
                 // Add a source for city boundaries of the selected state
@@ -185,70 +326,17 @@
                     'source': 'city-borders',
                     'layout': {},
                     'paint': {
-                        'line-color': '#eee',
+                        'line-color': '#fff',
                         'line-width': 1
                     }
                 });
 
-                // Add hover effect on city polygons
-            map.on('mousemove', 'city-borders', (e) => {
-                if (e.features.length > 0) {
-                    const newHoveredPolygonId = e.features[0].id || e.features[0].properties.index;
 
-                    if (newHoveredPolygonId) {
-                        if (hoveredPolygonId !== null && hoveredPolygonId !== newHoveredPolygonId) {
-                            map.setFeatureState({
-                                source: 'city-borders',
-                                id: hoveredPolygonId
-                            }, {
-                                hover: false
-                            });
-                        }
-
-                        hoveredPolygonId = newHoveredPolygonId;
-
-                        map.setFeatureState({
-                            source: 'city-borders',
-                            id: hoveredPolygonId
-                        }, {
-                            hover: true
-                        });
-                    }
-                }else{
-                    console.log('NOT 1');
-                }
-            });
-
-            // Remove hover effect when leaving city polygons
-            map.on('mouseleave', 'city-borders', () => {
-                if (hoveredPolygonId !== null) {
-                    map.setFeatureState({
-                        source: 'city-borders',
-                        id: hoveredPolygonId
-                    }, {
-                        hover: false
-                    });
-                    hoveredPolygonId = null;
-                }else{
-                    console.log('NOT 1222');
-                }
-            });
-            }else{
-                console.log('HERE');
+            } else {
+                console.log('StateGeometry Coordinates Error');
             }
         });
 
-        map.on('mouseleave', 'state-fills', () => {
-            if (hoveredPolygonId !== null) {
-                map.setFeatureState({
-                    source: 'states',
-                    id: hoveredPolygonId
-                }, {
-                    hover: false
-                });
-            }
-            hoveredPolygonId = null;
-        });
     });
 
 </script>
