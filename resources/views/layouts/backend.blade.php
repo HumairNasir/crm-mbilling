@@ -23,12 +23,15 @@
     </div>
 
 <body>
-@include('partials.header')
-<div class="page-content">
-    @include('partials.sidebar')
-    @yield('content')
-</div>
+<div class="d-flex flex-column h-100vh">
+    @include('partials.header')
+    <div class="page-content">
+        @include('partials.sidebar')
+        @yield('content')
+    </div>
     @include('partials.footer')
+</div>
+
 @include('partials.scripts')
 @yield('scripts')
 </body>

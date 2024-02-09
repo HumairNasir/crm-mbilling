@@ -1,3 +1,3 @@
         <div class="footer-copyright">
-                <span>Copyright © TxLabz 2024</span>
+                <span>Copyright © TxLabz {{$year = date("Y")}}</span>
         </div>

@@ -801,14 +801,25 @@
 </script>
 <script>
     $(document).ready(function() {
+        let open = false
         $(".burger-menu-button").click(function() {
-            $(".sidebar").animate({
-                left: "0%"
-            }, 500);
-            $(".sidebar-overlay").animate({
-                right: "0%"
-            }, 500);
+            if(open){
+                $(".sidebar").animate({
+                    left: "-100%"
+                }, 500);
+                open = false
+            }else{
+                $(".sidebar").animate({
+                    left: "0%"
+                }, 500);
+                $(".sidebar-overlay").animate({
+                    right: "0%"
+                }, 500);
+                open = true
+            }
         });
+
+
         $(".sidebar-overlay").click(function() {
             $(".sidebar").animate({
                 left: "-100%"

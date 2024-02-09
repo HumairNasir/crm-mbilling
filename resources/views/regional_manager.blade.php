@@ -271,7 +271,7 @@
 
             </div>
             <div class="modal-footer form-office-modal-footer">
-                <button type="submit" class="btn btn-primary update-btn" data-id="">Update Regional Manager</button>
+                <button type="submit" class="btn btn-primary update-btn whitespace-nowrap" data-id="">Update Regional Manager</button>
              </div>
         </form>
       </div>

@@ -17,7 +17,6 @@
             </form>
         </div>
     </div>
-</header>
 <script>
     function submitForm(button) {
         button.onclick = null;
@@ -25,3 +24,5 @@
         form.submit();
     }
 </script>
+</header>
+

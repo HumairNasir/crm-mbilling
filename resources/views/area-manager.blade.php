@@ -306,7 +306,7 @@
                 </div>
             </div>
             <div class="modal-footer form-office-modal-footer">
-                <button type="submit" class="btn btn-secondary update-btn" >Update Area Manager</button>
+                <button type="submit" class="btn btn-secondary update-btn whitespace-nowrap" >Update Area Manager</button>
                 <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
             </div>
         </form>
