@@ -153,7 +153,7 @@
                 </div>
             </div>
             <div class="modal-footer form-office-modal-footer">
-                <button type="submit" class="btn btn-primary" >Add Office</button>
+                <button type="submit" class="btn btn-primary" >Add Regional Manager</button>
              </div>
         </form>
     </div>
@@ -271,7 +271,7 @@
 
             </div>
             <div class="modal-footer form-office-modal-footer">
-                <button type="submit" class="btn btn-primary update-btn" data-id="">Update Mamager</button>
+                <button type="submit" class="btn btn-primary update-btn" data-id="">Update Regional Manager</button>
              </div>
         </form>
       </div>
