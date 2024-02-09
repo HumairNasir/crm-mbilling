@@ -1,11 +1,11 @@
 @extends('layouts.backend')
 @section('content')
-<?php $assets_url= config('constants.assets_url'); ?>
+<?php $assets_url = config('constants.assets_url'); ?>
 <div class="content-main">
     <div class="dashboard">
         <h3>Dashboard</h3>
     </div>
-        <div class="sales-record-main new-followup-table-main">
+    <div class="sales-record-main new-followup-table-main">
         <div class="">
             <div class="region-map">
                 <div class="sales-by-region representativesales">
@@ -28,62 +28,62 @@
                         </tr>
                     </thead>
                     <tbody>
- <tr>
+                        <tr>
                             <td>01</td>
                             <td>Dental Office</td>
                             <td><a href="#"><button>Follow up</button></a></td>
                         </tr>
-                         <tr>
+                        <tr>
                             <td>02</td>
                             <td>Dental Office</td>
                             <td><a href="#"><button>Follow up</button></a></td>
                         </tr>
-                         <tr>
+                        <tr>
                             <td>03</td>
                             <td>Dental Office</td>
                             <td><a href="#"><button>Follow up</button></a></td>
                         </tr>
-                         <tr>
+                        <tr>
                             <td>04</td>
                             <td>Dental Office</td>
                             <td><a href="#"><button>Follow up</button></a></td>
                         </tr>
-                         <tr>
+                        <tr>
                             <td>05</td>
                             <td>Dental Office</td>
                             <td><a href="#"><button>Follow up</button></a></td>
                         </tr>
-                                                 <tr>
+                        <tr>
                             <td>06</td>
                             <td>Dental Office</td>
                             <td><a href="#"><button>Follow up</button></a></td>
                         </tr>
-                                                 <tr>
+                        <tr>
                             <td>07</td>
                             <td>Dental Office</td>
                             <td><a href="#"><button>Follow up</button></a></td>
                         </tr>
-                                                 <tr>
+                        <tr>
                             <td>08</td>
                             <td>Dental Office</td>
                             <td><a href="#"><button>Follow up</button></a></td>
                         </tr>
-                                                 <tr>
+                        <tr>
                             <td>09</td>
                             <td>Dental Office</td>
                             <td><a href="#"><button>Follow up</button></a></td>
                         </tr>
-                                                 <tr>
+                        <tr>
                             <td>10</td>
                             <td>Dental Office</td>
                             <td><a href="#"><button>Follow up</button></a></td>
                         </tr>
-                                                 <tr>
+                        <tr>
                             <td>11</td>
                             <td>Dental Office</td>
                             <td><a href="#"><button>Follow up</button></a></td>
                         </tr>
-                                                 <tr>
+                        <tr>
                             <td>12</td>
                             <td>Dental Office</td>
                             <td><a href="#"><button>Follow up</button></a></td>
@@ -104,14 +104,21 @@
             </div>
             <div id="donutchart"></div>
         </div>
-                 <div class="wd-sm">
+        <div class="wd-sm">
             <div class="graph-section-icons">
-<h4>Capturing by month</h4>
+                <h4>Capturing by month</h4>
                 <img src="../images/filter.svg" alt="" class="filter">
             </div>
             <div class="chart-groups">
-<div id="guagechart"></div>
-<div id="simplepie"></div>
+                <div id="guagechart"></div>
+                <div id="guagechart2"></div>
+                <div id="guagechart3"></div>
+                <!-- <div id="simplepie"></div> -->
+                <div class="apexcharts-legend apexcharts-align-center apx-legend-position-bottom" xmlns="http://www.w3.org/1999/xhtml" style="inset: auto 0px 1px; position: absolute; max-height: 97.0833px;">
+                    <div class="apexcharts-legend-series" rel="1" seriesname="TeamxA" data:collapsed="false" style="margin: 2px 5px;"><span class="apexcharts-legend-marker" rel="1" data:collapsed="false" style="background: rgb(0, 143, 251) !important; color: rgb(0, 143, 251); height: 12px; width: 12px; left: 0px; top: 0px; border-width: 0px; border-color: rgb(255, 255, 255); border-radius: 12px;"></span><span class="apexcharts-legend-text" rel="1" i="0" data:default-text="Team%20A" data:collapsed="false" style="color: rgb(55, 61, 63); font-size: 12px; font-weight: 400; font-family: Helvetica, Arial, sans-serif;">Team A</span></div>
+                    <div class="apexcharts-legend-series" rel="2" seriesname="TeamxB" data:collapsed="false" style="margin: 2px 5px;"><span class="apexcharts-legend-marker" rel="2" data:collapsed="false" style="background: rgb(0, 227, 150) !important; color: rgb(0, 227, 150); height: 12px; width: 12px; left: 0px; top: 0px; border-width: 0px; border-color: rgb(255, 255, 255); border-radius: 12px;"></span><span class="apexcharts-legend-text" rel="2" i="1" data:default-text="Team%20B" data:collapsed="false" style="color: rgb(55, 61, 63); font-size: 12px; font-weight: 400; font-family: Helvetica, Arial, sans-serif;">Team B</span></div>
+                    <div class="apexcharts-legend-series" rel="3" seriesname="TeamxC" data:collapsed="false" style="margin: 2px 5px;"><span class="apexcharts-legend-marker" rel="3" data:collapsed="false" style="background: rgb(254, 176, 25) !important; color: rgb(254, 176, 25); height: 12px; width: 12px; left: 0px; top: 0px; border-width: 0px; border-color: rgb(255, 255, 255); border-radius: 12px;"></span><span class="apexcharts-legend-text" rel="3" i="2" data:default-text="Team%20C" data:collapsed="false" style="color: rgb(55, 61, 63); font-size: 12px; font-weight: 400; font-family: Helvetica, Arial, sans-serif;">Team C</span></div>
+                </div>
             </div>
             <p class="activities">Activities Won</p>
             <p class="activities-won">4</p>
@@ -139,9 +146,9 @@
             </svg>
         </div>
         <div class="map-images">
-<img src="../images/Map.png" alt="">
-<img src="../images/Map(1).png" alt="">
-<img src="../images/1.png" alt="">
+            <img src="../images/Map.png" alt="">
+            <img src="../images/Map(1).png" alt="">
+            <img src="../images/1.png" alt="">
         </div>
     </div>
     <div class="sales-record-main">
