@@ -74,7 +74,7 @@
                                     </button>
                                 </form>
                             </div>
-                            
+
                         </td>
                     </tr>
                 @endforeach
@@ -147,12 +147,12 @@
                     <input type="number" name="phone" id="phone" placeholder="+123 456 789">
                     <span id=""  class="phone-error text-danger"></span>
 
-                
+
                     <label for="name">Address</label>
                     <input type="text" name="address" id="address" placeholder="Address">
                     <span class="address-error text-danger"></span>
 
-                   
+
                     <label for="assign">Assign to</label>
                     <select name="assign" id="assign">
                         <option value="">Select regional manager</option>
@@ -178,56 +178,12 @@
           </div>
         </form>
       </div>
-      
+
     </div>
   </div>
 </div>
 
 <!-- Modal 2 -->
-
-<div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle2" aria-hidden="true">
-  <div class="modal-dialog form-office-modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle2">Add Note</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form action="">
-          <div class="form-office-main">
-            <div>
-              <label for="contact-way">How they were contacted</label>
-              <input type="tel" name="contact-way" placeholder="Phone">
-              <label for="product-purchase">Did the dental office purchese the product</label>
-              <input type="text" name="product-purchase" placeholder="No">
-              <label for="contact-date">Contact date</label>
-              <input type="text" name="contact-date" placeholder="01/01/2024">
-            </div>
-            <div>
-              <label for="sale-rep">How receptive the dental office is to sale</label>
-              <input type="text" name="sale-rep" placeholder="Cold">
-              <label for="followup">Follow up date</label>
-              <input type="text" name="followup" placeholder="12/02/2024">
-              <label for="contact-person">Contact person</label>
-              <input type="text" name="contact-person" placeholder="John Morgan">
-            </div>
-            <div class="text-area-parent">
-              <label for="description">Description</label>
-              <textarea name="description" class="description-textarea" cols="30" rows="10"></textarea>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer form-office-modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Save</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal 3 -->
 
 <div class="modal fade" id="edit-area-manager" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle3" aria-hidden="true">
   <div class="modal-dialog form-office-modal-dialog modal-dialog-centered" role="document">
@@ -281,12 +237,12 @@
                     <input type="number" name="phone" id="edt-phone" placeholder="+123 456 789">
                     <span class="phone-error text-danger"></span>
 
-                
+
                     <label for="name">Address</label>
                     <input type="text" name="address" id="edt-address" placeholder="Address">
                     <span class="address-error text-danger"></span>
 
-                   
+
                     <label for="assign">Assign to</label>
                     <select name="assign" id="edt-assign">
                         <option value="">Select regional manager</option>
@@ -311,14 +267,14 @@
             </div>
         </form>
       </div>
-     
+
     </div>
   </div>
 </div>
 
 
 
- 
+
 
 <script>
     $(document).ready(function() {
@@ -329,15 +285,15 @@
         }
 
         $('#add-area-manager').submit(function(event) {
-            event.preventDefault(); 
+            event.preventDefault();
             var formData = $(this).serialize();
             clearErrors();
             showLoader();
 
             $.ajax({
-                url: "{{ route('area_manager.store') }}",  
-                method: 'POST',  
-                data: formData,  
+                url: "{{ route('area_manager.store') }}",
+                method: 'POST',
+                data: formData,
                 success: function(response) {
                     var errors = response.errors;
                     document.getElementById('loader-overlay').style.display = 'none';
@@ -349,11 +305,11 @@
                                 // Get the field name
                                 var fieldName = field;
 
-                                var errorMessage = errors[field][0]; 
+                                var errorMessage = errors[field][0];
 
                                 $('.' + fieldName + '-error').text(errorMessage).show();
                             }
-                            
+
                         }
 
                     } else {
@@ -369,13 +325,13 @@
         });
 
         $('.edit-area-manager-btn').click(function() {
-            var managerId = $(this).data('id');   
+            var managerId = $(this).data('id');
             console.log("arslan");
             console.log(managerId);
             clearErrors();
             showLoader();
             $.ajax({
- 
+
                 url: '/edit-area-manager/' + managerId,
                 type: 'GET',
                 success: function(response) {
@@ -387,7 +343,7 @@
                     $('#edit-area-manager #edt-phone').val(response.phone);
                     $('#edit-area-manager #edt-email').val(response.email);
                     $('#edit-area-manager #edt-address').val(response.address);
-                    
+
                     var button = $('.update-btn');
                     button.attr('data-id', response.user_id);
                     regionId = response.region_id;
@@ -446,7 +402,7 @@
 
         $('#region').change(function() {
             var region_id = $(this).val();
-             
+
             $.ajax({
                 url: '/get-areas/' + region_id,
                 method: 'GET',
@@ -472,7 +428,7 @@
 
         $('#edt-region').change(function() {
             var region_id = $(this).val();
-             
+
             $.ajax({
                 url: '/get-areas/' + region_id,
                 method: 'GET',
@@ -498,9 +454,9 @@
 
         // $('#area').change(function() {
         //     var area_id = $(this).val();
-             
+
         //     console.log(area_id);
-             
+
         //     $.ajax({
         //         url: '/get-territories/' + area_id,
         //         method: 'GET',
@@ -528,9 +484,9 @@
             e.preventDefault(); // Prevent the default form submission
 
             var userId = $(this).data('id');
-        
+
             // Set the user_id value in the hidden input field
-             
+
             // Serialize the form data
             var formData = $('#update-area-manager').serialize();
 
@@ -539,11 +495,11 @@
 
             clearErrors();
             showLoader();
- 
+
             $.ajax({
-                 url: "{{ route('area_manager.update', ':userId') }}".replace(':userId', userId),  
-                method: 'POST',  
-                data: formData,  
+                 url: "{{ route('area_manager.update', ':userId') }}".replace(':userId', userId),
+                method: 'POST',
+                data: formData,
                 success: function(response) {
                     var errors = response.errors;
                     console.log(errors);
@@ -557,11 +513,11 @@
                             // Get the field name
                             var fieldName = field;
 
-                            var errorMessage = errors[field][0]; 
+                            var errorMessage = errors[field][0];
 
                             $('.'+ fieldName + '-error').text(errorMessage).show();
                         }
-                        
+
                     }
 
                 } else {
@@ -577,7 +533,7 @@
         });
 
         $('.delete-btn').click(function(event) {
-            event.preventDefault(); 
+            event.preventDefault();
             var formId = $(this).closest('form').attr('id'); // Get the ID of the parent form
             var managerId = $(this).data('id'); // Get the manager ID from data attribute
 
