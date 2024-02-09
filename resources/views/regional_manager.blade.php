@@ -281,12 +281,14 @@
 </div>
 
 
-@endsection
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
+ 
 <script>
     $(document).ready(function() {
+        function showLoader() {
+            // Show loader overlay
+            document.getElementById('loader-overlay').style.display = 'block';
+        }
         $('#add-regional-manager').submit(function(event) {
             event.preventDefault(); // Prevent the default form submission
 
@@ -294,12 +296,15 @@
             var formData = $(this).serialize();
             clearErrors();
 
+            showLoader();
             $.ajax({
                 url: "{{ route('regional_manager.store') }}",  
                 method: 'POST',  
                 data: formData,  
                 success: function(response) {
                     var errors = response.errors;
+                    document.getElementById('loader-overlay').style.display = 'none';
+
                     if(errors){
                           // Iterate over the errors object
                         for (var field in errors) {
@@ -328,7 +333,7 @@
         $('.edit-manager-btn').click(function() {
             var managerId = $(this).data('id');    
             clearErrors();
-        
+            showLoader();
             $.ajax({
  
                 url: '/edit-manager/' + managerId,
@@ -336,6 +341,8 @@
                 success: function(response) {
                     console.log(response.name);
                     console.log(response);
+                    document.getElementById('loader-overlay').style.display = 'none';
+
                     $('#edit-regional-manager #edt-name').val(response.name);
                     $('#edit-regional-manager #edt-phone').val(response.phone);
                     $('#edit-regional-manager #edt-email').val(response.email);
@@ -368,11 +375,11 @@
         
               
             var formData = $('#update-regional-manager').serialize();
-
+ 
             console.log("userId");
             console.log(formData);
             clearErrors();
-
+            showLoader();
             $.ajax({
                  url: "{{ route('regional_manager.update', ':userId') }}".replace(':userId', userId),  
                 method: 'POST',  
@@ -380,6 +387,7 @@
                 success: function(response) {
                     var errors = response.errors;
                     console.log(errors);
+                    document.getElementById('loader-overlay').style.display = 'none';
 
                     if(errors){
                           // Iterate over the errors object
@@ -443,3 +451,4 @@
 </script>
 
 
+@endsection

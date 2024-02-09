@@ -9,8 +9,18 @@
     @yield('styles')
     <title>Kriss Crm</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> -->
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script src="{{ asset('js/custom.js') }}"></script>
+
+   
 
 </head>
+<div id="loader-overlay" style="display: none;">
+        <div id="loader"></div>
+    </div>
 
 <body>
 @include('partials.header')
@@ -24,3 +34,4 @@
 </body>
 
 </html>
+<?php

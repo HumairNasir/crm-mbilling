@@ -315,18 +315,22 @@
 </div>
 
 
-@endsection
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
+ 
 
 <script>
     $(document).ready(function() {
+
+        function showLoader() {
+            // Show loader overlay
+            document.getElementById('loader-overlay').style.display = 'block';
+        }
 
         $('#add-area-manager').submit(function(event) {
             event.preventDefault(); 
             var formData = $(this).serialize();
             clearErrors();
+            showLoader();
 
             $.ajax({
                 url: "{{ route('area_manager.store') }}",  
@@ -334,6 +338,8 @@
                 data: formData,  
                 success: function(response) {
                     var errors = response.errors;
+                    document.getElementById('loader-overlay').style.display = 'none';
+
                     if(errors){
                           // Iterate over the errors object
                         for (var field in errors) {
@@ -365,6 +371,7 @@
             console.log("arslan");
             console.log(managerId);
             clearErrors();
+            showLoader();
             $.ajax({
  
                 url: '/edit-area-manager/' + managerId,
@@ -372,6 +379,8 @@
                 success: function(response) {
                     console.log(response.name);
                     console.log(response);
+                    document.getElementById('loader-overlay').style.display = 'none';
+
                     $('#edit-area-manager #edt-name').val(response.name);
                     $('#edit-area-manager #edt-phone').val(response.phone);
                     $('#edit-area-manager #edt-email').val(response.email);
@@ -527,7 +536,7 @@
             console.log(formData);
 
             clearErrors();
-
+            showLoader();
  
             $.ajax({
                  url: "{{ route('area_manager.update', ':userId') }}".replace(':userId', userId),  
@@ -536,6 +545,8 @@
                 success: function(response) {
                     var errors = response.errors;
                     console.log(errors);
+                    document.getElementById('loader-overlay').style.display = 'none';
+
 
                 if(errors){
                     // Iterate over the errors object
@@ -596,3 +607,4 @@
 
     });
 </script>
+@endsection
