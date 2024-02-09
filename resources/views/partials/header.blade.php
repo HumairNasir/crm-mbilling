@@ -9,7 +9,7 @@
         </div>
         <div class="header-notifications">
             <img src="../images/notifications.svg" alt="">
-            <form id="logoutForm" method="POST" action="{{ route('logout') }}">
+            <form id="logoutForm" class="m-0" method="POST" action="{{ route('logout') }}">
                 @csrf
                 <div id="logoutButton" onclick="submitForm(this)">
                     <img src="../images/logout.svg" alt="Logout" style="cursor: pointer;">
