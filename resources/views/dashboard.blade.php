@@ -1,6 +1,21 @@
 @extends('layouts.backend')
 @section('content')
 <?php $assets_url= config('constants.assets_url'); ?>
+
+@php
+    // Make sure these are iterable (sometimes controller returns JSON/string)
+    $contacted_dental_offices = is_iterable($contacted_dental_offices ?? null)
+        ? $contacted_dental_offices
+        : (is_string($contacted_dental_offices ?? null) ? (json_decode($contacted_dental_offices) ?? []) : []);
+
+    $dental_offices = is_iterable($dental_offices ?? null)
+        ? $dental_offices
+        : (is_string($dental_offices ?? null) ? (json_decode($dental_offices) ?? []) : []);
+
+    // Safe numeric formatting input (avoids number_format type errors)
+    $total_sale_safe = (float) preg_replace('/[^\d\.\-]/', '', $total_sale ?? 0);
+@endphp
+
 <div class="content-main">
     <div class="dashboard">
         <h3>Dashboard</h3>
@@ -77,7 +92,8 @@
                         <p style="color:#4D4D4D;"  class="year_sale">
                             {{$year = date("Y")}}
                         </p>
-                        <h3>${{number_format($total_sale)}}</h3>
+
+                        <h3>${{ number_format($total_sale_safe, 2) }}</h3>
                     </div>
                     <div> <img src="{{$assets_url}}/images/calen.svg" alt="" class="filter">
                     </div>
