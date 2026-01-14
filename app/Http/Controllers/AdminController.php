@@ -80,9 +80,9 @@ class AdminController extends Controller
 
     public function dental_offices()
     {
+        $dentalOffices = DentalOffice::with('salesRep')->paginate(10);
 
-        return view('dental_offices');
-
+        return view('dental_offices', compact('dentalOffices'));
     }
 
 
