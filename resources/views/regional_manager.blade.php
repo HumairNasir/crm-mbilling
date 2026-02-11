@@ -72,7 +72,7 @@
     <div class="">
         <div class="dental-office-parent">
             <div class="search-main search-employee">
-                <input type="search" name="search" id="search" placeholder="Search..." class="dental-office-search">
+                <input type="search" name="search" id="search" placeholder="Search name, email, region..." class="dental-office-search">
                 <img src="../images/search.svg" alt="">
             </div>
             <div class="category-search search-employee dental-category">
@@ -513,6 +513,22 @@
                 }
             });
         });
+
+        // --- SEARCH: filter by region, name, email ---
+        $('.dental-office-search').on('keyup', function() {
+            var filter = $(this).val().toUpperCase();
+            $('.dental-office-table tbody tr').each(function() {
+                var name = $(this).find('td:eq(1)').text().toUpperCase();
+                var email = $(this).find('td:eq(2)').text().toUpperCase();
+                var regions = $(this).find('td:eq(5)').text().toUpperCase();
+                if (name.indexOf(filter) > -1 || email.indexOf(filter) > -1 || regions.indexOf(filter) > -1) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
     });
 </script>
 @endsection

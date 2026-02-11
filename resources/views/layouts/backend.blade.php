@@ -33,6 +33,7 @@
 </div>
 
 @include('partials.scripts')
+@include('partials.notification-scripts')
 @yield('scripts')
 </body>
 

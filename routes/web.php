@@ -122,4 +122,20 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/team-tasks/fetch/{rep_id}', [App\Http\Controllers\TeamTaskController::class, 'fetchRepTasks'])->name(
         'team.tasks.fetch',
     );
+
+    // --- NOTIFICATIONS ---
+    Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name(
+        'notifications.index',
+    );
+    Route::post('/notifications/{id}/read', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name(
+        'notifications.read',
+    );
+    Route::post('/notifications/mark-all-read', [
+        App\Http\Controllers\NotificationController::class,
+        'markAllAsRead',
+    ])->name('notifications.markAllRead');
+    Route::get('/notifications/unread-count', [
+        App\Http\Controllers\NotificationController::class,
+        'unreadCount',
+    ])->name('notifications.unreadCount');
 });

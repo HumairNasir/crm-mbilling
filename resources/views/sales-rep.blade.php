@@ -180,8 +180,10 @@
     <div class="">
         <div class="dental-office-parent">
             <div class="search-main search-employee">
-                <input type="search" name="search" id="search" placeholder="Search..." class="dental-office-search">
-                <img src="../images/search.svg" alt="">
+                <form action="{{ route('sales_rep.index') }}" method="GET" style="display:flex; align-items:center; width:100%;">
+                    <input type="search" name="search" value="{{ request('search') }}" placeholder="Search name, state..." class="dental-office-search">
+                    <img src="../images/search.svg" alt="" onclick="this.closest('form').submit()" style="cursor:pointer;">
+                </form>
             </div>
             
             @if(Auth::user()->roles[0]->name != 'SalesRepresentative')

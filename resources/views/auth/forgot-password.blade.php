@@ -1,4 +1,4 @@
-forgotpasword.blade
+
 <x-guest-layout>
     <x-auth-card  >
         <x-slot name="logo">
