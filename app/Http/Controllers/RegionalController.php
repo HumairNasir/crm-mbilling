@@ -1,12 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\User;
 use App\Models\Region;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
@@ -21,33 +20,24 @@ class RegionalController extends Controller
      */
     public function index()
     {
+        // 1. Get Regional Managers
         $regional_managers = User::whereNotNull('country_manager_id')
             ->whereNull('regional_manager_id')
             ->whereNull('state_manager_id')
+            ->with('regions') // Eager load for the table badge loop
             ->get();
+
+        // 2. LOGIC: Get only regions that are NOT assigned to anyone
+        // Get all region_ids currently in the pivot table
+        $takenRegionIds = DB::table('region_user')->pluck('region_id')->toArray();
+
+        // Filter: Show only regions NOT in the taken list
+        $available_regions = Region::whereNotIn('id', $takenRegionIds)->get();
+
+        // Keep full list for fallback/display if needed, but 'available' is main for Add
         $region_list = Region::all();
 
-
-
-        if ($regional_managers->isEmpty()) {
-            // Handle case when no regional managers are found
-            return redirect()->back()->with('error', 'No regional managers found.');
-        }
-
-
-        return view('regional_manager', compact('regional_managers','region_list'));
-    }
-
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-
+        return view('regional_manager', compact('regional_managers', 'region_list', 'available_regions'));
     }
 
     /**
@@ -58,66 +48,50 @@ class RegionalController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the request data
+        // 1. Validate
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'phone' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'region' => 'required|numeric', // Assuming region is numeric
-            'password' => 'required', // Assuming region is numeric
+            'phone' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'password' => 'required|min:8',
+            'region' => 'required|array', // CHANGE: 'numeric' -> 'array'
+            'region.*' => 'exists:regions,id', // Validate each item exists
         ];
 
         $validator = Validator::make($request->all(), $rules);
 
-        // Check if validation fails
         if ($validator->fails()) {
-
-            $errorsArray = [];
-
-            foreach ($validator->errors()->toArray() as $field => $errors) {
-                // Create an array for each field containing the error messages
-                $errorsArray[$field] = array_map(function($error) {
-                    return ucfirst($error);
-                }, $errors);
-            }
-
-            // Return the validation errors
-            return response()->json(['errors' => $errorsArray]);
-
+            return response()->json(['errors' => $validator->errors()]);
         }
 
+        // 2. Create User
         $user = new User();
         $user->name = $request->input('name');
         $user->email = $request->input('email');
-        // $user->country = $request->input('country');
         $user->phone = $request->input('phone');
         $user->address = $request->input('address');
-        $user->country_manager_id = Auth::user()->id;
-        $user->region_id = $request->input('region');
         $user->password = Hash::make($request->input('password'));
 
-        // Save the user
+        // 3. Assign Hierarchy
+        $user->country_manager_id = Auth::user()->id;
+        // REMOVED: $user->region_id = ... (We don't use this column anymore)
+
         $user->save();
-        $user_id = $user->id; // Retrieve the ID of the saved user
 
+        // 4. Attach Multiple Regions
+        if ($request->has('region')) {
+            $user->regions()->sync($request->input('region'));
+        }
 
-        DB::insert('insert into model_has_roles (role_id, model_type, model_id) values (?, ?, ?)', [3, 'App\Models\User', $user_id]);
+        // 5. Assign Role
+        DB::insert('insert into model_has_roles (role_id, model_type, model_id) values (?, ?, ?)', [
+            3,
+            'App\Models\User',
+            $user->id,
+        ]);
 
-        return redirect()->route('regional_manager.index')->with('success', 'User created successfully.');
-    }
-
-
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        return response()->json(['success' => 'Regional Manager created successfully.']);
     }
 
     /**
@@ -128,32 +102,28 @@ class RegionalController extends Controller
      */
     public function edit($id)
     {
-        $user = User::find($id);
+        $user = User::with('regions')->find($id);
 
-        if(!empty($user)){
-            $userData   = array();
+        if ($user) {
+            // --- EDIT LOGIC: Show Free Regions + This User's Regions ---
 
-            $user_name = !empty($user->name) ? $user->name : '';
-            $user_phone = !empty($user->phone) ? $user->phone : '';
-            $user_email = !empty($user->email) ? $user->email : '';
-            $user_address = !empty($user->address) ? $user->address : '';
-            $user_region_id = !empty($user->region_id) ? $user->region_id : '';
-            $user_id = !empty($user->id) ? $user->id : '';
+            // 1. Get IDs taken by OTHER people (exclude current user)
+            $takenByOthers = DB::table('region_user')->where('user_id', '!=', $id)->pluck('region_id')->toArray();
 
-            $userData = [
-                'name' => $user_name,
-                'phone' => $user_phone,
-                'email' => $user_email,
-                'address' => $user_address,
-                'region_id' => $user_region_id,
-                'user_id' => $user_id,
-            ];
+            // 2. Get regions that are NOT taken by others
+            $valid_regions = Region::whereNotIn('id', $takenByOthers)->get();
 
-            // Return the array as a JSON response
-            return response()->json($userData);
-
+            return response()->json([
+                'user_id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'address' => $user->address,
+                'region_ids' => $user->regions->pluck('id'),
+                'valid_regions' => $valid_regions, // <--- Sending the specific list for this user
+            ]);
         } else {
-            return response()->json(['message' => 'Something Went Wrong'], 404);
+            return response()->json(['message' => 'User not found'], 404);
         }
     }
 
@@ -168,81 +138,58 @@ class RegionalController extends Controller
     {
         $user = User::find($id);
 
-        if($user){
-             // Validate the request data
-
+        if ($user) {
             $rules = [
                 'name' => 'required|string|max:255',
-                'email' => 'required|email',
-                'phone' => 'required|string|max:255',
-                'address' => 'required|string|max:255',
-                'region' => 'required|numeric', // Assuming region is numeric
+                'email' => 'required|email|unique:users,email,' . $id,
+                'phone' => 'nullable|string|max:255',
+                'address' => 'nullable|string|max:255',
+                'region' => 'required|array', // CHANGE: numeric -> array
             ];
 
             $validator = Validator::make($request->all(), $rules);
 
-            // Check if validation fails
             if ($validator->fails()) {
-
-                $errorsArray = [];
-
-                foreach ($validator->errors()->toArray() as $field => $errors) {
-                    // Create an array for each field containing the error messages
-                    $errorsArray[$field] = array_map(function($error) {
-                        return ucfirst($error);
-                    }, $errors);
-                }
-
-                // Return the validation errors
-                return response()->json(['errors' => $errorsArray]);
-
+                return response()->json(['errors' => $validator->errors()]);
             }
 
-            // Update user details
             $user->name = $request->input('name');
             $user->email = $request->input('email');
             $user->phone = $request->input('phone');
             $user->address = $request->input('address');
-            $user->region_id = $request->input('region');
+            // REMOVED: $user->region_id update
+
             if ($request->has('password') && !empty($request->input('password'))) {
-                // Hash the password
-                $hashedPassword = Hash::make($request->input('password'));
-                $user->password = $hashedPassword;
+                $user->password = Hash::make($request->input('password'));
             }
 
             $user->save();
-            return response()->json(['message' => 'User update successfully'], 200);
 
+            // Sync new regions (this handles adding new ones and removing unchecked ones)
+            $user->regions()->sync($request->input('region'));
 
+            return response()->json(['message' => 'User updated successfully']);
         } else {
             return response()->json(['message' => 'User not found'], 404);
-
-
         }
-
     }
-
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function destroy($id)
     {
-        // Find the user
         $user = User::find($id);
 
-        // Check if the user exists
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        // Check if the associated record exists in model_has_roles table
-        $recordExists = DB::table('model_has_roles')->where('model_id', $id)->exists();
-
-        if ($recordExists) {
-            // Delete the associated record from model_has_roles table
+        if ($user) {
+            // Remove Role
             DB::table('model_has_roles')->where('model_id', $id)->delete();
+            $user->delete();
+            return redirect()->back()->with('success', 'User deleted successfully.');
         }
 
-        // Delete the user
-        $user->delete();
-
-        return Redirect::back();
+        return redirect()->back()->with('error', 'User not found.');
     }
 }

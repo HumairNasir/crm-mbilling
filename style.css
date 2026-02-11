@@ -1,116 +1,116 @@
 .sign-in-main {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  justify-content: center;
-  align-items: center;
-  background: #dfdfdf;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background: #dfdfdf;
 }
 
 .sign-in-main img {
-  width: min-content;
+    width: min-content;
 }
 
 .sign-in-main > div {
-  background: #fff;
-  padding: 20px 50px;
-  margin-top: 30px;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 35%;
+    background: #fff;
+    padding: 20px 50px;
+    margin-top: 30px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 35%;
 }
 
 .sign-in-main form {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  gap: 15px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 15px;
 }
 
 .sign-in-main h3 {
-  font-family: "Poppins", sans-serif;
-  font-size: 24px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
 }
 
 .sign-in-main p,
 .sign-in-main form label,
 .sign-in-main form input {
-  font-family: "Inter", sans-serif;
-  font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
 }
 
 .sign-in-main p {
-  font-size: 18px;
+    font-size: 18px;
 }
 
 .sign-in-main form > div:not(:last-of-type) {
-  display: flex;
-  flex-direction: column;
-  position: relative;
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
 
 .sign-in-main form a {
-  float: right;
-  color: #8c8c8c;
+    float: right;
+    color: #8c8c8c;
 }
 
 .sign-in-main input#email,
 .sign-in-main input#password {
-  border: 1px solid #eee;
-  border-radius: 4px;
+    border: 1px solid #eee;
+    border-radius: 4px;
 }
 
 .sign-in-main input#password {
-  padding: 10px 30px;
+    padding: 10px 30px;
 }
 
 .sign-in-main input#email {
-  padding: 10px 10px 10px 30px;
+    padding: 10px 10px 10px 30px;
 }
 
 .sign-in-main input#email::placeholder,
 .sign-in-main input#password::placeholder {
-  font-weight: normal;
+    font-weight: normal;
 }
 
 #sign-in-btn {
-  font-size: 20px;
-  border: none;
-  border-radius: 4px;
-  padding: 10px 0px;
+    font-size: 20px;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 0px;
 }
 
 #sign-in-btn:hover {
-  opacity: 0.7;
+    opacity: 0.7;
 }
 
 .sign-in-main form svg.left-svgs {
-  position: absolute;
-  bottom: 12px;
-  left: 5px;
+    position: absolute;
+    bottom: 12px;
+    left: 5px;
 }
 
 .sign-in-main form svg.right-svg {
-  position: absolute;
-  right: 5px;
-  bottom: 12px;
-  cursor: pointer;
+    position: absolute;
+    right: 5px;
+    bottom: 12px;
+    cursor: pointer;
 }
 
-.sign-in-main input[type="checkbox"] {
-  cursor: pointer;
+.sign-in-main input[type='checkbox'] {
+    cursor: pointer;
 }
 
 @media only screen and (min-width: 767px) and (max-width: 1024px) {
-  .sign-in-main > div {
-    width: unset !important;
-  }
+    .sign-in-main > div {
+        width: unset !important;
+    }
 }
 
 @media only screen and (max-width: 767px) {
-  .sign-in-main > div {
-    width: 95% !important;
-  }
+    .sign-in-main > div {
+        width: 95% !important;
+    }
 }

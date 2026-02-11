@@ -19,27 +19,27 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Super Admin',
                 'role' => 'SuperAdmin',
-                'email' => 'superadmin@kriss.com'
+                'email' => 'superadmin@kriss.com',
             ],
             [
                 'name' => 'Country Manager',
                 'role' => 'CountryManager',
-                'email' => 'countrymanager@kriss.com'
+                'email' => 'countrymanager@kriss.com',
             ],
             [
                 'name' => 'Regional Manager',
                 'role' => 'RegionalManager',
-                'email' => 'RegionalManager@kriss.com'
+                'email' => 'RegionalManager@kriss.com',
             ],
             [
                 'name' => 'Area Manager',
                 'role' => 'AreaManager',
-                'email' => 'AreaManager@kriss.com'
+                'email' => 'AreaManager@kriss.com',
             ],
             [
                 'name' => 'Sales Representative',
                 'role' => 'SalesRepresentative',
-                'email' => 'SalesRepresentative@kriss.com'
+                'email' => 'SalesRepresentative@kriss.com',
             ],
         ];
         foreach ($users as $user) {

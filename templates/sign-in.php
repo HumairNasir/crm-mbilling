@@ -1,4 +1,4 @@
-<?php include('../header.php'); ?>
+<?php include '../header.php'; ?>
 
 <div class="sign-in-main">
     <img src="../images/Logo.png" alt="Logo">
@@ -35,4 +35,4 @@
         </form>
     </div>
 </div>
-<?php include('../footer.php'); ?>
+<?php include '../footer.php'; ?>

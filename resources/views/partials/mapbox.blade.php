@@ -125,6 +125,59 @@
             'Wyoming': 'green'
         };
 
+        const stateAbbreviations = {
+            'Alabama': 'AL',
+            'Alaska': 'AK',
+            'Arizona': 'AZ',
+            'Arkansas': 'AR',
+            'California': 'CA',
+            'Colorado': 'CO',
+            'Connecticut': 'CT',
+            'Delaware': 'DE',
+            'Florida': 'FL',
+            'Georgia': 'GA',
+            'Hawaii': 'HI',
+            'Idaho': 'ID',
+            'Illinois': 'IL',
+            'Indiana': 'IN',
+            'Iowa': 'IA',
+            'Kansas': 'KS',
+            'Kentucky': 'KY',
+            'Louisiana': 'LA',
+            'Maine': 'ME',
+            'Maryland': 'MD',
+            'Massachusetts': 'MA',
+            'Michigan': 'MI',
+            'Minnesota': 'MN',
+            'Mississippi': 'MS',
+            'Missouri': 'MO',
+            'Montana': 'MT',
+            'Nebraska': 'NE',
+            'Nevada': 'NV',
+            'New Hampshire': 'NH',
+            'New Jersey': 'NJ',
+            'New Mexico': 'NM',
+            'New York': 'NY',
+            'North Carolina': 'NC',
+            'North Dakota': 'ND',
+            'Ohio': 'OH',
+            'Oklahoma': 'OK',
+            'Oregon': 'OR',
+            'Pennsylvania': 'PA',
+            'Rhode Island': 'RI',
+            'South Carolina': 'SC',
+            'South Dakota': 'SD',
+            'Tennessee': 'TN',
+            'Texas': 'TX',
+            'Utah': 'UT',
+            'Vermont': 'VT',
+            'Virginia': 'VA',
+            'Washington': 'WA',
+            'West Virginia': 'WV',
+            'Wisconsin': 'WI',
+            'Wyoming': 'WY'
+        };
+
 
         // Add fill layer for states with different colors
         map.addLayer({
@@ -240,11 +293,13 @@
         map.on('mousemove', 'state-fills', (e) => {
             if (e.features.length > 0) {
                 const stateName = e.features[0].properties.STATE_NAME;
+                const stateAbbr = stateAbbreviations[stateName];
+                const label = stateAbbr ? `${stateName} (${stateAbbr})` : stateName;
 
                 // Update popup content and position
                 popup.setLngLat(e.lngLat)
                     .setHTML(
-                        `<span><svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ${stateName}</span>`
+                        `<span><svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> ${label}</span>`
                     )
                     .addTo(map);
 

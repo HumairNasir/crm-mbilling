@@ -3,6 +3,7 @@ var options = {
     chart: {
         // width: 300,
         type: 'pie',
+        foreColor: '#E0E0E0',
     },
     legend: {
         position: 'bottom'

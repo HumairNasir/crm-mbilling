@@ -18,52 +18,52 @@ class RegionSeeder extends Seeder
             [
                 'name' => 'Region 1',
                 'latitude' => '0.12',
-                'longitude' => '0.123'
+                'longitude' => '0.123',
             ],
             [
                 'name' => 'Region 2',
                 'latitude' => '0.12',
-                'longitude' => '0.123'
+                'longitude' => '0.123',
             ],
             [
                 'name' => 'Region 3',
                 'latitude' => '0.12',
-                'longitude' => '0.123'
+                'longitude' => '0.123',
             ],
             [
                 'name' => 'Region 4',
                 'latitude' => '0.12',
-                'longitude' => '0.123'
+                'longitude' => '0.123',
             ],
             [
                 'name' => 'Region 5',
                 'latitude' => '0.12',
-                'longitude' => '0.123'
+                'longitude' => '0.123',
             ],
             [
                 'name' => 'Region 6',
                 'latitude' => '0.12',
-                'longitude' => '0.123'
+                'longitude' => '0.123',
             ],
             [
                 'name' => 'Region 7',
                 'latitude' => '0.12',
-                'longitude' => '0.123'
+                'longitude' => '0.123',
             ],
             [
                 'name' => 'Region 8',
                 'latitude' => '0.12',
-                'longitude' => '0.123'
+                'longitude' => '0.123',
             ],
             [
                 'name' => 'Region 9',
                 'latitude' => '0.12',
-                'longitude' => '0.123'
+                'longitude' => '0.123',
             ],
             [
                 'name' => 'Region 10',
                 'latitude' => '0.12',
-                'longitude' => '0.123'
+                'longitude' => '0.123',
             ],
         ];
         foreach ($regions as $region) {

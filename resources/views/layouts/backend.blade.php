@@ -23,7 +23,7 @@
     </div>
 
 <body>
-<div class="d-flex flex-column h-100vh">
+<div class="d-flex flex-column">
     @include('partials.header')
     <div class="page-content">
         @include('partials.sidebar')
@@ -37,4 +37,3 @@
 </body>
 
 </html>
-<?php

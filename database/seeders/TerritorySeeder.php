@@ -19,55 +19,55 @@ class TerritorySeeder extends Seeder
                 'name' => 'Test',
                 'state_id' => '1',
                 'latitude' => '0.12',
-                'longitude' => '0.123'
+                'longitude' => '0.123',
             ],
             [
                 'name' => 'Test1',
                 'state_id' => '1',
                 'latitude' => '0.12',
-                'longitude' => '0.123'
+                'longitude' => '0.123',
             ],
             [
                 'name' => 'Test2',
                 'state_id' => '1',
                 'latitude' => '0.12',
-                'longitude' => '0.123'
+                'longitude' => '0.123',
             ],
             [
                 'name' => 'Test3',
                 'state_id' => '1',
                 'latitude' => '0.12',
-                'longitude' => '0.123'
+                'longitude' => '0.123',
             ],
             [
                 'name' => 'Test5',
                 'state_id' => '2',
                 'latitude' => '0.12',
-                'longitude' => '0.123'
+                'longitude' => '0.123',
             ],
             [
                 'name' => 'Test6',
                 'state_id' => '3',
                 'latitude' => '0.12',
-                'longitude' => '0.123'
+                'longitude' => '0.123',
             ],
             [
                 'name' => 'Test7',
                 'state_id' => '3',
                 'latitude' => '0.12',
-                'longitude' => '0.123'
+                'longitude' => '0.123',
             ],
             [
                 'name' => 'Test9',
                 'state_id' => '3',
                 'latitude' => '0.12',
-                'longitude' => '0.123'
+                'longitude' => '0.123',
             ],
             [
                 'name' => 'Test0',
                 'state_id' => '3',
                 'latitude' => '0.12',
-                'longitude' => '0.123'
+                'longitude' => '0.123',
             ],
         ];
         foreach ($territories as $territory) {

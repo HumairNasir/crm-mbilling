@@ -16,6 +16,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+        // Run the auto-assigner every hour
+        // $schedule->command('leads:auto-assign')->hourly();
+
+        // Check for auto-assignments every 10 minutes
+        $schedule->command('leads:auto-assign')->everyTenMinutes();
     }
 
     /**
@@ -25,7 +30,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

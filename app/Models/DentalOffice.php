@@ -47,4 +47,9 @@ class DentalOffice extends Model
     {
         return $this->belongsTo(\App\Models\Territory::class, 'territory_id');
     }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
 }

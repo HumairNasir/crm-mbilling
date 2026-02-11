@@ -16,21 +16,32 @@ class CreateDentalOfficesTable extends Migration
         Schema::create('dental_offices', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
+
+            // Foreign Keys (Nullable for bulk import safety)
             $table->unsignedBigInteger('sales_rep_id')->nullable();
-            $table->foreign('sales_rep_id')->references('id')->on('users')->onDelete('set null');
             $table->string('country')->nullable();
             $table->unsignedBigInteger('region_id')->nullable();
-            $table->foreign('region_id')->references('id')->on('regions')->onDelete('set null');
             $table->unsignedBigInteger('state_id')->nullable();
-            $table->foreign('state_id')->references('id')->on('states')->onDelete('set null');
             $table->unsignedBigInteger('territory_id')->nullable();
+
             $table->string('contacted_source')->nullable();
             $table->string('receptive')->nullable();
             $table->string('purchase_product')->nullable();
+
+            // Using string to match your dump format perfectly
             $table->string('follow_up_date')->nullable();
             $table->string('contact_date')->nullable();
+
             $table->string('contact_person')->nullable();
             $table->longText('description')->nullable();
+
+            // New Columns from your SQL Dump
+            $table->string('phone')->nullable();
+            $table->string('email')->nullable();
+            $table->string('address')->nullable();
+            $table->string('purchase_subscriptions')->nullable();
+            $table->string('dr_name')->nullable();
+
             $table->timestamps();
             $table->softDeletes();
         });
