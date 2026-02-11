@@ -27,5 +27,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Fix for "Specified key was too long" (MariaDB/MySQL index length)
         Schema::defaultStringLength(191);
+
+        Paginator::useBootstrap();
     }
 }

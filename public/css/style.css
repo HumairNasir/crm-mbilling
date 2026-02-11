@@ -999,21 +999,83 @@ body img,
     display: flex;
     padding: 20px 0;
     align-items: center;
+    justify-content: center;
     color: #e0e0e0;
 }
 
 .main-pagination > div:first-of-type {
-    width: 40%;
+    width: auto;
+    font-size: 14px;
+    color: #9ca3af;
+}
+
+.main-pagination nav {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
 }
 
 .pagination {
-    border-radius: 4px;
-    border: 1px solid #ffffff;
+    display: flex;
+    list-style: none;
+    border-radius: 6px;
+    border: 1px solid #1f2937;
     background: #020617;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
+.pagination .page-item .page-link {
+    padding: 8px 14px;
+    text-decoration: none;
+    font-size: 14px;
+    color: #9ca3af;
+    background: transparent;
+    border: none;
+    border-right: 1px solid #1f2937;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 38px;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+.pagination .page-item:last-child .page-link {
+    border-right: none;
+}
+
+.pagination .page-item .page-link:hover {
+    background: #1e3a5f;
+    color: #e5e7eb;
+    text-decoration: none;
+}
+
+.pagination .page-item.active .page-link {
+    background: #1d4ed8;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #4b5563;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+/* Fix oversized prev/next SVG icons */
+.pagination .page-item .page-link svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Legacy plain anchor pagination fallback */
 .pagination a {
-    padding: 12px;
+    padding: 8px 14px;
     text-decoration: none;
     font-size: 14px;
     color: #9ca3af;
@@ -1021,7 +1083,7 @@ body img,
 
 .pagination a:hover,
 .pagination a:active {
-    background: #1f5bdf;
+    background: #1d4ed8;
     color: #e5e7eb;
     font-weight: 600;
     text-decoration: none;
@@ -1166,6 +1228,7 @@ select {
 select {
     -webkit-appearance: none;
     -moz-appearance: none;
+    appearance: none;
     background-color: #e0e0e0;
     color: #000000;
     background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
