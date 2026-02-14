@@ -166,11 +166,11 @@
                         </div>
                     </div>
                     <div class="stats-grid">
-                        <div class="stat-item"><span class="stat-label">Pending</span><h2 class="stat-value">{{ $pending_tasks ?? 0 }}</h2></div>
+                        <div class="stat-item"><span class="stat-label">PENDING TASKS</span><h2 class="stat-value">{{ $pending_tasks ?? 0 }}</h2></div>
                         <div class="stat-separator"></div>
-                        <div class="stat-item"><span class="stat-label">Done Today</span><h2 class="stat-value text-blue">{{ $completed_tasks ?? 0 }}</h2></div>
+                        <div class="stat-item"><span class="stat-label">COMPLETED TODAY</span><h2 class="stat-value text-blue">{{ $completed_tasks ?? 0 }}</h2></div>
                         <div class="stat-separator"></div>
-                        <div class="stat-item"><span class="stat-label">Overall</span><h2 class="stat-value" style="color: #4ade80;">{{ $total_completed_tasks ?? 0 }}</h2></div>
+                        <div class="stat-item"><span class="stat-label">OVERALL COMPLETED</span><h2 class="stat-value" style="color: #4ade80;">{{ $total_completed_tasks ?? 0 }}</h2></div>
                     </div>
                 </div>
                 <div style="margin-top: 25px; display: flex; align-items: center;">
