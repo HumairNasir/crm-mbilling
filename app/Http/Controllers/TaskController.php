@@ -30,7 +30,6 @@ class TaskController extends Controller
 
     public function markAsDone(Request $request, $id)
     {
-        // 1. Setup
         $user = Auth::user();
         $task = Task::find($id);
 
@@ -41,7 +40,7 @@ class TaskController extends Controller
             return redirect()->back()->with('error', 'Task not found');
         }
 
-        // 2. Auth Check
+        // Auth Check
         if ($task->user_id != $user->id && !$user->hasAnyRole(['CountryManager', 'RegionalManager', 'AreaManager'])) {
             if ($request->ajax()) {
                 return response()->json(['message' => 'Unauthorized'], 403);
@@ -49,21 +48,27 @@ class TaskController extends Controller
             return redirect()->back()->with('error', 'Unauthorized');
         }
 
-        // 3. Update Status
+        // 1. Update Task Status
         $task->status = 'completed';
         $task->completed_at = now();
 
-        // 4. ✅ SAVE THE NOTE (This was missing!)
-        // We check if the request actually sent a note
+        // 2. Save the Note
         if ($request->has('completion_note')) {
             $task->completion_note = $request->input('completion_note');
         }
 
+        // 3. ✅ NEW: Update Dental Office "Receptive" Status
+        if ($request->has('receptive_status') && !empty($request->receptive_status)) {
+            // Assuming the relationship is 'dentalOffice'
+            $task->dentalOffice->update([
+                'receptive' => $request->input('receptive_status'),
+            ]);
+        }
+
         $task->save();
 
-        // 5. Response
         if ($request->ajax()) {
-            return response()->json(['success' => true, 'message' => 'Task marked as done']);
+            return response()->json(['success' => true, 'message' => 'Task completed and status updated']);
         }
 
         return redirect()->back()->with('success', 'Task marked as done');

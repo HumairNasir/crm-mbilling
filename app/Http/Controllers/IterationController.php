@@ -9,13 +9,13 @@ use App\Models\Task;
 use App\Models\Iteration;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class IterationController extends Controller
 {
     public function store(Request $request)
     {
-        // 1. Create a New Iteration Record (Batch Log)
-        // Check if an active one exists first to avoid duplicates if you want
+        // 1. Create or Get Active Iteration (Batch Log)
         $activeIteration = Iteration::where('status', 'active')->first();
         if (!$activeIteration) {
             $iteration = new Iteration();
@@ -27,89 +27,120 @@ class IterationController extends Controller
         }
 
         // 2. Get All Active Sales Reps
-        // We eagerly load 'states' to limit database queries
         $salesReps = User::role('SalesRepresentative')->with('states')->get();
 
-        $report = []; // To store who got what
+        $report = [];
         $totalAssigned = 0;
-        $batchSize = 5; // Configurable: How many leads per rep per hour
+        $batchSize = 5; // Configurable: Tasks per rep per batch
 
-        DB::beginTransaction(); // Start Transaction for Safety
+        DB::beginTransaction(); // Start Transaction
 
         try {
             foreach ($salesReps as $rep) {
                 // A. Identify Territory
                 $allowedStateIds = $rep->states->pluck('id')->toArray();
 
-                // --- LOGGING START ---
-                if ($rep->id == 61) {
-                    // Only log for Rep 01 to keep file clean
-                    \Illuminate\Support\Facades\Log::info('AUTO-PILOT AUDIT: Rep 01 (ID 61)');
-                    \Illuminate\Support\Facades\Log::info('Allowed States found: ' . implode(',', $allowedStateIds));
-                }
-
-                // If Rep has no territory, skip them
+                // Skip if no territory
                 if (empty($allowedStateIds)) {
-                    $report[] = "{$rep->name}: Skipped (No Territory Assigned)";
+                    $report[] = "{$rep->name}: Skipped (No Territory)";
                     continue;
                 }
 
-                // B. Find Available Leads in Their Territory
-                // Logic: Must be in their state AND not yet assigned to anyone
+                // =========================================================
+                // LOGIC CHANGE 1: CHECK AVAILABILITY (Busy Check)
+                // =========================================================
+                // If the Rep has ANY pending tasks, do not assign more.
+                $busyCheck = Task::where('user_id', $rep->id)->where('status', 'pending')->count();
+
+                if ($busyCheck > 0) {
+                    $report[] = "{$rep->name}: Skipped (Busy with $busyCheck tasks)";
+                    continue; // Stop here for this Rep
+                }
+
+                // =========================================================
+                // LOGIC CHANGE 2: PRIORITY ASSIGNMENT (New vs Recycled)
+                // =========================================================
+
+                // PRIORITY A: Fresh Leads (Unassigned) in Territory
                 $leads = DentalOffice::whereIn('state_id', $allowedStateIds)
-                    ->whereNull('sales_rep_id') // Only fresh leads
+                    ->whereNull('sales_rep_id') // Strictly new leads
                     ->take($batchSize)
                     ->get();
 
-                // --- LOGGING START ---
-                if ($rep->id == 61 && $leads->count() > 0) {
-                    foreach ($leads as $l) {
-                        \Illuminate\Support\Facades\Log::info(
-                            ">> ASSIGNING LEAD: {$l->name} (ID: {$l->id}) - State ID: {$l->state_id}",
-                        );
-                    }
+                $source = 'New';
+
+                // PRIORITY B: Recycle Old Leads (If no new leads found)
+                if ($leads->isEmpty()) {
+                    $source = 'Recycled';
+
+                    // Logic: Find oldest 'completed' tasks for this rep in their territory
+                    // We fetch the DentalOffice models associated with those tasks
+                    $leads = DentalOffice::whereIn('state_id', $allowedStateIds)
+                        ->whereHas('tasks', function ($q) use ($rep) {
+                            $q->where('user_id', $rep->id)->where('status', 'completed');
+                        })
+                        // Ensure we don't pick one that is already currently pending (double safety)
+                        ->whereDoesntHave('tasks', function ($q) {
+                            $q->where('status', 'pending');
+                        })
+                        ->with([
+                            'tasks' => function ($q) {
+                                $q->latest(); // To check last interaction time if needed
+                            },
+                        ])
+                        ->take($batchSize)
+                        ->get();
+                }
+
+                // --- Logging for Audit ---
+                if ($rep->id == 61) {
+                    Log::info("AUTO-PILOT: Rep {$rep->name} - Source: {$source} - Count: {$leads->count()}");
                 }
 
                 $countForThisRep = 0;
 
-                // C. Assign Leads & Create Tasks
+                // C. Process Assignment
                 foreach ($leads as $lead) {
-                    // 1. Lock the lead to this Rep
-                    $lead->sales_rep_id = $rep->id;
-                    $lead->save();
+                    // 1. Ensure Lead is Locked to Rep (Vital for Recycled leads too)
+                    if ($lead->sales_rep_id !== $rep->id) {
+                        $lead->sales_rep_id = $rep->id;
+                        $lead->save();
+                    }
 
-                    // 2. Create the Task
+                    // 2. Create a NEW Task
+                    // We create a NEW row even for recycling to preserve the history/notes of the old task.
                     Task::create([
                         'user_id' => $rep->id,
                         'dental_office_id' => $lead->id,
                         'status' => 'pending',
-                        'iteration_id' => $iteration->id, // Link to this batch
+                        'iteration_id' => $iteration->id,
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now(),
+                        // Optional: Add a system note to differentiate recycled tasks?
+                        // 'completion_note' => ($source === 'Recycled') ? 'System: Recycled Lead' : null
                     ]);
 
                     $countForThisRep++;
                     $totalAssigned++;
                 }
 
-                // D. Log the result for this Rep
-                if ($countForThisRep < $batchSize) {
-                    $report[] = "{$rep->name}: Assigned {$countForThisRep} (Territory Dry)";
+                // D. Report Generation
+                if ($countForThisRep == 0) {
+                    $report[] = "{$rep->name}: No leads available (New or Recycled)";
                 } else {
-                    $report[] = "{$rep->name}: Assigned {$countForThisRep} (Full Batch)";
+                    $report[] = "{$rep->name}: Assigned {$countForThisRep} ({$source})";
                 }
             }
 
-            DB::commit(); // Save all changes
+            DB::commit();
 
-            // 3. Return Success with the Report
             return response()->json([
                 'status' => 'success',
                 'message' => "Batch completed. Total Assigned: $totalAssigned",
-                'report' => $report, // This shows you the imbalance details!
+                'report' => $report,
             ]);
         } catch (\Exception $e) {
-            DB::rollBack(); // Undo changes if something crashes
+            DB::rollBack();
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }

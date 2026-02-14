@@ -48,12 +48,8 @@
 </style>
 
 <div class="content-main">
-    
     <div class="task-page-header">
-        <div>
-            <h3 class="task-page-title">Team Oversight</h3>
-            <p class="task-page-subtitle">Monitor and manage your sales team's pipeline in real-time.</p>
-        </div>
+        <div><h3 class="task-page-title">Team Oversight</h3><p class="task-page-subtitle">Monitor and manage your sales team's pipeline in real-time.</p></div>
     </div>
 
     <div class="rep-scroll-container">
@@ -78,7 +74,6 @@
             <h5>Select a Sales Rep above to view their board.</h5>
         </div>
     </div>
-
 </div>
 
 <div class="modal fade" id="convertClientModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -92,8 +87,8 @@
                     <input type="hidden" name="dental_office_id" id="convert_office_id">
                     <div class="form-group"><label>Office Name</label><input type="text" name="name" id="convert_office_name" class="form-control" readonly style="background-color: #e9ecef;"></div>
                     <div class="form-group" style="background: #f0f9ff; padding: 15px; border-radius: 8px; border: 1px dashed #bae6fd;"><label style="color: #0369a1; font-weight: 700;">Monthly Subscription Amount ($)</label><div class="input-group"><div class="input-group-prepend"><span class="input-group-text">$</span></div><input type="number" name="subscription_amount" class="form-control" placeholder="0.00" step="0.01" min="0" required></div><small style="color: #0284c7;">Enter the recurring monthly revenue for this client.</small></div>
-                    <div class="form-group mt-3"><label>Contact Person <span class="text-danger">*</span></label><input type="text" name="contact_person" class="form-control" required placeholder="e.g. Dr. Smith"></div>
-                    <div class="row"><div class="col-md-6"><div class="form-group"><label>Direct Email <span class="text-danger">*</span></label><input type="email" name="email" class="form-control" required></div></div><div class="col-md-6"><div class="form-group"><label>Direct Phone</label><input type="text" name="phone" class="form-control"></div></div></div>
+                    <div class="form-group mt-3"><label>Contact Person <span class="text-danger">*</span></label><input type="text" name="contact_person" id="convert_contact_person" class="form-control" required placeholder="e.g. Dr. Smith"></div>
+                    <div class="row"><div class="col-md-6"><div class="form-group"><label>Direct Email <span class="text-danger">*</span></label><input type="email" name="email" id="convert_email" class="form-control" required></div></div><div class="col-md-6"><div class="form-group"><label>Direct Phone</label><input type="text" name="phone" id="convert_phone" class="form-control" placeholder="(555) 123-4567"></div></div></div>
                 </div>
                 <div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button><button type="submit" class="btn btn-success">Confirm Conversion</button></div>
             </form>
@@ -127,6 +122,18 @@
                             <option value="Not Interested">Not Interested</option>
                             <option value="Other">Other (Type below)</option>
                         </select>
+                    </div>
+                    {{-- NEW: Receptive Status --}}
+                    <div class="form-group">
+                        <label>Update Lead Status (Optional)</label>
+                        <select class="form-control" id="task_receptive_status" style="background: #0f172a; color: white; border: 1px solid #334155; margin-bottom: 10px;">
+                            <option value="">Keep Current Status</option>
+                            <option value="HOT" style="color: #ef4444; font-weight: bold;">HOT</option>
+                            <option value="WARM" style="color: #f59e0b; font-weight: bold;">WARM</option>
+                            <option value="COLD" style="color: #3b82f6; font-weight: bold;">COLD</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label>Additional Notes (Optional)</label>
                         <textarea class="form-control" id="task_note" rows="3" placeholder="Enter specific details..." style="background: #0f172a; color: white; border: 1px solid #334155;"></textarea>
                     </div>
@@ -140,139 +147,137 @@
 <script>
     var currentRepId = null;
     var autoRefreshInterval = null;
-    var currentUrl = null; // <--- NEW: Stores the current page URL
+    var currentUrl = null; 
     let searchResetTimer; 
 
-    // --- 1. SEARCH WITH 10 SEC TIMER ---
+    // --- 1. SEARCH FUNCTION (Server-Side) ---
     $(document).on('keyup', '#taskSearchInput', function() {
-        var filter = $(this).val().toUpperCase();
         clearTimeout(searchResetTimer);
-
-        // Determine which table is currently visible
-        var tableId = $('.nav-link-dark.active').attr('href') === '#activeTasks' ? '#activeTasksTable' : '#pastTasksTable';
-        
-        $(tableId + " tbody tr").each(function() {
-            var row = $(this);
-            var tdName = row.find('td').eq(0).text().toUpperCase(); 
-            var tdArea = row.find('td').eq(1).text().toUpperCase(); 
-            var tdNote = (tableId === '#pastTasksTable') ? row.find('td').eq(3).text().toUpperCase() : "";
-
-            if(tdName.indexOf(filter) > -1 || tdArea.indexOf(filter) > -1 || tdNote.indexOf(filter) > -1) {
-                row.show();
-            } else {
-                row.hide();
-            }
-        });
-
         searchResetTimer = setTimeout(function() {
-            $('#taskSearchInput').val(''); 
-            $('#activeTasksTable tbody tr, #pastTasksTable tbody tr').show(); 
-        }, 10000);
+            if(currentRepId) {
+                // Reset to Page 1 when searching
+                currentUrl = '/team-tasks/fetch/' + currentRepId;
+                fetchTasks(false, true); 
+            }
+        }, 500);
     });
 
     // --- 2. SELECT REP ---
     function selectRep(repId) {
         currentRepId = repId;
-        
-        // Reset URL to Page 1 (Base URL) when selecting a new rep
         currentUrl = '/team-tasks/fetch/' + repId;
-
         $('.rep-btn').removeClass('active');
         $('#rep-btn-' + repId).addClass('active');
         $('#repTaskContainer').html('<div class="text-center py-5"><div class="spinner-border text-primary"></div><div class="mt-2">Loading tasks...</div></div>');
-        
-        // Initial Fetch
+        $('#taskSearchInput').val(''); // Clear Search
         fetchTasks(false, true);
-
-        // Start Auto-Refresh
         if (autoRefreshInterval) clearInterval(autoRefreshInterval);
         autoRefreshInterval = setInterval(function() { 
-            if(currentRepId) fetchTasks(true, false); // Silent Refresh
+            var searchValue = $('#taskSearchInput').val();
+            if(currentRepId && searchValue === '') { fetchTasks(true, false); }
         }, 5000); 
     }
 
-    // --- 3. FETCH FUNCTION (FIXED) ---
-    // Now uses the global 'currentUrl' variable so it remembers the page
-    function fetchTasks(silent = false, force = false) {
+    // --- 3. FETCH FUNCTION ---
+    function fetchTasks(silent = false, force = false, customUrl = null) {
         if (!force && $('.modal.show').length > 0) { return; }
         
         var activeTabId = $('.nav-link-dark.active').attr('id');
+        var ajaxUrl = customUrl || currentUrl;
         
-        // Add timestamp to the CURRENT URL (Page 1 or Page 2, etc)
-        // We use 'currentUrl' which is updated by pagination clicks
-        var ajaxUrl = currentUrl;
-        ajaxUrl += (ajaxUrl.indexOf('?') === -1 ? '?' : '&') + 't=' + new Date().getTime();
+        // Append Search Term
+        var searchValue = $('#taskSearchInput').val();
+        var separator = ajaxUrl.indexOf('?') === -1 ? '?' : '&';
+        ajaxUrl += separator + 'search=' + encodeURIComponent(searchValue);
+        ajaxUrl += '&t=' + new Date().getTime();
         
         $.get(ajaxUrl, function(html) {
-            if(!silent) console.log("✅ Data Loaded: " + currentUrl);
-            
+            if(!silent) console.log("✅ Data Loaded");
             $('#repTaskContainer').html(html).css('opacity', '1');
-            
             if(activeTabId) {
-                $('.nav-link-dark').removeClass('active'); 
-                $('.tab-pane').removeClass('show active');
+                $('.nav-link-dark').removeClass('active'); $('.tab-pane').removeClass('show active');
                 $('#' + activeTabId).addClass('active');
-                var targetPane = $('#' + activeTabId).attr('href'); 
-                $(targetPane).addClass('show active');
+                var targetPane = $('#' + activeTabId).attr('href'); $(targetPane).addClass('show active');
             }
-        }).fail(function() { 
-            if(!silent) $('#repTaskContainer').html('<div class="text-center text-danger">Error loading tasks.</div>'); 
-        });
+        }).fail(function() { if(!silent) $('#repTaskContainer').html('<div class="text-center text-danger">Error loading tasks.</div>'); });
     }
 
-    // ====================================================================
-    // ✅ PAGINATION HANDLER (Updates global 'currentUrl')
-    // ====================================================================
-    $(document).on('click', '#repTaskContainer .pagination a, #repTaskContainer .page-link, #repTaskContainer nav[role="navigation"] a', function(e) {
+    // --- 4. PAGINATION HANDLER ---
+    $(document).on('click', '#repTaskContainer .pagination a', function(e) {
         e.preventDefault(); 
-        
         var newUrl = $(this).attr('href'); 
-        
         if(newUrl && newUrl !== '#' && currentRepId) {
-            console.log("Pagination Clicked: " + newUrl);
-            
-            // UPDATE THE GLOBAL VARIABLE
             currentUrl = newUrl; 
-
             $('#repTaskContainer').css('opacity', '0.5');
-            
-            // Fetch immediately
             fetchTasks(false, true); 
         }
     });
 
-    // --- 5. MARK AS DONE LOGIC ---
+    // --- 5. MARK AS DONE LOGIC (Updated for Receptive) ---
     $(document).ready(function() {
         $(document).on('click', '.mark-done-trigger', function(e) {
             e.preventDefault(); var taskId = $(this).data('id'); $('#modal_task_id').val(taskId); $('#taskCompletionModal').modal('show');
         });
 
         $('#confirmTaskDone').click(function() {
-            var taskId = $('#modal_task_id').val(); var finalNote = $('#task_outcome_select').val() + ($('#task_note').val() ? " - " + $('#task_note').val() : ""); 
+            var taskId = $('#modal_task_id').val(); var outcome = $('#task_outcome_select').val(); var receptive = $('#task_receptive_status').val(); var note = $('#task_note').val(); var finalNote = outcome + (note ? " - " + note : ""); 
             $(this).prop('disabled', true).text('Saving...');
             $.ajax({
-                url: '/tasks/' + taskId + '/done', type: 'POST', data: { _token: '{{ csrf_token() }}', completion_note: finalNote },
+                url: '/tasks/' + taskId + '/done', type: 'POST', 
+                data: { _token: '{{ csrf_token() }}', completion_note: finalNote, receptive_status: receptive },
                 success: function(response) { $('#taskCompletionModal').modal('hide'); if(currentRepId) fetchTasks(true, true); $('#confirmTaskDone').prop('disabled', false).text('Mark as Done'); $('#task_note').val(''); },
                 error: function(err) { alert('Error updating task.'); $('#confirmTaskDone').prop('disabled', false).text('Mark as Done'); }
             });
         });
     });
 
-    // --- 6. CONVERT & VIEW HELPERS ---
-    $(document).on('submit', '#convertClientModal form', function(e) {
-        e.preventDefault(); var form = $(this); var btn = form.find('button[type="submit"]'); btn.prop('disabled', true).text('Converting...');
-        $.ajax({
-            url: form.attr('action'), type: 'POST', data: form.serialize(),
-            success: function(response) { $('#convertClientModal').modal('hide'); form[0].reset(); btn.prop('disabled', false).text('Confirm Conversion'); if(currentRepId) fetchTasks(true, true); alert('Success!'); },
-            error: function(xhr) { btn.prop('disabled', false).text('Confirm Conversion'); alert('Error converting.'); }
+    // --- 6. CONVERT CLIENT HELPER (Pre-fill Data) ---
+    function openConvertModal(el) { 
+        var id = $(el).data('id');
+        var name = $(el).data('name');
+        var contact = $(el).data('contact');
+        var email = $(el).data('email');
+        var phone = $(el).data('phone');
+
+        $('#convert_office_id').val(id);
+        $('#convert_office_name').val(name);
+        $('#convert_contact_person').val(contact ? contact : '');
+        $('#convert_email').val(email ? email : '');
+        $('#convert_phone').val(phone ? phone : '').trigger('input'); // Trigger format
+
+        $('#convertClientModal').modal('show'); 
+    }
+
+    // --- 7. PHONE VALIDATION (Strict US) ---
+    $(document).ready(function() {
+        $('#convert_phone').on('input', function(e) {
+            var input = $(this).val();
+            var numbers = input.replace(/\D/g, '');
+            if (numbers.length > 11) { numbers = numbers.substring(0, 11); }
+            if (numbers.length > 0 && numbers.charAt(0) !== '1') { numbers = '1' + numbers; }
+            var formatted = '';
+            if (numbers.length > 0) { formatted += '+' + numbers.substring(0, 1); }
+            if (numbers.length > 1) { formatted += ' (' + numbers.substring(1, 4); }
+            if (numbers.length > 4) { formatted += ') ' + numbers.substring(4, 7); }
+            if (numbers.length > 7) { formatted += '-' + numbers.substring(7, 11); }
+            $(this).val(formatted);
+        });
+        
+        // Modal Submit Handler
+        $(document).on('submit', '#convertClientModal form', function(e) {
+            e.preventDefault(); var form = $(this); var btn = form.find('button[type="submit"]'); btn.prop('disabled', true).text('Converting...');
+            $.ajax({
+                url: form.attr('action'), type: 'POST', data: form.serialize(),
+                success: function(response) { $('#convertClientModal').modal('hide'); form[0].reset(); btn.prop('disabled', false).text('Confirm Conversion'); if(currentRepId) fetchTasks(true, true); alert('Success!'); },
+                error: function(xhr) { btn.prop('disabled', false).text('Confirm Conversion'); alert('Error converting.'); }
+            });
         });
     });
 
-    function openConvertModal(name, id) { $('#convert_office_name').val(name); $('#convert_office_id').val(id); $('#convertClientModal').modal('show'); }
-
+    // --- 8. VIEW DETAILS AJAX ---
     function viewOfficeDetails(id, taskNote) {
         $('#viewOfficeModal').modal('show');
-        $('#view_office_body').html('<div class="text-center py-4"><div class="spinner-border text-primary"></div></div>');
+        $('#view_office_body').html('<div class="text-center py-4"><div class="spinner-border text-primary"></div><div class="mt-2">Loading...</div></div>');
         $.ajax({
             url: '/dental_offices/' + id + '/edit', type: 'GET',
             success: function(response) {

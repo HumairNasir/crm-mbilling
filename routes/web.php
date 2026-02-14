@@ -61,11 +61,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/get_reschedule_sales', [AdminController::class, 'get_reschedule_sales'])->name('get_reschedule_sales');
     Route::get('/get_schedule_sales', [AdminController::class, 'get_schedule_sales'])->name('get_schedule_sales');
     Route::get('/get_won_sales', [AdminController::class, 'get_won_sales'])->name('get_won_sales');
-    Route::get('/get_total_sale', [AdminController::class, 'get_total_sale'])->name('get_total_sale');
+    // Route::get('/get_total_sale', [AdminController::class, 'get_total_sale'])->name('get_total_sale');
     Route::get('/get_subscriptions_sale', [AdminController::class, 'get_subscriptions_sale'])->name(
         'get_subscriptions_sale',
     );
 
+    Route::get('/get_total_sale', [AdminController::class, 'get_total_sale'])->name('get_total_sale');
+    Route::get('/get_dashboard_stats', [AdminController::class, 'get_dashboard_stats'])->name('get_dashboard_stats');
     // --- REGIONAL MANAGER MODULE ---
     Route::resource('regional_manager', 'App\Http\Controllers\RegionalController');
     Route::post('/regionalmanagerstore', 'App\Http\Controllers\RegionalController@store')->name(
@@ -109,6 +111,8 @@ Route::group(['middleware' => 'auth'], function () {
         App\Http\Controllers\SalesRepController::class,
         'getManagerStates',
     ]);
+
+    Route::get('/get_capturing_stats', [AdminController::class, 'get_capturing_stats'])->name('get_capturing_stats');
 
     // Route to start a new batch of tasks
     Route::post('/iterations/start', [App\Http\Controllers\IterationController::class, 'store'])->name(

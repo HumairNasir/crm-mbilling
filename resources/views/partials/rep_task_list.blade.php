@@ -61,7 +61,14 @@
                                             Done
                                         </button>
 
-                                        <button class="btn-convert-small" onclick="openConvertModal('{{ addslashes($task->dentalOffice->name) }}', {{ $task->dentalOffice->id }})">
+                                        {{-- CONVERT BUTTON (Updated to pass data) --}}
+                                        <button class="btn-convert-small" 
+                                            onclick="openConvertModal(this)"
+                                            data-id="{{ $task->dentalOffice->id }}"
+                                            data-name="{{ addslashes($task->dentalOffice->name) }}"
+                                            data-contact="{{ addslashes($task->dentalOffice->contact_person ?? '') }}"
+                                            data-email="{{ addslashes($task->dentalOffice->email ?? '') }}"
+                                            data-phone="{{ addslashes($task->dentalOffice->phone ?? '') }}">
                                             Convert
                                         </button>
                                     </div>
@@ -113,13 +120,21 @@
                                     @endif
                                 </td>
                                 <td class="text-right">
+                                    {{-- View Details (Pass Note) --}}
                                     <button class="btn-icon-dark mr-1" onclick="viewOfficeDetails({{ $task->dentalOffice->id }}, '{{ addslashes($task->completion_note ?? '') }}')" title="View Details">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                                     </button>
 
+                                    {{-- Revive Button (Pass Data) --}}
                                     @if($task->status == 'completed')
                                         <button class="btn-convert-small" style="background: linear-gradient(135deg, #6366f1, #4f46e5);" 
-                                            onclick="openConvertModal('{{ addslashes($task->dentalOffice->name) }}', {{ $task->dentalOffice->id }})" title="Revive Lead">
+                                            onclick="openConvertModal(this)"
+                                            data-id="{{ $task->dentalOffice->id }}"
+                                            data-name="{{ addslashes($task->dentalOffice->name) }}"
+                                            data-contact="{{ addslashes($task->dentalOffice->contact_person ?? '') }}"
+                                            data-email="{{ addslashes($task->dentalOffice->email ?? '') }}"
+                                            data-phone="{{ addslashes($task->dentalOffice->phone ?? '') }}"
+                                            title="Revive Lead">
                                             Revive
                                         </button>
                                     @endif

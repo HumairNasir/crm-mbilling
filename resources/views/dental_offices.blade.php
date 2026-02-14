@@ -22,7 +22,7 @@
 </style>
 
 <div class="content-main dental-office-content">
-  <h3>Dental Offices</h3>
+  <h3>Doctors' offices</h3>
   <div class="">
     <div class="dental-office-parent">
       <div class="search-main search-employee">
@@ -34,7 +34,7 @@
 
       @if(!Auth::user()->hasRole('SalesRepresentative'))
       <div class="add-dental-button">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addDentalOfficeModal">Add Dental Office</button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addDentalOfficeModal">Add Doctor Office</button>
       </div>
       @endif
     </div>
@@ -92,7 +92,7 @@
           </tr>
           @empty
           <tr>
-            <td colspan="8" class="text-center">No dental offices found</td>
+            <td colspan="8" class="text-center">No doctors' offices found</td>
           </tr>
           @endforelse
         </tbody>
@@ -106,7 +106,7 @@
   <div class="modal-dialog form-office-modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add Dental Office</h5>
+        <h5 class="modal-title">Add Doctor Office</h5>
         <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
       </div>
       <form action="{{ route('dental_offices.store') }}" method="POST">
@@ -162,7 +162,7 @@
   <div class="modal-dialog form-office-modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Edit Dental Office</h5>
+        <h5 class="modal-title">Edit Doctor Office</h5>
         <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
       </div>
       <form id="editForm" method="POST">
@@ -273,7 +273,7 @@
       $.post(url, $(this).serialize(), function(response) {
         location.reload();
       }).fail(function() {
-        alert('Error updating dental office.');
+        alert('Error updating doctor office.');
       });
     });
   });
