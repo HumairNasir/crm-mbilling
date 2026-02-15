@@ -95,6 +95,37 @@
         border-radius: 10px;
         font-size: 12px;
     }
+
+    /* --- Sales Rep Dashboard Styles --- */
+ 
+/* --- NEW GAUGE & REVENUE STYLES --- */
+.gauge-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 300px; /* Adjust based on your card height */
+}
+.gauge-container { text-align: center; position: relative; }
+.gauge-label { color: #d1d5db; font-size: 14px; font-weight: 500; margin-bottom: 5px; }
+.task-subtext { font-size: 12px; color: #6b7280; display: block; margin-top: -10px; }
+
+/* Center the Revenue Text */
+.revenue-center {
+    text-align: center;
+    padding: 20px 0;
+}
+.revenue-text-big {
+    font-size: 36px;
+    font-weight: 800;
+    color: #fff;
+    margin: 0;
+}
+
+/* Fix Table scroll inside card
+.table-scroll {
+    overflow-y: auto;
+    max-height: 300px;
+} */
 </style>
 
 <div class="content-main">
@@ -106,50 +137,95 @@
     </div>
 
     {{-- SALES REP VIEW --}}
+
     @if(Auth::user()->roles[0]->name == 'SalesRepresentative')
-        <div class="sales-record-main new-followup-table-main">
-            <div>
-                <div class="region-map">
-                    <div class="sales-by-region representativesales"><h3>Dental offices contacted this week</h3></div>
-                    <div class="search-main search-employee"><input type="search" placeholder="Search..."><img src="{{$assets_url}}/images/search.svg"></div>
-                    <div class="filter-employee"><img src="{{$assets_url}}/images/filter.svg" class="filter"></div>
-                </div>
-                <div class="new-followup-table">
-                    <table>
-                        <thead><tr><td>#</td><td colspan="2">Name</td></tr></thead>
-                        <tbody>
-                        @foreach($contacted_dental_offices as $co)
-                            <tr><td>{{$co->id}}</td><td>{{$co->name}}</td><td><a href="#"><button>Follow up</button></a></td></tr>
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="wd-sm">
-                <div class="sales-resp">
-                    <div><h3 class="sales-year">Total Sales</h3><h3 id="display_total_sales_count">{{$total_sale_count}}</h3></div>
-                    <div><img src="{{$assets_url}}/images/filter.svg" class="filter"></div>
-                </div>
-                <div id="donutchart"></div>
-            </div>
-            <div class="wd-sm">
-                <div class="sales-resp">
-                    <div><h4 id="capturingTitle">Capturing Stats</h4></div>
-                    <div class="filter-dropdown">
-                        <button type="button" class="filter-button" id="capturingFilterBtn"><img src="{{$assets_url}}/images/filter.svg" class="filter"></button>
-                        <div class="filter-menu" id="capturingFilterMenu" style="display:none;">
-                            <button class="filter-menu-item" onclick="updateCapturing('today', 'Today')">Today</button>
-                            <button class="filter-menu-item" onclick="updateCapturing('month', 'This Month')">This Month</button>
-                        </div>
+
+
+    <div class="sales-main-graph" style="display: flex; gap: 20px; width: 100%;">
+        
+        <div class="wd-sm" style="flex: 1; min-width: 0;">
+            <div class="sales-resp">
+                <div><h4>Converted Offices</h4></div>
+                <div class="filter-dropdown">
+                    <button type="button" class="filter-button" onclick="toggleFilter('menuClients')">
+                        <img src="{{$assets_url}}/images/filter.svg" class="filter">
+                    </button>
+                    <div class="filter-menu" id="menuClients">
+                        <div class="filter-menu-item" onclick="setFilter('clients', 'this_week')">This Week</div>
+                        <div class="filter-menu-item" onclick="setFilter('clients', 'this_month')">This Month</div>
+                        <div class="filter-menu-item" onclick="setFilter('clients', 'this_year')">This Year</div>
                     </div>
                 </div>
-                <div class="chart-groups">
-                    <div style="position:relative;"><div id="revenueArc"></div><div style="text-align:center;color:#fff;">Revenue</div></div>
-                    <div style="position:relative;"><div id="conversionArc"></div><div style="text-align:center;color:#fff;">Conversion</div></div>
-                    <div style="position:relative;"><div id="activityArc"></div><div style="text-align:center;color:#fff;">Activity</div></div>
+            </div>
+            
+            <div style="overflow-y: auto; max-height: 300px;">
+                <table class="category-table" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th style="color:#9ca3af; text-align:left; padding:10px;">Name</th>
+                            <th style="color:#9ca3af; text-align:right; padding:10px;">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listClients">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="wd-sm" style="flex: 1; min-width: 0;">
+            <div class="sales-resp">
+                <div><h4>Sales</h4></div>
+                <div class="filter-dropdown">
+                    <button type="button" class="filter-button" onclick="toggleFilter('menuRevenue')">
+                        <img src="{{$assets_url}}/images/filter.svg" class="filter">
+                    </button>
+                    <div class="filter-menu" id="menuRevenue">
+                        <div class="filter-menu-item" onclick="setFilter('revenue', 'this_week')">This Week</div>
+                        <div class="filter-menu-item" onclick="setFilter('revenue', 'this_month')">This Month</div>
+                        <div class="filter-menu-item" onclick="setFilter('revenue', 'this_year')">This Year</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="revenue-center">
+                <h1 id="textRevenue" class="revenue-text-big">$0.00</h1>
+            </div>
+            
+            <div style="position: relative;">
+                <div id="chartSalesDonut"></div>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none;">
+                    <span style="font-size: 12px; color: #9ca3af;">Total Sales</span>
+                    <br>
+                    <span id="textSalesCount" style="font-size: 24px; font-weight: 800; color: #fff;">0</span>
                 </div>
             </div>
         </div>
+
+        <div class="wd-sm" style="flex: 1; min-width: 0;">
+            <div class="sales-resp">
+                <div><h4>Performance</h4></div>
+                <div class="filter-dropdown">
+                    <button type="button" class="filter-button" onclick="toggleFilter('menuPerformance')">
+                        <img src="{{$assets_url}}/images/filter.svg" class="filter">
+                    </button>
+                    <div class="filter-menu" id="menuPerformance">
+                        <div class="filter-menu-item" onclick="setFilter('performance', 'today')">Today</div>
+                        <div class="filter-menu-item" onclick="setFilter('performance', 'this_week')">This Week</div>
+                        <div class="filter-menu-item" onclick="setFilter('performance', 'this_month')">This Month</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gauge-wrapper">
+                <div class="gauge-container">
+                    <div class="gauge-label">✅ Tasks Completed</div>
+                    <div id="gaugeTasks"></div>
+                    <span id="textTasks" class="task-subtext">(0 of 0 tasks)</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
 
     {{-- MANAGER VIEW --}}
     @else
@@ -596,5 +672,129 @@
     document.addEventListener('click', function() { document.querySelectorAll('.filter-menu').forEach(m => m.style.display='none'); });
 </script>
 
+<script>
+@if(Auth::user()->roles[0]->name == 'SalesRepresentative')
 
+// Global Filter State
+var currentFilters = {
+    clients: 'this_month',
+    revenue: 'this_month',
+    performance: 'this_month'
+};
+
+$(document).ready(function() {
+    
+    // 1. Initialize ApexCharts
+    var chartTasks = new ApexCharts(document.querySelector("#gaugeTasks"), createGaugeOptions('#10b981'));
+    var chartSales = new ApexCharts(document.querySelector("#chartSalesDonut"), createDonutOptions());
+
+    chartTasks.render();
+    chartSales.render();
+
+    // 2. Load Initial Data
+    loadData('clients');
+    loadData('revenue');
+    loadData('performance');
+
+    // 3. Close menus when clicking outside
+    $(document).click(function(e) {
+        if (!$(e.target).closest('.filter-dropdown').length) {
+            $('.filter-menu').removeClass('show');
+        }
+    });
+
+    // --- Helper Functions ---
+
+    // Toggle Menu Visibility
+    window.toggleFilter = function(menuId) {
+        $('.filter-menu').not('#' + menuId).removeClass('show'); // Close others
+        $('#' + menuId).toggleClass('show');
+    };
+
+    // Set Filter & Reload
+    window.setFilter = function(type, value) {
+        currentFilters[type] = value;
+        $('#menu' + type.charAt(0).toUpperCase() + type.slice(1)).removeClass('show'); // Close menu
+        loadData(type); // Reload specific module
+    };
+
+    function loadData(type) {
+        var filterVal = currentFilters[type];
+
+        if (type === 'performance') {
+            $.get('/get-rep-performance', { filter: filterVal }, function(res) {
+                chartTasks.updateSeries([res.tasks.percentage]);
+                $('#textTasks').text('(' + res.tasks.text + ')');
+            });
+        } 
+        else if (type === 'revenue') {
+            $.get('/get-rep-revenue', { filter: filterVal }, function(res) {
+                $('#textRevenue').text('$' + res.revenue);
+                $('#textSalesCount').text(res.count);
+            });
+        } 
+       
+        else if (type === 'clients') {
+            $('#listClients').html('<tr><td colspan="2" class="text-center" style="padding:20px; color:#6b7280;">Loading...</td></tr>');
+            
+            $.get('/get-rep-converted-list', { filter: filterVal }, function(res) {
+                var html = '';
+                if(res.offices.length > 0) {
+                    $.each(res.offices, function(i, office) {
+                        // Determine Doctor Name (fallback to contact person if empty)
+                        var drName = office.dr_name ? office.dr_name : (office.contact_person ? office.contact_person : 'No Doctor');
+                        
+                        html += `
+                        <tr>
+                            <td style="padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <div style="color: #fff; font-weight: 600; font-size: 14px;">${office.name}</div>
+                                <div style="color: #6b7280; font-size: 12px; margin-top: 2px;">${drName}</div>
+                            </td>
+                            <td style="padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: right; color: #9ca3af; font-size: 12px;">
+                                ${office.formatted_date}
+                            </td>
+                        </tr>`;
+                    });
+                } else {
+                    html = '<tr><td colspan="2" class="text-center" style="padding:20px; color:#6b7280;">No data found.</td></tr>';
+                }
+                $('#listClients').html(html);
+            });
+        }
+    }
+
+    function createGaugeOptions(color) {
+        return {
+            series: [0],
+            chart: { type: 'radialBar', height: 180, fontFamily: 'Inter, sans-serif' },
+            plotOptions: {
+                radialBar: {
+                    hollow: { size: '60%' },
+                    track: { background: 'rgba(255,255,255,0.05)' },
+                    dataLabels: {
+                        name: { show: false },
+                        value: { fontSize: '22px', fontWeight: 700, color: '#fff', offsetY: 10, show: true }
+                    }
+                }
+            },
+            colors: [color],
+            stroke: { lineCap: 'round' }
+        };
+    }
+
+    function createDonutOptions() {
+        return {
+            series: [100], 
+            chart: { type: 'donut', height: 240, fontFamily: 'Inter, sans-serif' },
+            colors: ['#3b82f6', 'rgba(255,255,255,0.05)'], 
+            dataLabels: { enabled: false },
+            legend: { show: false },
+            tooltip: { enabled: false },
+            stroke: { width: 0 },
+            plotOptions: { pie: { donut: { size: '75%' } } }
+        };
+    }
+});
+@endif
+</script>
 @endsection

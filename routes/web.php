@@ -102,6 +102,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/edit-salesrep/{id}', [App\Http\Controllers\SalesRepController::class, 'edit']);
     Route::get('/my-tasks', [App\Http\Controllers\TaskController::class, 'index'])->name('tasks.index');
 
+    // --- Sales Rep Dashboard AJAX Routes ---
+    Route::get('/get-rep-performance', [App\Http\Controllers\AdminController::class, 'getRepPerformance']);
+    Route::get('/get-rep-revenue', [App\Http\Controllers\AdminController::class, 'getRepRevenue']);
+    Route::get('/get-rep-converted-list', [App\Http\Controllers\AdminController::class, 'getRepConvertedList']);
+
     // Sales Rep AJAX Helpers for Hierarchy
     Route::get('/get-regional-managers/{region_id}', 'App\Http\Controllers\SalesRepController@getRegionalManagers');
     Route::get('/get-area-managers/{regional_manager_id}', 'App\Http\Controllers\SalesRepController@getAreaManagers');

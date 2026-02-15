@@ -441,4 +441,100 @@ class AdminController extends Controller
             'active_won' => $wonQ->count(),
         ]);
     }
+
+    // ==========================================
+    //  SALES REP DASHBOARD AJAX METHODS
+
+    // 1. Performance Gauges (Leads & Tasks)
+    public function getRepPerformance(Request $request)
+    {
+        $filter = $request->filter ?? 'this_month';
+        $user_id = Auth::id();
+        $dates = $this->getDashboardDateRange($filter);
+
+        // --- A. TASKS METRICS ---
+        $total_tasks = Task::where('user_id', $user_id)
+            ->whereBetween('created_at', [$dates['start'], $dates['end']])
+            ->count();
+
+        $completed_tasks = Task::where('user_id', $user_id)
+            ->whereIn('status', ['completed', 'converted'])
+            ->whereBetween('updated_at', [$dates['start'], $dates['end']])
+            ->count();
+
+        $task_percentage = $total_tasks > 0 ? round(($completed_tasks / $total_tasks) * 100) : 0;
+
+        return response()->json([
+            'tasks' => [
+                'percentage' => $task_percentage,
+                'text' => "{$completed_tasks} of {$total_tasks} tasks",
+            ],
+        ]);
+    }
+
+    // 2. Revenue Center Card (Source: Clients Table)
+    public function getRepRevenue(Request $request)
+    {
+        $filter = $request->filter ?? 'this_month';
+        $user_id = Auth::id();
+        $dates = $this->getDashboardDateRange($filter);
+
+        // Revenue = Sum of Subscription Amount from Active Clients
+        $revenue = Client::where('sales_rep_id', $user_id)
+            ->where('status', 'Active')
+            ->whereBetween('created_at', [$dates['start'], $dates['end']])
+            ->sum('subscription_amount');
+
+        // Count = Number of Active Clients
+        $sales_count = Client::where('sales_rep_id', $user_id)
+            ->where('status', 'Active')
+            ->whereBetween('created_at', [$dates['start'], $dates['end']])
+            ->count();
+
+        return response()->json([
+            'revenue' => number_format($revenue, 2),
+            'count' => $sales_count,
+        ]);
+    }
+
+    // 3. Converted Dental Offices List (Source: Clients Table)
+    public function getRepConvertedList(Request $request)
+    {
+        $filter = $request->filter ?? 'this_month';
+        $user_id = Auth::id();
+        $dates = $this->getDashboardDateRange($filter);
+
+        // Fetch latest clients for the list
+        $clients = Client::where('sales_rep_id', $user_id)
+            ->where('status', 'Active')
+            ->whereBetween('created_at', [$dates['start'], $dates['end']])
+            ->latest()
+            ->take(10)
+            ->get(['id', 'name', 'contact_person', 'created_at']);
+
+        // Format date for display
+        $clients->transform(function ($client) {
+            $client->formatted_date = Carbon::parse($client->created_at)->format('M d, Y');
+            return $client;
+        });
+
+        return response()->json(['offices' => $clients]);
+    }
+
+    // --- PRIVATE HELPER FOR DATES ---
+    private function getDashboardDateRange($filter)
+    {
+        $now = Carbon::now();
+        switch ($filter) {
+            case 'today':
+                return ['start' => $now->copy()->startOfDay(), 'end' => $now->copy()->endOfDay()];
+            case 'this_week':
+                return ['start' => $now->copy()->startOfWeek(), 'end' => $now->copy()->endOfWeek()];
+            case 'this_year':
+                return ['start' => $now->copy()->startOfYear(), 'end' => $now->copy()->endOfYear()];
+            case 'this_month':
+            default:
+                return ['start' => $now->copy()->startOfMonth(), 'end' => $now->copy()->endOfMonth()];
+        }
+    }
 }
