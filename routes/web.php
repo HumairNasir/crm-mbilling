@@ -26,6 +26,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/dental_offices/delete/{id}', [DentalOfficeController::class, 'destroy'])->name(
         'dental_offices.delete',
     );
+    // Route to fetch states based on selected region
+    Route::get('/get-states-by-region/{id}', [App\Http\Controllers\DentalOfficeController::class, 'getStatesByRegion']);
 
     // AJAX Helper Routes for Dropdowns (Required for the modals to work)
     Route::get('/get-areas/{region_id}', [DentalOfficeController::class, 'getAreas']);

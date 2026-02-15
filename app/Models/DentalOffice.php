@@ -12,8 +12,6 @@ class DentalOffice extends Model
 
     protected $fillable = [
         'name',
-        'email',
-        'phone',
         'sales_rep_id',
         'country',
         'region_id',
@@ -26,6 +24,11 @@ class DentalOffice extends Model
         'contact_date',
         'contact_person',
         'description',
+        'phone',
+        'email',
+        'address',
+        'purchase_subscriptions',
+        'dr_name',
     ];
 
     public function salesRep()

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DentalOffice;
 use App\Models\State;
+use App\Models\Region;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,7 @@ class DentalOfficeController extends Controller
         $user = Auth::user();
         $query = DentalOffice::with(['region', 'state', 'salesRep']);
 
-        // 1. FILTER TABLE VIEW (Who sees what?)
+        // 1. FILTER TABLE VIEW (Permissions)
         if ($user->hasRole('RegionalManager')) {
             $regionIds = $user->regions->pluck('id');
             $query->whereIn('region_id', $regionIds);
@@ -24,16 +25,15 @@ class DentalOfficeController extends Controller
             $stateIds = $user->states->pluck('id');
             $query->whereIn('state_id', $stateIds);
         } elseif ($user->hasRole('SalesRepresentative')) {
-            // New: All offices in my assigned Territory (States)
             $territoryIds = $user->states->pluck('id');
             $query->whereIn('state_id', $territoryIds);
         }
-        // CountryManager sees all (no filter)
 
-        // SEARCH: office name, region, area(state)
+        // SEARCH logic
         if ($search = request('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('dr_name', 'like', "%{$search}%")
                     ->orWhereHas('region', function ($r) use ($search) {
                         $r->where('name', 'like', "%{$search}%");
                     })
@@ -48,83 +48,106 @@ class DentalOfficeController extends Controller
             ->paginate(10)
             ->appends(request()->query());
 
-        // 2. PREPARE DROPDOWN DATA (Grouped States)
-        // Format: ['Region Name' => [State1, State2], ...]
+        // Data for dropdowns
+        $regions = Region::all();
         $groupedStates = $this->getGroupedStatesForUser($user);
 
-        return view('dental_offices', compact('dentalOffices', 'groupedStates'));
+        return view('dental_offices', compact('dentalOffices', 'groupedStates', 'regions'));
     }
 
     public function store(Request $request)
     {
-        // 1. BLOCK SALES REPS
+        // DEBUG: Check what is coming from the form
+        \Log::info('Incoming Form Data:', $request->all());
+
         if (Auth::user()->hasRole('SalesRepresentative')) {
             return redirect()->back()->with('error', 'Access Denied');
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'state_id' => 'required|exists:states,id', // This is the "Location" dropdown
-            'sales_rep' => 'required|numeric',
+            'name' => ['required', 'string', 'max:255'],
+            'region_id' => ['required', 'exists:regions,id'],
+            'state_id' => ['required', 'exists:states,id'],
+            'email' => ['nullable', 'email', 'max:191'],
+            'sales_rep' => ['nullable', 'numeric'],
+            'phone' => ['nullable', 'string', 'max:20'],
+            'receptive' => ['nullable', 'in:HOT,WARM,COLD'],
         ]);
 
         if ($validator->fails()) {
+            // DEBUG: Log validation errors if it fails
+            \Log::error('Validation Failed:', $validator->errors()->toArray());
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // 2. AUTO-DETECT REGION from the selected State
-        $state = State::find($request->state_id);
-        $region_id = $state->region_id;
+        try {
+            $office = new DentalOffice();
+            $office->name = $request->name;
+            $office->dr_name = $request->dr_name;
+            $office->email = $request->email;
+            // $office->phone = $request->phone;
+            $office->address = $request->address;
+            $office->contact_person = $request->contact_person;
+            $office->description = $request->description;
+            $office->country = $request->country ?? 'United States';
+            $office->region_id = $request->region_id;
+            $office->state_id = $request->state_id;
+            $office->sales_rep_id = $request->sales_rep;
+            $office->territory_id = $request->territory;
+            $office->receptive = $request->receptive ?? 'COLD';
+            $office->purchase_product = $request->purchase_product ?? 'No';
+            $office->purchase_subscriptions = $request->purchase_subscriptions ?? 'No';
+            $office->contact_date = $request->contact_date;
+            $office->follow_up_date = $request->follow_up_date;
 
-        $office = new DentalOffice();
-        $office->name = $request->name;
-        $office->email = $request->email;
-        $office->phone = $request->phone;
-        $office->contact_person = $request->contact_person;
-        $office->address = $request->address;
-        $office->country = $request->country ?? 'United States';
-        $office->dr_name = $request->dr_name;
+            // 2. PHONE FORMATTING LOGIC
+            if ($request->phone) {
+                // Remove everything except numbers (strip spaces, dashes, +)
+                $rawPhone = preg_replace('/[^0-9]/', '', $request->phone);
 
-        // Hierarchy
-        $office->state_id = $request->state_id;
-        $office->region_id = $region_id; // Inferred
-        $office->sales_rep_id = $request->sales_rep;
-        $office->territory_id = $request->territory;
+                // If it starts with '1' (country code), remove it for consistent formatting
+                if (strlen($rawPhone) == 11 && substr($rawPhone, 0, 1) == '1') {
+                    $rawPhone = substr($rawPhone, 1);
+                }
 
-        $office->receptive = 'Cold'; // Default
-        $office->purchase_product = 'No'; // Default
+                // If we have exactly 10 digits, format as +1 (XXX) XXX-XXXX
+                if (strlen($rawPhone) == 10) {
+                    $formattedPhone =
+                        '+1 (' . substr($rawPhone, 0, 3) . ') ' . substr($rawPhone, 3, 3) . '-' . substr($rawPhone, 6);
+                    $office->phone = $formattedPhone;
+                } else {
+                    // If length is weird (not 10), just save what the user typed to avoid data loss
+                    $office->phone = $request->phone;
+                }
+            }
 
-        $office->save();
+            $office->save();
 
-        return redirect()->back()->with('success', 'Dental Office added successfully.');
+            \Log::info('Office saved successfully with ID: ' . $office->id);
+            return redirect()->back()->with('success', 'Office created successfully.');
+        } catch (\Exception $e) {
+            // DEBUG: Log any database errors
+            \Log::error('Database Save Error: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->with('error', 'Database Error: ' . $e->getMessage());
+        }
     }
 
     public function edit($id)
     {
         $office = DentalOffice::with(['region', 'state', 'salesRep'])->find($id);
-
         if (!$office) {
             return response()->json(['error' => 'Not found'], 404);
         }
 
-        $valid_reps = [];
-        try {
-            if ($office->state_id) {
-                $valid_reps = User::role('SalesRepresentative')
-                    ->whereHas('states', function ($q) use ($office) {
-                        // FIX: Change 'id' to 'states.id' to avoid ambiguity
-                        $q->where('states.id', $office->state_id);
-                    })
-                    ->get(['id', 'name']);
-            }
-        } catch (\Exception $e) {
-            \Log::error('Error fetching reps: ' . $e->getMessage());
-        }
+        $valid_reps = User::role('SalesRepresentative')
+            ->whereHas('states', function ($q) use ($office) {
+                $q->where('states.id', $office->state_id);
+            })
+            ->get(['id', 'name']);
 
-        return response()->json([
-            'office' => $office,
-            'valid_reps' => $valid_reps,
-        ]);
+        return response()->json(['office' => $office, 'valid_reps' => $valid_reps]);
     }
 
     public function update(Request $request, $id)
@@ -133,79 +156,60 @@ class DentalOfficeController extends Controller
             return response()->json(['error' => 'Access Denied'], 403);
         }
 
-        $office = DentalOffice::find($id);
-        if (!$office) {
-            return response()->json(['error' => 'Not found'], 404);
-        }
+        $office = DentalOffice::findOrFail($id);
 
+        // Fill all fields from request
         $office->name = $request->name;
+        $office->dr_name = $request->dr_name;
         $office->email = $request->email;
         $office->phone = $request->phone;
-        $office->contact_person = $request->contact_person;
         $office->address = $request->address;
+        $office->contact_person = $request->contact_person;
+        $office->description = $request->description;
         $office->country = $request->country;
-        $office->dr_name = $request->dr_name;
-
-        // If location changed
-        if ($request->filled('state_id')) {
-            $state = State::find($request->state_id);
-            $office->state_id = $request->state_id;
-            $office->region_id = $state->region_id; // Auto-update region
-        }
-
-        if ($request->filled('sales_rep')) {
-            $office->sales_rep_id = $request->sales_rep;
-        }
-        if ($request->filled('territory')) {
-            $office->territory_id = $request->territory;
-        }
+        $office->region_id = $request->region_id;
+        $office->state_id = $request->state_id;
+        $office->sales_rep_id = $request->sales_rep;
+        $office->territory_id = $request->territory;
+        $office->receptive = $request->receptive;
+        $office->contacted_source = $request->contacted_source;
+        $office->purchase_product = $request->purchase_product;
+        $office->purchase_subscriptions = $request->purchase_subscriptions;
+        $office->contact_date = $request->contact_date;
+        $office->follow_up_date = $request->follow_up_date;
 
         $office->save();
 
         return response()->json(['success' => 'Updated successfully']);
     }
 
-    public function destroy($id)
+    // --- AJAX HELPER: Get States for a specific Region ---
+    public function getStatesByRegion($region_id)
     {
-        if (Auth::user()->hasRole('SalesRepresentative')) {
-            return redirect()->back()->with('error', 'Access Denied');
-        }
-        DentalOffice::destroy($id);
-        return redirect()->back()->with('success', 'Deleted successfully');
+        $states = State::where('region_id', $region_id)->get(['id', 'name']);
+        return response()->json(['states' => $states]);
     }
 
-    // --- HELPER: Get Sales Reps for a specific State ---
+    // --- AJAX HELPER: Get Sales Reps for a specific State ---
     public function getSalesReps($state_id)
     {
         $reps = User::role('SalesRepresentative')
             ->whereHas('states', function ($q) use ($state_id) {
-                $q->where('id', $state_id);
+                $q->where('states.id', $state_id);
             })
             ->get(['id', 'name']);
 
         return response()->json(['reps' => $reps]);
     }
 
-    // --- PRIVATE HELPER: Group States by Region Logic ---
     private function getGroupedStatesForUser($user)
     {
         $query = State::with('region');
-
         if ($user->hasRole('RegionalManager')) {
-            // Only states in my regions
-            $regionIds = $user->regions->pluck('id');
-            $query->whereIn('region_id', $regionIds);
+            $query->whereIn('region_id', $user->regions->pluck('id'));
         } elseif ($user->hasRole('AreaManager')) {
-            // Only states assigned to me
-            $stateIds = $user->states->pluck('id');
-            $query->whereIn('id', $stateIds);
-        } elseif ($user->hasRole('SalesRepresentative')) {
-            return collect(); // Empty collection (Hidden anyway)
+            $query->whereIn('id', $user->states->pluck('id'));
         }
-        // CountryManager gets everything (no filter)
-
-        // Fetch and Group
-        $states = $query->get();
-        return $states->groupBy('region.name');
+        return $query->get()->groupBy('region.name');
     }
 }
