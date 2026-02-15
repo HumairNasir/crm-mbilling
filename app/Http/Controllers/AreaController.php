@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Redirect;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UserCredentialsMail;
 
 class AreaController extends Controller
 {
@@ -26,15 +28,16 @@ class AreaController extends Controller
             $query->where('country_manager_id', $user->id);
         } elseif ($user->roles[0]->name == 'RegionalManager') {
             $query->where('regional_manager_id', $user->id);
+            $regional_managers = User::where('id', $user->id)->get();
         }
 
         $area_managers = $query->get();
-        $region_list = Region::all();
+        $region_list = $user->hasRole('RegionalManager') ? $user->regions : Region::all();
 
         // Get Regional Managers for Dropdown
-        $regional_managers = User::whereHas('roles', function ($q) {
-            $q->where('name', 'RegionalManager');
-        })->get();
+        // $regional_managers = User::whereHas('roles', function ($q) {
+        //     $q->where('name', 'RegionalManager');
+        // })->get();
 
         return view('area-manager', compact('area_managers', 'region_list', 'regional_managers'));
     }
@@ -68,6 +71,9 @@ class AreaController extends Controller
         $user->email = $request->email;
         $user->phone = $request->phone;
         $user->address = $request->address;
+
+        // Capture raw password for email
+        $rawPassword = $request->password;
         $user->password = Hash::make($request->password);
 
         // HIERARCHY
@@ -91,6 +97,25 @@ class AreaController extends Controller
         // SYNC STATES
         if ($request->has('areas')) {
             $user->states()->sync($request->areas);
+        }
+
+        // SEND CREDENTIALS EMAIL
+
+        $stateNames = State::whereIn('id', $request->areas)->pluck('name')->implode(', ');
+
+        $emailData = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'password' => $rawPassword,
+            'role' => 'Area Manager',
+            'region' => $regionalManager ? $regionalManager->regions->pluck('name')->implode(', ') : 'N/A',
+            'state' => $stateNames,
+        ];
+
+        try {
+            Mail::to($user->email)->send(new UserCredentialsMail($emailData));
+        } catch (\Exception $e) {
+            \Log::error("Mail failed for Area Manager {$user->email}: " . $e->getMessage());
         }
 
         return response()->json(['success' => 'Area Manager created successfully.']);
@@ -222,5 +247,14 @@ class AreaController extends Controller
             \Illuminate\Support\Facades\Log::error('Get States Error: ' . $e->getMessage());
             return response()->json(['error' => 'Server Error'], 500);
         }
+    }
+
+    public function getRegionsByManager($id)
+    {
+        $manager = User::with('regions')->find($id);
+        if (!$manager) {
+            return response()->json([]);
+        }
+        return response()->json($manager->regions);
     }
 }

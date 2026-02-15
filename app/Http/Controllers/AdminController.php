@@ -70,7 +70,8 @@ class AdminController extends Controller
                 ->whereIn('status', ['completed', 'converted'])
                 ->count();
             $total_region_tasks = Task::whereIn('user_id', $teamIds)->count();
-            $current_iteration = max(ceil($total_region_tasks / 50), 1);
+            $latestIteration = Iteration::latest('id')->first();
+            $current_iteration = $latestIteration ? $latestIteration->id : 0;
         }
         // --- 3. AREA MANAGER LOGIC ---
         elseif ($user->hasRole('AreaManager')) {
@@ -95,7 +96,8 @@ class AdminController extends Controller
                 ->whereIn('status', ['completed', 'converted'])
                 ->count();
             $total_area_tasks = Task::whereIn('user_id', $teamIds)->count();
-            $current_iteration = max(ceil($total_area_tasks / 50), 1);
+            $latestIteration = Iteration::latest('id')->first();
+            $current_iteration = $latestIteration ? $latestIteration->id : 0;
         }
         // --- 4. SALES REP LOGIC ---
         elseif ($user->hasRole('SalesRepresentative')) {

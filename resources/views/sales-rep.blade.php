@@ -612,7 +612,22 @@ $(document).ready(function() {
     // --- AUTO-INIT ---
     @if(Auth::user()->hasRole('RegionalManager'))
         var loggedInRmId = "{{ Auth::user()->id }}";
+        
+        // 1. Load the Badges
         fetchRegionBadges(loggedInRmId, '#add-region-badges');
+
+        // 2. FORCE LOAD AREA MANAGERS (The Missing Piece)
+        // We manually call the same logic that the 'change' event uses
+        $.get('/get-area-managers/' + loggedInRmId, function(data) {
+            $('#area_manager').html('<option value="">Select Area Manager</option>');
+            if(data.length > 0) {
+                $.each(data, function(index, user) {
+                    $('#area_manager').append('<option value="'+user.id+'">'+user.name+'</option>');
+                });
+            } else {
+                $('#area_manager').html('<option value="">No Area Managers Found</option>');
+            }
+        });
     @endif
     
     @if(Auth::user()->hasRole('AreaManager'))

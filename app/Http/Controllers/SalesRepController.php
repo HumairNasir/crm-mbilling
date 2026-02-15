@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Redirect;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UserCredentialsMail;
+use App\Models\Iteration;
 
 class SalesRepController extends Controller
 {
@@ -73,8 +76,13 @@ class SalesRepController extends Controller
             ->whereIn('status', ['completed', 'converted'])
             ->count();
 
+        $latestIteration = \App\Models\Iteration::latest('id')->first();
+
+        // If table is empty, default to 1. Otherwise use the real ID.
+        $batchId = $latestIteration ? $latestIteration->id : 1;
+
+        // We still need this to check if the GREEN dot should pulse or not
         $activeIteration = \App\Models\Iteration::where('status', 'active')->first();
-        $batchId = $activeIteration ? $activeIteration->id : '-';
 
         $region_list = Region::all();
         $regional_managers = User::role('RegionalManager')->get();
@@ -132,6 +140,8 @@ class SalesRepController extends Controller
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
+        // Capture raw password for email
+        $rawPassword = $request->password;
         $user->password = Hash::make($request->password);
         $user->phone = $request->phone;
         $user->address = $request->address;
@@ -165,6 +175,24 @@ class SalesRepController extends Controller
 
         if ($request->has('areas')) {
             $user->states()->sync($request->areas);
+        }
+        // SEND CREDENTIALS EMAIL
+
+        $stateNames = State::whereIn('id', $request->areas)->pluck('name')->implode(', ');
+
+        $emailData = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'password' => $rawPassword,
+            'role' => 'Sales Representative',
+            'region' => 'Assigned to Area', // Can be refined if needed
+            'state' => $stateNames,
+        ];
+
+        try {
+            Mail::to($user->email)->send(new UserCredentialsMail($emailData));
+        } catch (\Exception $e) {
+            \Log::error("Mail failed for Sales Rep {$user->email}: " . $e->getMessage());
         }
 
         if ($request->ajax()) {

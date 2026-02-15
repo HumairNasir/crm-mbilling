@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Redirect;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UserCredentialsMail;
 
 class RegionalController extends Controller
 {
@@ -73,6 +75,10 @@ class RegionalController extends Controller
         $user->address = $request->input('address');
         $user->password = Hash::make($request->input('password'));
 
+        // Save raw password for email before hashing
+        $rawPassword = $request->input('password');
+        $user->password = Hash::make($rawPassword);
+
         // 3. Assign Hierarchy
         $user->country_manager_id = Auth::user()->id;
         // REMOVED: $user->region_id = ... (We don't use this column anymore)
@@ -90,6 +96,28 @@ class RegionalController extends Controller
             'App\Models\User',
             $user->id,
         ]);
+        // ==========================================
+        // NEW: SEND CREDENTIALS EMAIL
+        // ==========================================
+
+        // Fetch the names of the assigned regions to show in the email
+        $regionNames = Region::whereIn('id', $request->input('region'))->pluck('name')->implode(', ');
+
+        $emailData = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'password' => $rawPassword, // Sending the un-hashed password
+            'role' => 'Regional Manager',
+            'region' => $regionNames,
+            'state' => null, // Regional managers don't have states assigned yet
+        ];
+
+        try {
+            Mail::to($user->email)->send(new UserCredentialsMail($emailData));
+        } catch (\Exception $e) {
+            // Log error so the manager still sees the "Success" message even if mail fails
+            \Log::error("Mail failed for user {$user->email}: " . $e->getMessage());
+        }
 
         return response()->json(['success' => 'Regional Manager created successfully.']);
     }
