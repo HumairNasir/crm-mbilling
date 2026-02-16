@@ -16,7 +16,7 @@ class AutoAssignLeads extends Command
 
     // --- CONFIGURATION ---
     // Change this number to increase/decrease the batch size in the future
-    protected $batchLimit = 5;
+    protected $batchLimit = 50;
 
     public function __construct()
     {
