@@ -66,7 +66,10 @@
 </style>
 
 {{-- DETECT WHICH TAB SHOULD BE ACTIVE --}}
-@php $showPast = request()->has('past_page'); @endphp
+@php 
+    $showPast = request()->get('tab') === 'active' || request()->has('past_page'); 
+@endphp
+
 
 <div class="content-main">
     
@@ -91,10 +94,33 @@
                     </a>
                 </div>
 
-                <div class="search-dark-wrapper">
+                <!-- <div class="search-dark-wrapper">
                     <svg class="search-icon-dark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     <input type="text" id="taskSearchInput" class="search-dark-input" placeholder="Search Office, Area, or Notes...">
-                </div>
+                </div> -->
+                 
+                <form method="GET" action="{{ route('tasks.index') }}">
+                    <input type="hidden" name="tab" value="{{ $showPast ? 'past' : 'active' }}">
+
+                    <div class="search-dark-wrapper">
+                        <svg class="search-icon-dark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+
+                        <input 
+                            type="text" 
+                            name="search"
+                            value="{{ request('search') }}"
+                            class="search-dark-input" 
+                            placeholder="Search Office, Area, or Notes..."
+                        >
+                    </div>
+                </form>
+
+
+
+
             </div>
 
             <div class="tab-content" id="taskTabsContent">
@@ -369,45 +395,45 @@
     // --- 1. SEARCH FUNCTION WITH AUTO-RESET TIMER ---
     let searchResetTimer; 
 
-    document.getElementById('taskSearchInput').addEventListener('keyup', function() {
-        var filter = this.value.toUpperCase();
+    // document.getElementById('taskSearchInput').addEventListener('keyup', function() {
+    //     var filter = this.value.toUpperCase();
         
-        clearTimeout(searchResetTimer);
-        filterTable(filter);
+    //     clearTimeout(searchResetTimer);
+    //     filterTable(filter);
 
-        searchResetTimer = setTimeout(function() {
-            var input = document.getElementById('taskSearchInput');
-            input.value = ''; 
-            filterTable(''); 
-            console.log("Search auto-reset due to inactivity.");
-        }, 10000); 
-    });
+    //     searchResetTimer = setTimeout(function() {
+    //         var input = document.getElementById('taskSearchInput');
+    //         input.value = ''; 
+    //         filterTable(''); 
+    //         console.log("Search auto-reset due to inactivity.");
+    //     }, 10000); 
+    // });
 
-    function filterTable(filter) {
-        var activeTab = document.querySelector('.nav-link-dark.active').getAttribute('href');
-        var tableId = (activeTab === '#activeTasks') ? 'activeTasksTable' : 'pastTasksTable';
+    // function filterTable(filter) {
+    //     var activeTab = document.querySelector('.nav-link-dark.active').getAttribute('href');
+    //     var tableId = (activeTab === '#activeTasks') ? 'activeTasksTable' : 'pastTasksTable';
         
-        var table = document.getElementById(tableId);
-        var tr = table.getElementsByTagName("tr");
+    //     var table = document.getElementById(tableId);
+    //     var tr = table.getElementsByTagName("tr");
 
-        for (var i = 1; i < tr.length; i++) {
-            var tdName = tr[i].getElementsByTagName("td")[0]; 
-            var tdArea = tr[i].getElementsByTagName("td")[1]; 
-            var tdNote = (tableId === 'pastTasksTable') ? tr[i].getElementsByTagName("td")[3] : null; 
+    //     for (var i = 1; i < tr.length; i++) {
+    //         var tdName = tr[i].getElementsByTagName("td")[0]; 
+    //         var tdArea = tr[i].getElementsByTagName("td")[1]; 
+    //         var tdNote = (tableId === 'pastTasksTable') ? tr[i].getElementsByTagName("td")[3] : null; 
             
-            if (tdName && tdArea) {
-                var txtName = tdName.textContent || tdName.innerText;
-                var txtArea = tdArea.textContent || tdArea.innerText;
-                var txtNote = tdNote ? (tdNote.textContent || tdNote.innerText) : "";
+    //         if (tdName && tdArea) {
+    //             var txtName = tdName.textContent || tdName.innerText;
+    //             var txtArea = tdArea.textContent || tdArea.innerText;
+    //             var txtNote = tdNote ? (tdNote.textContent || tdNote.innerText) : "";
                 
-                if (txtName.toUpperCase().indexOf(filter) > -1 || txtArea.toUpperCase().indexOf(filter) > -1 || txtNote.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }       
-        }
-    }
+    //             if (txtName.toUpperCase().indexOf(filter) > -1 || txtArea.toUpperCase().indexOf(filter) > -1 || txtNote.toUpperCase().indexOf(filter) > -1) {
+    //                 tr[i].style.display = "";
+    //             } else {
+    //                 tr[i].style.display = "none";
+    //             }
+    //         }       
+    //     }
+    // }
 
     // --- 2. MARK AS DONE LOGIC ---
     $(document).ready(function() {
