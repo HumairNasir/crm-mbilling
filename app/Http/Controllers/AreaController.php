@@ -20,24 +20,43 @@ class AreaController extends Controller
     {
         $user = Auth::user();
 
+        // 1. Base Query for Area Managers
         $query = User::whereHas('roles', function ($q) {
             $q->where('name', 'AreaManager');
-        })->with(['states', 'regionalManager']); // Eager load states and boss
+        })->with(['states', 'regionalManager']);
 
-        if ($user->roles[0]->name == 'CountryManager') {
+        // 2. Initialize the variable to avoid "Undefined variable" error
+        $regional_managers = collect();
+
+        // 3. Filter Logic based on Role
+        if ($user->hasRole('CountryManager')) {
+            // Country Manager sees their own Area Managers
             $query->where('country_manager_id', $user->id);
-        } elseif ($user->roles[0]->name == 'RegionalManager') {
+
+            // FIX: Fetch the Regional Managers under this Country Manager for the dropdown
+            $regional_managers = User::whereHas('roles', function ($q) {
+                $q->where('name', 'RegionalManager');
+            })
+                ->where('country_manager_id', $user->id)
+                ->get();
+        } elseif ($user->hasRole('RegionalManager')) {
+            // Regional Manager sees their own Area Managers
             $query->where('regional_manager_id', $user->id);
+
+            // For the dropdown, they can only assign to themselves
             $regional_managers = User::where('id', $user->id)->get();
+        } else {
+            // Admin / SuperUser sees everyone
+            // FIX: Fetch ALL Regional Managers for Admin
+            $regional_managers = User::whereHas('roles', function ($q) {
+                $q->where('name', 'RegionalManager');
+            })->get();
         }
 
         $area_managers = $query->get();
-        $region_list = $user->hasRole('RegionalManager') ? $user->regions : Region::all();
 
-        // Get Regional Managers for Dropdown
-        // $regional_managers = User::whereHas('roles', function ($q) {
-        //     $q->where('name', 'RegionalManager');
-        // })->get();
+        // Fix for Region List logic
+        $region_list = $user->hasRole('RegionalManager') ? $user->regions : Region::all();
 
         return view('area-manager', compact('area_managers', 'region_list', 'regional_managers'));
     }

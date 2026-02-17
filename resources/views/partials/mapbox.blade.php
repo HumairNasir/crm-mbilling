@@ -38,6 +38,24 @@
         <div id="map" class="w-100" style="height:40rem"></div>
     </div>
 </div>
+@elseif(Auth::user()->roles[0]->name == 'AreaManager')
+<div class="region-map-main">
+    <div class="region-map">
+        <div class="sales-by-region">
+            <h3>Sales by Area Manager</h3>
+        </div>
+        <div class="search-main">
+            <input type="search" name="search" id="search" placeholder="Search...">
+            <img src="{{$assets_url}}/images/search.svg" alt="">
+        </div>
+        <div>
+            <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
+        </div>
+    </div>
+    <div class="map-vectors mt-3 border">
+        <div id="map" class="w-100" style="height:40rem"></div>
+    </div>
+</div>
 @endif
 
 <script>

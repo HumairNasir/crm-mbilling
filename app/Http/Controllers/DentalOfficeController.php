@@ -9,6 +9,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Imports\DentalOfficesImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DentalOfficeController extends Controller
 {
@@ -211,5 +213,31 @@ class DentalOfficeController extends Controller
             $query->whereIn('id', $user->states->pluck('id'));
         }
         return $query->get()->groupBy('region.name');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate(['file' => 'required|mimes:xlsx,csv']);
+
+        $import = new DentalOfficesImport();
+        $import->import($request->file('file'));
+
+        $skipped = [];
+        if ($import->failures()->isNotEmpty()) {
+            foreach ($import->failures() as $failure) {
+                $skipped[] = [
+                    'row' => $failure->row(),
+                    'name' => $failure->values()['name'] ?? 'Unknown',
+                    'reason' => $failure->errors()[0],
+                ];
+            }
+        }
+
+        return redirect()
+            ->back()
+            ->with([
+                'success' => 'Import process completed.',
+                'skipped_entries' => $skipped,
+            ]);
     }
 }

@@ -298,8 +298,8 @@
                     <div class="filter-dropdown">
                         <button class="filter-button"><img src="{{$assets_url}}/images/filter.svg" class="filter"></button>
                         <div class="filter-menu" id="revenueFilterMenu">
-                            <button class="filter-menu-item" onclick="updateRevenueChart('weekly')">Weekly</button>
-                            <button class="filter-menu-item" onclick="updateRevenueChart('monthly')">Monthly</button>
+                            <button class="filter-menu-item" onclick="console.log('🟢 Weekly filter clicked'); updateRevenueChart('weekly')">Weekly</button>
+                            <button class="filter-menu-item" onclick="console.log('🟢 Monthly filter clicked'); updateRevenueChart('monthly')">Monthly</button>
                         </div>
                     </div>
                 </div>
@@ -491,61 +491,242 @@
     function initRevenueChart() {
         if(!document.querySelector("#barchart")) return;
 
+        console.log("🔵 [initRevenueChart] Initializing revenue chart...");
+
         // If a chart already exists on this ID, destroy it before re-creating
         if (charts.revenue && typeof charts.revenue.destroy === 'function') {
+            console.log("🟡 [initRevenueChart] Destroying previous chart instance");
             charts.revenue.destroy();
         }
 
         var options = {
-            series: [{ name: 'Revenue', data: [] }],
+            series: [{ name: 'Revenue', data: [0, 0, 0, 0] }], // Placeholder data
             chart: { 
-                type: 'bar', 
-                height: 350, 
+                type: 'bar', // Horizontal bars
+                height: 400, // Increased height for better spacing
                 toolbar: { show: false },
-                id: 'main-revenue-chart' // Unique ID to track the instance
+                id: 'main-revenue-chart',
+                stacked: false
             },
-            plotOptions: { bar: { horizontal: true, borderRadius: 4, barHeight: '50%' } },
+            plotOptions: { 
+                bar: { 
+                    horizontal: true, // Horizontal bars show week names on left
+                    borderRadius: 4,
+                    barHeight: '65%'
+                } 
+            },
             xaxis: {
-                categories: [],
+                // For horizontal bars ApexCharts expects categories on xaxis (they render on Y axis visually)
+                categories: ['W1', 'W2', 'W3', 'W4'], // Placeholder will be replaced with real week labels
+                type: 'numeric',
+                min: 0,
+                max: 10000, // Default, will be updated on data
+                tickAmount: 5, // Limit ticks to avoid crowding (will be computed dynamically on update)
                 labels: {
-                    style: { colors: '#fff' },
+                    style: { colors: '#fff', fontSize: '11px' },
                     formatter: function (val) {
-                        // PREVENT CRASH: Only format if val is a valid number
-                        if (val === undefined || val === null || isNaN(val) || val === "") return "";
-                        return val >= 1000 ? "$" + (val / 1000).toFixed(1) + "k" : "$" + val;
+                        if (val === undefined || val === null || isNaN(val)) return "";
+                        // Format as $Xk when >= 1000
+                        var v = Number(val);
+                        if (Math.abs(v) >= 1000) {
+                            var k = v / 1000;
+                            return "$" + (k % 1 === 0 ? k.toString() : k.toFixed(1)) + "k";
+                        }
+                        return "$" + v;
                     }
                 }
             },
-            yaxis: { labels: { style: { colors: '#fff' } } },
+            yaxis: {
+                // Y-axis label styling (categories are set on xaxis for horizontal bars)
+                labels: {
+                    style: { colors: '#fff', fontSize: '12px' },
+                    show: true,
+                    maxWidth: 150
+                }
+            },
             colors: ['#38bdf8'],
-            grid: { borderColor: '#40475D' }
+            grid: { 
+                borderColor: '#40475D',
+                padding: { left: 10, right: 20 }
+            },
+            tooltip: {
+                enabled: true,
+                x: {
+                    formatter: function(value) {
+                        return "$" + (value || 0).toFixed(2);
+                    }
+                }
+            }
         };
 
         try {
+            console.log("🟢 [initRevenueChart] Creating new ApexChart instance (bar type)");
             charts.revenue = new ApexCharts(document.querySelector("#barchart"), options);
+            console.log("✅ [initRevenueChart] Chart instance created, rendering...");
             charts.revenue.render();
+            console.log("✅ [initRevenueChart] Chart rendered, now loading real data...");
         } catch (e) {
-            console.error("Revenue Chart render error:", e);
+            console.error("❌ [initRevenueChart] Creation error:", e);
         }
 
         updateRevenueChart('weekly');
     }
 
     function updateRevenueChart(range) {
-        if(!charts.revenue) return;
+        const _callId = Math.random().toString(36).slice(2,9);
+        console.log("🔵 [updateRevenueChart] (call", _callId + ") Updating chart with range:", range);
+
+        // Debounce duplicate rapid calls
+        const now = Date.now();
+        if (window._lastRevenueUpdateAt && (now - window._lastRevenueUpdateAt) < (window._revenueUpdateDebounceMs || 500)) {
+            console.log("⏱️ [updateRevenueChart] (call", _callId + ") Debounced duplicate call");
+            return;
+        }
+        window._lastRevenueUpdateAt = now;
+
+        if(!charts.revenue) {
+            console.error("❌ [updateRevenueChart] Chart instance not found!");
+            return;
+        }
         
-        fetch("{{ route('get_weekly_sales') }}?range=" + range + "&state=" + (currentState || ''))
+        const stateParam = currentState ? "&state=" + currentState : "";
+        const url = "{{ route('get_weekly_sales') }}?range=" + range + stateParam;
+        console.log("📡 [updateRevenueChart] Fetching from URL:", url);
+
+        fetch(url)
             .then(res => res.json())
             .then(data => {
+                console.log("📥 [updateRevenueChart] Raw data received:", data);
+                
                 // Check if the data is valid and has the correct keys
-                if (data && data.series && data.series.length > 0) {
-                    charts.revenue.updateOptions({
-                        xaxis: { categories: data.labels || [] },
-                        series: data.series
-                    }, false, true); // true as third param to animate
+                if (data && data.series && data.series.length > 0 && data.labels) {
+                    console.log("✅ [updateRevenueChart] Data validation passed");
+                    console.log("📋 Labels (weeks):", data.labels);
+                    console.log("📊 Series data (raw):", data.series[0].data);
+                    
+                    // Convert all data values to numbers to avoid string/number mixing
+                    let numericData = data.series[0].data.map(val => parseFloat(val) || 0);
+                    console.log("📊 Series data (converted to numbers):", numericData);
+                    
+                    // Calculate max value for better x-axis scaling - round to nearest 2000
+                    let maxVal = Math.max(...numericData, 1000);
+                    let roundedMax = Math.ceil(maxVal / 2000) * 2000; // Round up to nearest 2000
+                    console.log("📊 Max value:", maxVal, "Rounded max:", roundedMax);
+                    
+                    // Only show labels at clean intervals (every 2000)
+                    let tickAmount = Math.ceil(roundedMax / 2000) + 1;
+                    console.log("📊 Tick amount:", tickAmount);
+                    
+                    // Instead of updating options in-place (which can append duplicate SVG nodes in some ApexCharts versions),
+                    // destroy and recreate the chart instance with the updated options and data for a clean redraw.
+                    console.log("🔄 [updateRevenueChart] Recreating chart with new categories and range... (call", _callId + ")");
+
+                    try {
+                        // Build fresh options (mirrors initRevenueChart but with real data)
+                        var newOptions = {
+                            series: [{ name: 'Revenue', data: numericData }],
+                            chart: { type: 'bar', height: 400, toolbar: { show: false }, id: 'main-revenue-chart', stacked: false },
+                            plotOptions: { bar: { horizontal: true, borderRadius: 4, barHeight: '65%' } },
+                            xaxis: {
+                                // categories are applied here for horizontal bars (they render on y-axis visually)
+                                categories: data.labels || [],
+                                min: 0,
+                                max: roundedMax,
+                                tickAmount: Math.min(5, tickAmount),
+                                labels: {
+                                    style: { colors: '#fff', fontSize: '11px' },
+                                    formatter: function(val) {
+                                        if (val === undefined || val === null || isNaN(val)) return "";
+                                        var v = Number(val);
+                                        if (Math.abs(v) >= 1000) {
+                                            var k = v / 1000;
+                                            return "$" + (k % 1 === 0 ? k.toString() : k.toFixed(1)) + "k";
+                                        }
+                                        return "$" + v;
+                                    }
+                                }
+                            },
+                            yaxis: { labels: { style: { colors: '#fff', fontSize: '12px' }, show: true, maxWidth: 150 } },
+                            colors: ['#38bdf8'],
+                            grid: { borderColor: '#40475D', padding: { left: 10, right: 20 } },
+                            tooltip: { enabled: true }
+                        };
+
+                        // Remove previous chart instance cleanly and clear container to avoid leftover SVG nodes
+                        var container = document.querySelector("#barchart");
+                        if (charts.revenue && typeof charts.revenue.destroy === 'function') {
+                            try { charts.revenue.destroy(); } catch (e) { /* ignore destroy errors */ }
+                        }
+                        try { container.innerHTML = ''; } catch (e) { /* ignore */ }
+                        charts.revenue = null;
+
+                        // Create new chart
+                        charts.revenue = new ApexCharts(container, newOptions);
+                        charts.revenue.render().then(function() {
+                            console.log("✅ [updateRevenueChart] Recreated and rendered chart (call", _callId + ")");
+
+                            // Clean duplicate tspans that sometimes appear due to rendering quirks
+                            function cleanAxisLabels() {
+                                try {
+                                    const cleanTextNode = (el) => {
+                                        // collect non-empty child text values
+                                        const tTexts = Array.from(el.childNodes).map(n => (n.textContent || '').trim()).filter(Boolean);
+                                        if (tTexts.length === 0) return; // nothing to do
+                                        const first = tTexts[0];
+                                        // Replace content with a single tspan + title (if title desirable)
+                                        // Keep only one tspan and one title
+                                        el.innerHTML = '<tspan>' + first + '</tspan>' + (el.querySelector('title') ? ('<title>' + first + '</title>') : '');
+                                    };
+
+                                    const xTextEls = Array.from(document.querySelectorAll('#barchart .apexcharts-xaxis text'));
+                                    const yTextEls = Array.from(document.querySelectorAll('#barchart .apexcharts-yaxis text'));
+
+                                    xTextEls.forEach(cleanTextNode);
+                                    yTextEls.forEach(cleanTextNode);
+
+                                    // Recompute details for logging
+                                    const xAxisDetails = xTextEls.map((el, idx) => ({ index: idx, textContent: el.textContent.trim(), innerHTML: el.innerHTML, childCount: el.childNodes.length }));
+                                    const yAxisDetails = yTextEls.map((el, idx) => ({ index: idx, textContent: el.textContent.trim(), innerHTML: el.innerHTML, childCount: el.childNodes.length }));
+
+                                    console.log('🧭 [updateRevenueChart] x-axis elements details after clean:', xAxisDetails);
+                                    console.log('🧭 [updateRevenueChart] y-axis elements details after clean:', yAxisDetails);
+                                } catch (err) {
+                                    console.warn('⚠️ [updateRevenueChart] cleanAxisLabels failed:', err);
+                                }
+                            }
+
+                            setTimeout(function() {
+                                cleanAxisLabels();
+
+                                if (charts.revenue && charts.revenue.w) {
+                                    console.log('🔬 [updateRevenueChart] Chart internals (config.xaxis, globals):', {
+                                        xaxis: charts.revenue.w.config.xaxis || null,
+                                        yaxis: charts.revenue.w.config.yaxis || null,
+                                        globals: {
+                                            minX: charts.revenue.w.globals.minX, maxX: charts.revenue.w.globals.maxX,
+                                            minY: charts.revenue.w.globals.minY, maxY: charts.revenue.w.globals.maxY,
+                                            labels: charts.revenue.w.globals.labels
+                                        }
+                                    });
+                                }
+                            }, 120);
+                        }).catch(function(err){
+                            console.error('❌ [updateRevenueChart] Error rendering recreated chart:', err);
+                        });
+
+                    } catch (err) {
+                        console.warn('⚠️ [updateRevenueChart] Recreate path failed, falling back to updateSeries:', err);
+                        try {
+                            charts.revenue.updateSeries([{ name: 'Revenue', data: numericData }], true);
+                        } catch (e) {
+                            console.error('❌ [updateRevenueChart] Fallback updateSeries also failed:', e);
+                        }
+                    }
+                } else {
+                    console.error("❌ [updateRevenueChart] Invalid data structure:", data);
                 }
             })
-            .catch(err => console.error("Revenue Fetch Error:", err));
+            .catch(err => console.error("❌ [updateRevenueChart] Fetch Error:", err));
     }
 
     // --- 4. RESPONSE ---
@@ -565,18 +746,58 @@
     // --- 5. TOP SALES ---
     function initTopSales() {
         if(!document.querySelector("#employeeChart")) return;
-        var options = { series: [], chart: { type: 'bar', height: 350, toolbar: { show: false } }, 
-        plotOptions: { bar: { borderRadius: 4, horizontal: true, barHeight: '50%' } }, 
-        xaxis: { categories: [], labels: { style: { colors: '#fff' } } }, yaxis: { labels: { style: { colors: '#fff' } } }, 
-        colors: ['#fbbf24'], grid: { borderColor: '#40475D' } };
+        var options = {
+            series: [],
+            chart: { type: 'bar', height: 350, toolbar: { show: false } },
+            plotOptions: { bar: { borderRadius: 4, horizontal: true, barHeight: '50%' } },
+            xaxis: { categories: [], labels: { style: { colors: '#fff' }, formatter: function(val){ if(isNaN(val)) return val; var v = Number(val); if(Math.abs(v)>=1000){var k=v/1000; return "$" + (k%1===0? k.toString(): k.toFixed(1)) + "k";} return "$"+v;} } },
+            yaxis: { labels: { style: { colors: '#fff' } } },
+            colors: ['#fbbf24'], grid: { borderColor: '#40475D' }
+        };
         charts.topSales = new ApexCharts(document.querySelector("#employeeChart"), options);
         charts.topSales.render();
         updateTopSales('year');
     }
     function updateTopSales(range) {
-        if(!charts.topSales) return;
+        // Recreate chart with fresh options/data to avoid duplicate SVG/tspan nodes
+        var container = document.querySelector("#employeeChart");
         fetch("{{ route('get_top_sales') }}?range=" + range + "&state=" + (currentState || ''))
-            .then(res => res.json()).then(data => charts.topSales.updateOptions({ xaxis: { categories: data.labels }, series: data.series }));
+            .then(res => res.json()).then(data => {
+                try {
+                    // build options similar to init but with real data
+                    var maxVal = Math.max(...(data.series && data.series[0] && data.series[0].data ? data.series[0].data : [0,1]));
+                    var roundedMax = Math.ceil(maxVal/1000)*1000;
+                    var tickAmount = Math.min(5, Math.ceil(roundedMax/2000)+1);
+
+                    var newOptions = {
+                        series: data.series || [],
+                        chart: { type: 'bar', height: 350, toolbar: { show: false } },
+                        plotOptions: { bar: { borderRadius: 4, horizontal: true, barHeight: '50%' } },
+                        xaxis: { categories: data.labels || [], min: 0, max: roundedMax, tickAmount: tickAmount, labels: { style: { colors: '#fff' }, formatter: function(val){ if(isNaN(val)) return val; var v=Number(val); if(Math.abs(v)>=1000){var k=v/1000; return "$"+(k%1===0? k.toString(): k.toFixed(1))+"k";} return "$"+v; } } },
+                        yaxis: { labels: { style: { colors: '#fff' } } },
+                        colors: ['#fbbf24'], grid: { borderColor: '#40475D' }
+                    };
+
+                    // destroy/clear previous
+                    if (charts.topSales && typeof charts.topSales.destroy === 'function') { try{ charts.topSales.destroy(); }catch(e){} }
+                    try{ container.innerHTML = ''; }catch(e){}
+                    charts.topSales = new ApexCharts(container, newOptions);
+                    charts.topSales.render().then(function(){
+                        // clean duplicated tspan nodes if any
+                        setTimeout(function(){
+                            try{
+                                const els = Array.from(container.querySelectorAll('.apexcharts-xaxis text, .apexcharts-yaxis text'));
+                                els.forEach(el=>{
+                                    const texts = Array.from(el.childNodes).map(n=> (n.textContent||'').trim()).filter(Boolean);
+                                    if(texts.length) el.innerHTML = '<tspan>'+texts[0]+'</tspan>' + (el.querySelector('title')? '<title>'+texts[0]+'</title>':'') ;
+                                });
+                            }catch(e){ }
+                        }, 80);
+                    }).catch(e=>console.error('TopSales render error', e));
+                } catch (err) {
+                    console.error('updateTopSales error', err);
+                }
+            });
     }
 
     // --- 6. SUBSCRIPTION ---
@@ -595,48 +816,6 @@
 
     // --- 7. CAPTURING ---
     function initCapturing() { if(document.querySelector("#revenueArc")) { } }
-
-    // --- GLOBAL UPDATE ---
-  // --- UPDATED GLOBAL UPDATE (To fix the State Click Issue) ---
-    // window.updateDashboardByState = function(stateName) {
-    //     currentState = stateName;
-    //     document.getElementById('dashboard_title').innerText = 'Dashboard - ' + stateName;
-    //     document.getElementById('resetStateFilter').style.display = 'inline-block';
-
-    //     // 1. Update the Sales Card (Fetch the specific state data)
-    //     loadTotalSale('year'); 
-
-    //     // 2. Update the Dashboard Stats (Revenue Text + Circle Count)
-    //     fetch("{{ route('get_dashboard_stats') }}?state=" + stateName)
-    //         .then(res => res.json())
-    //         .then(data => { 
-    //             // FIXED ID: Using total_sales_amount_display
-    //             if(document.getElementById('total_sales_amount_display')) {
-    //                 document.getElementById('total_sales_amount_display').innerText = data.total_revenue;
-    //             }
-                
-    //             if(charts.circular) {
-    //                 salesCountSafe = data.total_sales_count;
-    //                 charts.circular.updateOptions({
-    //                     plotOptions: {
-    //                         radialBar: {
-    //                             dataLabels: {
-    //                                 value: { formatter: function () { return data.total_sales_count; } },
-    //                                 total: { formatter: function () { return data.total_sales_count; } }
-    //                             }
-    //                         }
-    //                     }
-    //                 });
-    //             }
-    //         });
-
-    //     // Refresh all other working charts
-    //     updateSalesRecord('year'); 
-    //     updateRevenueChart('weekly'); 
-    //     updateResponseChart(); 
-    //     updateTopSales('year'); 
-    //     updateSubscriptionChart();
-    // };
 
     window.updateDashboardByState = function(stateName) {
         currentState = stateName;
@@ -662,88 +841,93 @@
     window.resetStateFilter = function() {
         currentState = null; document.getElementById('dashboard_title').innerText = 'Dashboard'; document.getElementById('resetStateFilter').style.display = 'none';
         window.location.reload(); 
+    
     };
 
     document.addEventListener('DOMContentLoaded', function() {
-        initCircularChart(); initSalesRecord(); initRevenueChart(); initResponseChart(); initTopSales(); initSubscriptionChart(); initCapturing();
+        
+        initCircularChart(); 
+        // console.log("✅ Circular chart initialized");
+        initSalesRecord(); 
+        // console.log("✅ Sales record chart initialized");
+        initRevenueChart(); 
+        // console.log("✅ Revenue chart initialized");
+        initResponseChart(); 
+        // console.log("✅ Response chart initialized");
+        initTopSales(); 
+        // console.log("✅ Top sales chart initialized");
+        initSubscriptionChart(); 
+        // console.log("✅ Subscription chart initialized");
+        initCapturing();
+        // console.log("✅ All charts initialized successfully");
     });
 
-    document.querySelectorAll('.filter-button').forEach(btn => { btn.addEventListener('click', function(e) { e.stopPropagation(); let m = this.nextElementSibling; document.querySelectorAll('.filter-menu').forEach(x => {if(x!==m) x.style.display='none'}); m.style.display = m.style.display==='block'?'none':'block'; }); });
-    document.addEventListener('click', function() { document.querySelectorAll('.filter-menu').forEach(m => m.style.display='none'); });
+    document.querySelectorAll('.filter-button').forEach(btn => { 
+        btn.addEventListener('click', function(e) { 
+            console.log("🔘 [Filter Button Clicked]", this);
+            e.stopPropagation(); 
+            let m = this.nextElementSibling; 
+            document.querySelectorAll('.filter-menu').forEach(x => {
+                if(x!==m) x.style.display='none'
+            }); 
+            m.style.display = m.style.display==='block'?'none':'block'; 
+        }); 
+    });
+    document.addEventListener('click', function() { 
+        document.querySelectorAll('.filter-menu').forEach(m => m.style.display='none'); 
+    });
 </script>
-
 <script>
-@if(Auth::user()->roles[0]->name == 'SalesRepresentative')
+    @if(Auth::user()->roles[0]->name == 'SalesRepresentative')
 
-// Global Filter State
-var currentFilters = {
-    clients: 'this_month',
-    revenue: 'this_month',
-    performance: 'this_month'
-};
-
-$(document).ready(function() {
-    
-    // 1. Initialize ApexCharts
-    var chartTasks = new ApexCharts(document.querySelector("#gaugeTasks"), createGaugeOptions('#10b981'));
-    var chartSales = new ApexCharts(document.querySelector("#chartSalesDonut"), createDonutOptions());
-
-    chartTasks.render();
-    chartSales.render();
-
-    // 2. Load Initial Data
-    loadData('clients');
-    loadData('revenue');
-    loadData('performance');
-
-    // 3. Close menus when clicking outside
-    $(document).click(function(e) {
-        if (!$(e.target).closest('.filter-dropdown').length) {
-            $('.filter-menu').removeClass('show');
-        }
-    });
-
-    // --- Helper Functions ---
-
-    // Toggle Menu Visibility
-    window.toggleFilter = function(menuId) {
-        $('.filter-menu').not('#' + menuId).removeClass('show'); // Close others
-        $('#' + menuId).toggleClass('show');
+    // --- 1. DEFINE GLOBALS (OUTSIDE document.ready) ---
+    var currentFilters = {
+        clients: 'this_month',
+        revenue: 'this_month',
+        performance: 'this_month'
     };
 
-    // Set Filter & Reload
-    window.setFilter = function(type, value) {
+    var chartTasks = null;
+    var chartSales = null;
+
+    // --- 2. DEFINE HELPER FUNCTIONS (Globally accessible) ---
+
+    function toggleFilter(menuId) {
+        $('.filter-menu').not('#' + menuId).removeClass('show'); // Close others
+        $('#' + menuId).toggleClass('show');
+    }
+
+    function setFilter(type, value) {
         currentFilters[type] = value;
         $('#menu' + type.charAt(0).toUpperCase() + type.slice(1)).removeClass('show'); // Close menu
         loadData(type); // Reload specific module
-    };
+    }
 
     function loadData(type) {
         var filterVal = currentFilters[type];
 
         if (type === 'performance') {
             $.get('/get-rep-performance', { filter: filterVal }, function(res) {
-                chartTasks.updateSeries([res.tasks.percentage]);
+                if(chartTasks) {
+                    chartTasks.updateSeries([res.tasks.percentage]);
+                }
                 $('#textTasks').text('(' + res.tasks.text + ')');
-            });
+            }).fail(function() { console.error("Error loading performance"); });
         } 
         else if (type === 'revenue') {
             $.get('/get-rep-revenue', { filter: filterVal }, function(res) {
                 $('#textRevenue').text('$' + res.revenue);
                 $('#textSalesCount').text(res.count);
-            });
+            }).fail(function() { console.error("Error loading revenue"); });
         } 
-       
         else if (type === 'clients') {
             $('#listClients').html('<tr><td colspan="2" class="text-center" style="padding:20px; color:#6b7280;">Loading...</td></tr>');
             
             $.get('/get-rep-converted-list', { filter: filterVal }, function(res) {
                 var html = '';
-                if(res.offices.length > 0) {
+                if(res.offices && res.offices.length > 0) {
                     $.each(res.offices, function(i, office) {
-                        // Determine Doctor Name (fallback to contact person if empty)
                         var drName = office.dr_name ? office.dr_name : (office.contact_person ? office.contact_person : 'No Doctor');
-                        
                         html += `
                         <tr>
                             <td style="padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">
@@ -759,6 +943,8 @@ $(document).ready(function() {
                     html = '<tr><td colspan="2" class="text-center" style="padding:20px; color:#6b7280;">No data found.</td></tr>';
                 }
                 $('#listClients').html(html);
+            }).fail(function() { 
+                $('#listClients').html('<tr><td colspan="2" class="text-center text-danger">Error loading data</td></tr>');
             });
         }
     }
@@ -794,7 +980,35 @@ $(document).ready(function() {
             plotOptions: { pie: { donut: { size: '75%' } } }
         };
     }
-});
+
+    // --- 3. EXECUTE ON LOAD (Inside document.ready) ---
+    $(document).ready(function() {
+        console.log("🚀 Sales Rep Dashboard Init");
+
+        // Initialize ApexCharts
+        if(document.querySelector("#gaugeTasks")) {
+            chartTasks = new ApexCharts(document.querySelector("#gaugeTasks"), createGaugeOptions('#10b981'));
+            chartTasks.render();
+        }
+
+        if(document.querySelector("#chartSalesDonut")) {
+            chartSales = new ApexCharts(document.querySelector("#chartSalesDonut"), createDonutOptions());
+            chartSales.render();
+        }
+
+        // Load Initial Data
+        loadData('clients');
+        loadData('revenue');
+        loadData('performance');
+
+        // Close menus when clicking outside
+        $(document).click(function(e) {
+            if (!$(e.target).closest('.filter-dropdown').length) {
+                $('.filter-menu').removeClass('show');
+            }
+        });
+    });
+
 @endif
 </script>
 @endsection

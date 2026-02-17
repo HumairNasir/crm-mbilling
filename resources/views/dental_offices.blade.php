@@ -54,6 +54,21 @@
         </div>
     @endif
   <h3>Doctors' offices</h3>
+  @if(session('skipped_entries'))
+<div class="alert alert-warning border-0 shadow-sm" style="background: #fff; border-left: 5px solid #ffc107 !important;">
+    <h5 class="text-warning"><i class="fa fa-info-circle"></i> Entries Skipped (Duplicates)</h5>
+    <div class="row mt-3">
+        @foreach(session('skipped_entries') as $entry)
+        <div class="col-md-4 mb-2">
+            <div class="card p-2" style="font-size: 12px; background: #fffbeb;">
+                <strong>Row #{{ $entry['row'] }}: {{ $entry['name'] }}</strong>
+                <span class="text-muted">{{ $entry['reason'] }}</span>
+            </div>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
   <div class="">
     <div class="dental-office-parent">
       <div class="search-main search-employee">
@@ -64,7 +79,10 @@
       </div>
 
       @if(!Auth::user()->hasRole('SalesRepresentative'))
-      <div class="add-dental-button">
+      <div class="add-dental-button" style="display: flex; gap: 10px;">
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#importDentalOfficeModal">
+            <i class="fa fa-file-excel-o"></i>Import Data
+        </button>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addDentalOfficeModal">Add Doctor Office</button>
       </div>
       @endif
@@ -303,6 +321,37 @@
   </div>
 </div>
 @endforeach
+<div class="modal fade" id="importDentalOfficeModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Import Data from Excel/CSV</h5>
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <form action="{{ route('dental_offices.import') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <div class="modal-body">
+            <div class="alert alert-info">
+                <strong>Instructions:</strong><br>
+                1. File must be <b>.xlsx</b> or <b>.csv</b><br>
+                2. First row must contain headers: <br>
+                <code>name, doctor_name, email, phone, address, contact_person, state</code>
+            </div>
+            <div class="form-group" style="text-align: center; padding: 20px; border: 2px dashed #ccc; background: #f9f9f9; border-radius: 5px;">
+                <label for="file_upload" style="cursor: pointer;">
+                    <strong>Click to select file</strong> or drag & drop here
+                </label>
+                <input type="file" name="file" id="file_upload" class="form-control-file" style="display: block; margin: 10px auto;" required>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-success">Upload & Import</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
 <script>
     // --- GLOBAL FUNCTIONS (Must be outside document.ready) ---

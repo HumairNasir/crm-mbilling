@@ -304,20 +304,44 @@ class AdminController extends Controller
             for ($i = 3; $i >= 0; $i--) {
                 $start = Carbon::now()->subWeeks($i)->startOfWeek();
                 $end = Carbon::now()->subWeeks($i)->endOfWeek();
-                $labels[] = $i === 0 ? 'This Week' : $start->format('M d');
-                $currentData[] = (clone $query)->whereBetween('created_at', [$start, $end])->sum('subscription_amount');
+                // Use date range format to avoid duplicate-looking labels
+                if ($i === 0) {
+                    $labels[] = 'This Week';
+                } else {
+                    // Format: "Jan 12-18" to show the date range for each week
+                    if ($start->month === $end->month) {
+                        $labels[] = $start->format('M d') . '-' . $end->format('d');
+                    } else {
+                        $labels[] = $start->format('M d') . '-' . $end->format('M d');
+                    }
+                }
+                $currentData[] =
+                    (float) ((clone $query)->whereBetween('created_at', [$start, $end])->sum('subscription_amount') ??
+                        0);
             }
         } else {
             for ($i = 5; $i >= 0; $i--) {
                 $month = Carbon::now()->subMonths($i);
-                $labels[] = $month->format('M Y');
-                $currentData[] = (clone $query)
-                    ->whereMonth('created_at', $month->month)
-                    ->whereYear('created_at', $month->year)
-                    ->sum('subscription_amount');
+                $labels[] = $month->format('M\'y');
+                $currentData[] =
+                    (float) ((clone $query)
+                        ->whereMonth('created_at', $month->month)
+                        ->whereYear('created_at', $month->year)
+                        ->sum('subscription_amount') ?? 0);
             }
         }
-        return response()->json(['labels' => $labels, 'series' => [['name' => 'Revenue', 'data' => $currentData]]]);
+
+        $response = ['labels' => $labels, 'series' => [['name' => 'Revenue', 'data' => $currentData]]];
+        \Log::info(
+            '📊 [get_weekly_sales] Range: ' .
+                $range .
+                ' | Labels: ' .
+                json_encode($labels) .
+                ' | Data: ' .
+                json_encode($currentData),
+        );
+
+        return response()->json($response);
     }
 
     // --- 4. RESPONSE PIE CHART ---

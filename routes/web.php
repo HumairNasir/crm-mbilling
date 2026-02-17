@@ -26,6 +26,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/dental_offices/delete/{id}', [DentalOfficeController::class, 'destroy'])->name(
         'dental_offices.delete',
     );
+    Route::post('dental-offices/import', [App\Http\Controllers\DentalOfficeController::class, 'import'])->name(
+        'dental_offices.import',
+    );
     // Route to fetch states based on selected region
     Route::get('/get-states-by-region/{id}', [App\Http\Controllers\DentalOfficeController::class, 'getStatesByRegion']);
 
@@ -110,10 +113,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Sales Rep AJAX Helpers for Hierarchy
     Route::get('/get-regional-managers/{region_id}', 'App\Http\Controllers\SalesRepController@getRegionalManagers');
     Route::get('/get-area-managers/{regional_manager_id}', 'App\Http\Controllers\SalesRepController@getAreaManagers');
-    // Route::get('/get-area-details/{area_manager_id}', 'App\Http\Controllers\SalesRepController@getAreaDetails');
-    // UPDATED: Fetch multiple states for an Area Manager
-    // Route::get('/get-manager-states/{id}', [App\Http\Controllers\SalesRepController::class, 'getManagerStates']);
-    // Added optional {sales_rep_id?} for conflict logic
+
     Route::get('/get-manager-states/{id}/{sales_rep_id?}', [
         App\Http\Controllers\SalesRepController::class,
         'getManagerStates',
