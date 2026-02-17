@@ -151,11 +151,58 @@ class AdminController extends Controller
     }
 
     // --- HELPER: Base Query with State & Role Filter ---
+    // private function getBaseQuery($table, $request)
+    // {
+    //     $user = Auth::user();
+    //     $stateName = $request->input('state');
+
+    //     $query =
+    //         $table === 'Client'
+    //             ? Client::where('status', 'Active')
+    //             : ($table === 'DentalOffice'
+    //                 ? DentalOffice::query()
+    //                 : Task::query());
+
+    //     // 1. Role Filters
+    //     $teamIds = [];
+    //     if ($user->hasRole('RegionalManager')) {
+    //         $teamIds = User::where('regional_manager_id', $user->id)->pluck('id');
+    //     } elseif ($user->hasRole('AreaManager')) {
+    //         $teamIds = User::where('state_manager_id', $user->id)->pluck('id');
+    //     } elseif ($user->hasRole('SalesRepresentative')) {
+    //         $teamIds = [$user->id];
+    //     }
+
+    //     if (!empty($teamIds)) {
+    //         if ($table === 'Task') {
+    //             $query->whereIn('user_id', $teamIds);
+    //         } else {
+    //             $query->whereIn('sales_rep_id', $teamIds);
+    //         }
+    //     }
+
+    //     // 2. State Filter
+    //     if ($stateName && $stateName !== 'null') {
+    //         $state = State::where('name', $stateName)->first();
+    //         if ($state) {
+    //             if ($table === 'DentalOffice') {
+    //                 $query->where('state_id', $state->id);
+    //             } else {
+    //                 $query->whereHas('dentalOffice', function ($q) use ($state) {
+    //                     $q->where('state_id', $state->id);
+    //                 });
+    //             }
+    //         }
+    //     }
+    //     return $query;
+    // }
+
     private function getBaseQuery($table, $request)
     {
         $user = Auth::user();
         $stateName = $request->input('state');
 
+        // Initialize the base query based on the requested table
         $query =
             $table === 'Client'
                 ? Client::where('status', 'Active')
@@ -163,21 +210,41 @@ class AdminController extends Controller
                     ? DentalOffice::query()
                     : Task::query());
 
-        // 1. Role Filters
-        $teamIds = [];
+        // 1. TERRITORY-BASED ROLE FILTERS
+        // Regional Manager: Filter by assigned Regions
         if ($user->hasRole('RegionalManager')) {
-            $teamIds = User::where('regional_manager_id', $user->id)->pluck('id');
-        } elseif ($user->hasRole('AreaManager')) {
-            $teamIds = User::where('state_manager_id', $user->id)->pluck('id');
-        } elseif ($user->hasRole('SalesRepresentative')) {
-            $teamIds = [$user->id];
-        }
+            $myRegionIds = $user->regions->pluck('id');
 
-        if (!empty($teamIds)) {
-            if ($table === 'Task') {
-                $query->whereIn('user_id', $teamIds);
+            if ($table === 'Client' || $table === 'Task') {
+                // Filter by the Region of the associated Dental Office
+                $query->whereHas('dentalOffice', function ($q) use ($myRegionIds) {
+                    $q->whereIn('region_id', $myRegionIds);
+                });
             } else {
-                $query->whereIn('sales_rep_id', $teamIds);
+                // Table is DentalOffice
+                $query->whereIn('region_id', $myRegionIds);
+            }
+        }
+        // Area Manager: Filter by assigned States
+        elseif ($user->hasRole('AreaManager')) {
+            $myStateIds = $user->states->pluck('id');
+
+            if ($table === 'Client' || $table === 'Task') {
+                // Filter by the State of the associated Dental Office
+                $query->whereHas('dentalOffice', function ($q) use ($myStateIds) {
+                    $q->whereIn('state_id', $myStateIds);
+                });
+            } else {
+                // Table is DentalOffice
+                $query->whereIn('state_id', $myStateIds);
+            }
+        }
+        // Sales Rep: Filter by their own User ID
+        elseif ($user->hasRole('SalesRepresentative')) {
+            if ($table === 'Task') {
+                $query->where('user_id', $user->id);
+            } else {
+                $query->where('sales_rep_id', $user->id);
             }
         }
 
@@ -194,6 +261,7 @@ class AdminController extends Controller
                 }
             }
         }
+
         return $query;
     }
 
