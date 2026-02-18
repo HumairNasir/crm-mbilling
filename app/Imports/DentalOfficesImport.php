@@ -12,16 +12,40 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\Importable;
+use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 
 class DentalOfficesImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnFailure
 {
     use Importable, SkipsFailures;
+
+    private $row_data; // Property to hold the current row's data for validation
+
+    /**
+     * CAPTURE ROW DATA
+     * This runs before validation to let us access the whole row in the rules() method.
+     */
+    public function prepareForValidation($data, $index)
+    {
+        $this->row_data = $data;
+        return $data;
+    }
 
     /**
      * @param array $row
      *
      * @return \Illuminate\Database\Eloquent\Model|null
      */
+
+    // 3. ADD THIS FUNCTION TO DEFINE CSV SETTINGS
+    public function getCsvSettings(): array
+    {
+        return [
+            'input_encoding' => 'UTF-8', // Fixes weird character issues
+            'delimiter' => ',', // Forces comma delimiter
+            'enclosure' => '"', // Standard enclosure
+        ];
+    }
+
     public function model(array $row)
     {
         // --- 1. AUTO-MATCH STATE & REGION LOGIC ---
@@ -40,7 +64,7 @@ class DentalOfficesImport implements ToModel, WithHeadingRow, WithValidation, Sk
             }
         }
 
-        // Optional Fallback: If State wasn't found but 'region' column exists in Excel
+        // Fallback: If State wasn't found but 'region' column exists
         if (!$regionId && isset($row['region'])) {
             $region = Region::where('name', 'LIKE', trim($row['region']))->first();
             if ($region) {
@@ -48,7 +72,7 @@ class DentalOfficesImport implements ToModel, WithHeadingRow, WithValidation, Sk
             }
         }
 
-        // --- 2. AUTO-MATCH SALES REP LOGIC (Optional) ---
+        // --- 2. AUTO-MATCH SALES REP LOGIC ---
         $salesRepId = null;
         if (isset($row['sales_rep']) && !empty($row['sales_rep'])) {
             $rep = User::where('name', 'LIKE', trim($row['sales_rep']))->first();
@@ -58,6 +82,7 @@ class DentalOfficesImport implements ToModel, WithHeadingRow, WithValidation, Sk
         }
 
         // --- 3. CREATE THE RECORD ---
+        // Note: Validation has already passed at this point
         return new DentalOffice([
             'name' => $row['name'],
             'dr_name' => $row['dr_name'] ?? null,
@@ -67,14 +92,13 @@ class DentalOfficesImport implements ToModel, WithHeadingRow, WithValidation, Sk
             'email' => $row['email'] ?? null,
             'phone' => $row['phone'] ?? null,
             'address' => $row['address'] ?? null,
-            'country' => 'United States', // Hardcoded as requested
-            'receptive' => 'COLD',
+            'country' => 'United States',
+            'receptive' => 'COLD', // Default status
         ]);
     }
 
     /**
      * VALIDATION RULES
-     * This also handles the SKIP logic for duplicates
      */
     public function rules(): array
     {
@@ -83,35 +107,27 @@ class DentalOfficesImport implements ToModel, WithHeadingRow, WithValidation, Sk
             'name' => [
                 'required',
                 function ($attribute, $value, $fail) {
-                    // Get the data for the SPECIFIC row currently being validated
-                    // We use request('dr_name') as a fallback but we need the row context
-                    $data = request()->all();
-
-                    // Better approach: Look up State ID based on the row's 'state' value
+                    // 1. Get Context from the captured row data
                     $stateName = isset($this->row_data['state']) ? trim($this->row_data['state']) : null;
-                    $state = \App\Models\State::where('name', 'LIKE', $stateName)->first();
-                    $stateId = $state->id ?? null;
+                    $drName = isset($this->row_data['dr_name']) ? trim($this->row_data['dr_name']) : null;
 
-                    $drName = $this->row_data['dr_name'] ?? null;
+                    // 2. Resolve State ID (Need to look it up to check DB uniqueness)
+                    $state = State::where('name', 'LIKE', $stateName)->first();
+                    $stateId = $state ? $state->id : null;
 
-                    $exists = \App\Models\DentalOffice::where('name', $value)
-                        ->where('dr_name', $drName)
-                        ->where('state_id', $stateId)
-                        ->exists();
+                    // 3. Check for Duplicates in the Database
+                    // We check if a record exists with the same Name, Doctor, AND State.
+                    $query = DentalOffice::where('name', $value)->where('state_id', $stateId);
 
-                    if ($exists) {
-                        $fail('DUPLICATE: This office already exists in this state for this doctor.');
+                    if ($drName) {
+                        $query->where('dr_name', $drName);
+                    }
+
+                    if ($query->exists()) {
+                        $fail('DUPLICATE: This office already exists in this state.');
                     }
                 },
             ],
         ];
-    }
-
-    // Add this helper to capture row data for the validation rule
-    private $row_data;
-    public function prepareForValidation($data, $index)
-    {
-        $this->row_data = $data;
-        return $data;
     }
 }

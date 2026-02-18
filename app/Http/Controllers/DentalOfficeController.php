@@ -217,10 +217,19 @@ class DentalOfficeController extends Controller
 
     public function import(Request $request)
     {
-        $request->validate(['file' => 'required|mimes:xlsx,csv']);
+        $request->validate(['file' => 'required|mimes:xlsx,csv,txt']);
+
+        $file = $request->file('file');
+        $extension = strtolower($file->getClientOriginalExtension());
 
         $import = new DentalOfficesImport();
-        $import->import($request->file('file'));
+
+        // Check extension and pass the string 'Csv' explicitly
+        if ($extension === 'csv' || $extension === 'txt') {
+            $import->import($file, null, 'Csv');
+        } else {
+            $import->import($file);
+        }
 
         $skipped = [];
         if ($import->failures()->isNotEmpty()) {
