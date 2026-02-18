@@ -396,7 +396,7 @@
                             <img src="{{$assets_url}}/images/filter.svg" class="filter">
                         </button>
                         
-                        <div class="filter-menu" id="clientTimeFilter">
+                        <div class="filter-menu" id="clientTimeFilter" style="cursor: pointer;">
                             <div class="filter-menu-item" onclick="refreshClientList('all')">All Time</div>
                             <div class="filter-menu-item" onclick="refreshClientList('month')">This Month</div>
                             <div class="filter-menu-item" onclick="refreshClientList('week')">This Week</div>
@@ -430,7 +430,7 @@
                     <button type="button" class="filter-button" onclick="toggleFilter('subsFilterMenu')">
                         <img src="{{$assets_url}}/images/filter.svg" class="filter">
                     </button>
-                    <div class="filter-menu" id="subsFilterMenu">
+                    <div class="filter-menu" id="subsFilterMenu" style="cursor: pointer;">
                         <div class="filter-menu-item" onclick="updateSubscriptionChart('today')">Today</div>
                         <div class="filter-menu-item" onclick="updateSubscriptionChart('week')">This Week</div>
                         <div class="filter-menu-item" onclick="updateSubscriptionChart('month')">This Month</div>
