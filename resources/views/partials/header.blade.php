@@ -4,7 +4,7 @@
             <a href="{{ url('/') }}"><img src="../images/logo-header.png" alt=""></a>
         </div>
         <div class="search-main">
-            <input type="search" name="search" id="search" placeholder="Search...">
+            <input type="search" id="globalStateSearch" placeholder="Type a State name..." class="form-control">
             <img src="../images/search.svg" alt="">
         </div>
         <div class="header-notifications">

@@ -415,7 +415,19 @@ class AdminController extends Controller
     // --- 4. RESPONSE PIE CHART ---
     public function get_response(Request $request)
     {
+        $status = $request->input('receptive', 'all'); // Get the filter (hot, warm, cold, or all)
         $query = $this->getBaseQuery('DentalOffice', $request);
+
+        if ($status !== 'all') {
+            // If a specific status is clicked, we return a chart with ONLY that status
+            $count = (clone $query)->where('receptive', strtoupper($status))->count();
+            return response()->json([
+                'labels' => [strtoupper($status)],
+                'series' => [$count],
+            ]);
+        }
+
+        // Default: Return all three for the full Donut chart
         return response()->json([
             'labels' => ['HOT', 'WARM', 'COLD'],
             'series' => [
@@ -457,19 +469,90 @@ class AdminController extends Controller
     }
 
     // --- 6. SUBSCRIPTION ---
+    // public function get_subscriptions_sale(Request $request)
+    // {
+    //     $query = $this->getBaseQuery('Client', $request);
+    //     $labels = [];
+    //     $std = [];
+    //     $prm = [];
+    //     for ($i = 5; $i >= 0; $i--) {
+    //         $m = Carbon::now()->subMonths($i);
+    //         $labels[] = $m->format('M');
+    //         $monthQ = (clone $query)->whereMonth('created_at', $m->month)->whereYear('created_at', $m->year);
+    //         $std[] = (clone $monthQ)->where('subscription_amount', '<', 500)->count();
+    //         $prm[] = (clone $monthQ)->where('subscription_amount', '>=', 500)->count();
+    //     }
+    //     return response()->json(['labels' => $labels, 'standard' => $std, 'premium' => $prm]);
+    // }
+
     public function get_subscriptions_sale(Request $request)
     {
+        $range = $request->input('range', 'year');
         $query = $this->getBaseQuery('Client', $request);
+
         $labels = [];
         $std = [];
         $prm = [];
-        for ($i = 5; $i >= 0; $i--) {
-            $m = Carbon::now()->subMonths($i);
-            $labels[] = $m->format('M');
-            $monthQ = (clone $query)->whereMonth('created_at', $m->month)->whereYear('created_at', $m->year);
-            $std[] = (clone $monthQ)->where('subscription_amount', '<', 500)->count();
-            $prm[] = (clone $monthQ)->where('subscription_amount', '>=', 500)->count();
+
+        if ($range == 'today') {
+            // Show hourly breakdown for Today (Every 4 hours)
+            for ($i = 0; $i < 24; $i += 4) {
+                $start = Carbon::today()->addHours($i);
+                $end = Carbon::today()
+                    ->addHours($i + 3)
+                    ->endOfHour();
+
+                $labels[] = $start->format('g A');
+
+                $periodQ = (clone $query)->whereBetween('created_at', [$start, $end]);
+                $std[] = (clone $periodQ)->where('subscription_amount', '<', 500)->count();
+                $prm[] = (clone $periodQ)->where('subscription_amount', '>=', 500)->count();
+            }
+        } elseif ($range == 'week') {
+            // Show daily breakdown for This Week
+            for ($i = 0; $i < 7; $i++) {
+                $day = Carbon::now()->startOfWeek()->addDays($i);
+                if ($day > Carbon::now()) {
+                    break;
+                } // Don't show future days
+
+                $labels[] = $day->format('D'); // Mon, Tue...
+
+                $periodQ = (clone $query)->whereDate('created_at', $day);
+                $std[] = (clone $periodQ)->where('subscription_amount', '<', 500)->count();
+                $prm[] = (clone $periodQ)->where('subscription_amount', '>=', 500)->count();
+            }
+        } elseif ($range == 'month') {
+            // Show weekly breakdown for This Month
+            $start = Carbon::now()->startOfMonth();
+            $end = Carbon::now()->endOfMonth();
+            $weeks = $start->diffInWeeks($end) + 1;
+
+            for ($i = 0; $i < $weeks; $i++) {
+                $weekStart = $start->copy()->addWeeks($i);
+                $weekEnd = $weekStart->copy()->endOfWeek();
+                if ($weekStart->month != $start->month) {
+                    break;
+                }
+
+                $labels[] = 'Week ' . ($i + 1);
+
+                $periodQ = (clone $query)->whereBetween('created_at', [$weekStart, $weekEnd]);
+                $std[] = (clone $periodQ)->where('subscription_amount', '<', 500)->count();
+                $prm[] = (clone $periodQ)->where('subscription_amount', '>=', 500)->count();
+            }
+        } else {
+            // Default: Yearly view (Last 6 months)
+            for ($i = 5; $i >= 0; $i--) {
+                $m = Carbon::now()->subMonths($i);
+                $labels[] = $m->format('M');
+
+                $periodQ = (clone $query)->whereMonth('created_at', $m->month)->whereYear('created_at', $m->year);
+                $std[] = (clone $periodQ)->where('subscription_amount', '<', 500)->count();
+                $prm[] = (clone $periodQ)->where('subscription_amount', '>=', 500)->count();
+            }
         }
+
         return response()->json(['labels' => $labels, 'standard' => $std, 'premium' => $prm]);
     }
 
@@ -630,5 +713,42 @@ class AdminController extends Controller
             default:
                 return ['start' => $now->copy()->startOfMonth(), 'end' => $now->copy()->endOfMonth()];
         }
+    }
+
+    public function filterClientsList(Request $request)
+    {
+        // 1. Start with the Base Query (Handles Roles & Global State Filter)
+        $query = $this->getBaseQuery('Client', $request);
+
+        // 2. Apply Time Filter (Today, Week, Month)
+        $range = $request->input('range', 'all');
+        if ($range == 'today') {
+            $query->whereDate('created_at', Carbon::today());
+        } elseif ($range == 'week') {
+            $query->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
+        } elseif ($range == 'month') {
+            $query->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year);
+        }
+
+        // 3. Apply Search (Name, Dr Name, Region, State)
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('contact_person', 'LIKE', "%{$search}%")
+                    ->orWhereHas('dentalOffice', function ($subQ) use ($search) {
+                        $subQ
+                            ->whereHas('state', fn($s) => $s->where('name', 'LIKE', "%{$search}%"))
+                            ->orWhereHas('region', fn($r) => $r->where('name', 'LIKE', "%{$search}%"));
+                    });
+            });
+        }
+
+        // 4. Get Latest 20
+        // $clients = $query->latest()->take(20)->get();
+        // Show All Clients
+        $clients = $query->latest()->get();
+
+        // 5. Return HTML
+        return view('partials.client_rows', compact('clients'))->render();
     }
 }

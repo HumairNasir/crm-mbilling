@@ -313,7 +313,9 @@
              <div class="top-representatives">
                 <div class="region-map">
                     <div class="sales-by-region representativesales"><h3>Top Sales Representatives</h3></div>
-                    <div class="search-main search-employee"><input type="search" id="search" placeholder="Search..."><img src="{{$assets_url}}/images/search.svg"></div>
+                    <div class="search-main search-employee">
+                        <!-- <input type="search" id="search" placeholder="Search..."><img src="{{$assets_url}}/images/search.svg"> -->
+                    </div>
                     <div class="filter-employee">
                         <div class="filter-dropdown">
                             <button type="button" class="filter-button" id="topSalesFilterBtn"><img src="{{$assets_url}}/images/filter.svg" class="filter"></button>
@@ -346,10 +348,10 @@
             </div>
         </div>
 
-        <div class="sales-record-main dental-offices-main">
+        <!-- <div class="sales-record-main dental-offices-main">
              <div class="top-representatives">
                 <div class="dental-office-table-main">
-                    <div class="sales-by-region dental-offices"><h3>Dental Offices</h3></div>
+                    <div class="sales-by-region dental-offices"><h3>Doctors Offices</h3></div>
                     <div class="category-search search-employee"><select><option>Sorted by</option><option>All</option></select></div>
                     <div class="search-main search-employee dental-search"><input type="search" placeholder="Search..."><img src="{{$assets_url}}/images/search.svg"></div>
                 </div>
@@ -378,7 +380,67 @@
                 </div>
                 <div id="subscription-bar"></div>
             </div>
+        </div> -->
+        <div class="sales-record-main dental-offices-main">
+        <div class="top-representatives">
+            <div class="dental-office-table-main" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                
+                <div class="sales-by-region dental-offices">
+                    <h4 style="color:#fff;">Recent Clients</h4>
+                </div>
+
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    
+                    <div class="filter-dropdown">
+                        <button type="button" class="filter-button" onclick="toggleFilter('clientTimeFilter')">
+                            <img src="{{$assets_url}}/images/filter.svg" class="filter">
+                        </button>
+                        
+                        <div class="filter-menu" id="clientTimeFilter">
+                            <div class="filter-menu-item" onclick="refreshClientList('all')">All Time</div>
+                            <div class="filter-menu-item" onclick="refreshClientList('month')">This Month</div>
+                            <div class="filter-menu-item" onclick="refreshClientList('week')">This Week</div>
+                            <div class="filter-menu-item" onclick="refreshClientList('today')">Today</div>
+                        </div>
+                    </div>
+
+                    <div class="search-main search-employee dental-search" style="position: relative;">
+                        <input type="search" id="clientSearchInput" placeholder="Name, Dr, State..." onkeyup="refreshClientList()" style="padding: 8px 12px 8px 35px; border-radius: 8px; border: 1px solid #eee; width: 200px;">
+                        <img src="{{$assets_url}}/images/search.svg" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 16px;">
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="category-table-main" style="max-height: 400px; overflow-y: auto;">
+                <table class="category-table" style="width: 100%;">
+                    <tbody id="clientTableBody">
+                        @include('partials.client_rows', ['clients' => $dental_offices]) 
+                    </tbody>
+                </table>
+            </div>
         </div>
+
+        
+        <div class="sales-record">
+            <div class="sales-resp">
+                <div><h4>User Engagement Trends</h4></div>
+                
+                <div class="filter-dropdown">
+                    <button type="button" class="filter-button" onclick="toggleFilter('subsFilterMenu')">
+                        <img src="{{$assets_url}}/images/filter.svg" class="filter">
+                    </button>
+                    <div class="filter-menu" id="subsFilterMenu">
+                        <div class="filter-menu-item" onclick="updateSubscriptionChart('today')">Today</div>
+                        <div class="filter-menu-item" onclick="updateSubscriptionChart('week')">This Week</div>
+                        <div class="filter-menu-item" onclick="updateSubscriptionChart('month')">This Month</div>
+                        <div class="filter-menu-item" onclick="updateSubscriptionChart('year')">This Year</div>
+                    </div>
+                </div>
+                </div>
+            <div id="subscription-bar"></div>
+        </div>
+</div>
     @endif
 </div>
 
@@ -737,10 +799,21 @@
         charts.response.render();
         updateResponseChart();
     }
+    // Replace your current updateResponseChart function with this:
     function updateResponseChart(status = 'all') {
         if(!charts.response) return;
-        fetch("{{ route('get_response') }}?state=" + (currentState || ''))
-            .then(res => res.json()).then(data => charts.response.updateOptions({ labels: data.labels, series: data.series }));
+
+        // Construct URL with both State and the clicked Status
+        let url = "{{ route('get_response') }}?state=" + (currentState || '') + "&receptive=" + status;
+
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                charts.response.updateOptions({ 
+                    labels: data.labels, 
+                    series: data.series 
+                });
+            });
     }
 
     // --- 5. TOP SALES ---
@@ -803,15 +876,43 @@
     // --- 6. SUBSCRIPTION ---
     function initSubscriptionChart() {
         if(!document.querySelector("#subscription-bar")) return;
-        var options = { series: [], chart: { type: 'bar', height: 350, stacked: true, toolbar: { show: false } }, colors: ['#6366f1', '#a855f7'], plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: '40%' } }, xaxis: { categories: [], labels: { style: { colors: '#fff' } } }, yaxis: { labels: { style: { colors: '#fff' } } }, legend: { position: 'top', labels: { colors: '#fff' } }, grid: { borderColor: '#40475D' } };
+        
+        var options = { 
+            series: [], 
+            chart: { type: 'bar', height: 350, stacked: true, toolbar: { show: false } }, 
+            colors: ['#6366f1', '#a855f7'], 
+            plotOptions: { bar: { horizontal: false, borderRadius: 4, columnWidth: '40%' } }, 
+            xaxis: { categories: [], labels: { style: { colors: '#fff' } } }, 
+            yaxis: { labels: { style: { colors: '#fff' } } }, 
+            legend: { position: 'top', labels: { colors: '#fff' } }, 
+            grid: { borderColor: '#40475D' } 
+        };
+        
         charts.subs = new ApexCharts(document.querySelector("#subscription-bar"), options);
         charts.subs.render();
-        updateSubscriptionChart();
+        
+        // Pass default 'year' on initial load
+        updateSubscriptionChart('year'); 
     }
-    function updateSubscriptionChart() {
+
+    function updateSubscriptionChart(range = 'year') {
         if(!charts.subs) return;
-        fetch("{{ route('get_subscriptions_sale') }}?state=" + (currentState || ''))
-            .then(res => res.json()).then(data => charts.subs.updateOptions({ xaxis: { categories: data.labels }, series: [ { name: 'Standard', data: data.standard }, { name: 'Premium', data: data.premium } ] }));
+
+        // 1. Close the filter menu when a selection is made
+        document.querySelectorAll('.filter-menu').forEach(m => m.style.display='none');
+
+        // 2. Pass the 'range' parameter in the URL
+        fetch("{{ route('get_subscriptions_sale') }}?range=" + range + "&state=" + (currentState || ''))
+            .then(res => res.json())
+            .then(data => {
+                charts.subs.updateOptions({ 
+                    xaxis: { categories: data.labels }, 
+                    series: [ 
+                        { name: 'Standard', data: data.standard }, 
+                        { name: 'Premium', data: data.premium } 
+                    ] 
+                });
+            });
     }
 
     // --- 7. CAPTURING ---
@@ -822,6 +923,12 @@
         document.getElementById('dashboard_title').innerText = 'Dashboard - ' + stateName;
         document.getElementById('resetStateFilter').style.display = 'inline-block';
 
+        // This ensures if you click the Map, the Search Bar updates to match
+        const headerSearch = document.getElementById('globalStateSearch');
+        if(headerSearch) {
+            headerSearch.value = stateName; 
+        }
+
         // 1. Refresh the Sales Card correctly (Amount + Circle Count)
         loadTotalSale('year'); 
 
@@ -831,6 +938,7 @@
         updateResponseChart(); 
         updateTopSales('year'); 
         updateSubscriptionChart();
+        refreshClientList();
     };
 
     // --- ADD THIS MISSING BRIDGE (To fix the Filter Buttons Issue) ---
@@ -839,7 +947,14 @@
     };
 
     window.resetStateFilter = function() {
-        currentState = null; document.getElementById('dashboard_title').innerText = 'Dashboard'; document.getElementById('resetStateFilter').style.display = 'none';
+        currentState = null; 
+        document.getElementById('dashboard_title').innerText = 'Dashboard';
+        document.getElementById('resetStateFilter').style.display = 'none';
+        // [NEW] Clear the search bar
+        const headerSearch = document.getElementById('globalStateSearch');
+        if(headerSearch) {
+            headerSearch.value = ''; 
+        }
         window.location.reload(); 
     
     };
@@ -860,6 +975,33 @@
         // console.log("✅ Subscription chart initialized");
         initCapturing();
         // console.log("✅ All charts initialized successfully");
+        // --- 2. INITIALIZE RECENT CLIENTS LIST ---
+    // Loads the default list (Latest 20) on page load
+    if (typeof refreshClientList === 'function') {
+        refreshClientList('all');
+    }
+
+    // --- 3. GLOBAL HEADER SEARCH TRIGGER ---
+    // Wires up the top search bar to update the whole dashboard on "Enter"
+    const headerSearch = document.getElementById('globalStateSearch');
+    if (headerSearch) {
+        headerSearch.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Stop page reload
+                
+                let typedState = this.value.trim();
+                
+                if (typedState.length > 0) {
+                    console.log("🔍 Global Search Triggered for:", typedState);
+                    // Update dashboard with the typed state
+                    updateDashboardByState(typedState); 
+                } else {
+                    // If empty, reset the dashboard
+                    resetStateFilter();
+                }
+            }
+        });
+    }
     });
 
     document.querySelectorAll('.filter-button').forEach(btn => { 
@@ -875,6 +1017,35 @@
     });
     document.addEventListener('click', function() { 
         document.querySelectorAll('.filter-menu').forEach(m => m.style.display='none'); 
+    });
+
+    var currentClientRange = 'all';
+
+    function refreshClientList(range = null) {
+        if(range) {
+            currentClientRange = range;
+            // Hide dropdown after selection
+            document.getElementById('clientTimeFilter').style.display = 'none'; 
+        }
+
+        let search = document.getElementById('clientSearchInput').value;
+        let state = currentState || ''; 
+
+        // Construct URL
+        let url = `{{ route('clients.filter_dashboard') }}?range=${currentClientRange}&search=${search}&state=${state}`;
+
+        // Fetch and Update
+        fetch(url)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('clientTableBody').innerHTML = html;
+            })
+            .catch(error => console.error('Error loading clients:', error));
+    }
+
+    // Initial Load on Page Ready
+    document.addEventListener('DOMContentLoaded', function() {
+        refreshClientList('all');
     });
 </script>
 <script>

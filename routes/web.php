@@ -37,16 +37,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/get-sales-reps/{state_id}', [DentalOfficeController::class, 'getSalesReps']);
 
     // --- CLIENTS MODULE ---
-    // Route::get('/clients', [AdminController::class, 'clients'])->name('clients');
-    // Route::post('/clients/store', [AdminController::class, 'storeClient'])->name('clients.store');
-
-    // // NEW: Edit, Update, Delete for Clients
-    // Route::get('/clients/{id}/edit', [AdminController::class, 'editClient']);
-    // Route::post('/clients/update/{id}', [AdminController::class, 'updateClient'])->name('clients.update');
-    // Route::get('/clients/{id}/delete', [AdminController::class, 'deleteClient'])->name('clients.delete');
-
-    // // AJAX Helper for Client Dropdowns (Fetching offices by area)
-    // Route::get('/get-offices-by-area/{area_id}', [AdminController::class, 'getOfficesByArea']);
 
     // --- CLIENT ROUTES ---
     Route::get('/clients', [ClientController::class, 'index'])->name('clients');
@@ -54,6 +44,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/clients/{id}/edit', [ClientController::class, 'edit'])->name('clients.edit');
     Route::post('/clients/update/{id}', [ClientController::class, 'update'])->name('clients.update');
     Route::get('/clients/delete/{id}', [ClientController::class, 'destroy'])->name('clients.delete');
+    Route::get('/dashboard/filter-clients', [AdminController::class, 'filterClientsList'])->name(
+        'clients.filter_dashboard',
+    );
 
     // AJAX Helper for Dropdowns
     Route::get('/get-offices/{state_id}', [ClientController::class, 'getOfficesByArea']);
