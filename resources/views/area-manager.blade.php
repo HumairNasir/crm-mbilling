@@ -96,15 +96,15 @@
     <div class="">
         <div class="dental-office-parent">
             <div class="search-main search-employee">
-                <input type="search" name="search" id="search" placeholder="Search name, email, state..." class="dental-office-search">
+                <input type="search" name="search" id="search" placeholder="Search by name, email, state..." class="dental-office-search">
                 <img src="../images/search.svg" alt="">
             </div>
-            <div class="category-search search-employee dental-category">
+            <!-- <div class="category-search search-employee dental-category">
                 <select name="cats" id="categories">
                     <option value="" disabled selected>Sorted By</option>
                     <option value="dummy1">All</option>
                 </select>
-            </div>
+            </div> -->
             <div class="add-dental-button">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Add Area Manager</button>
             </div>

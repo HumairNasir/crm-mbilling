@@ -17,7 +17,7 @@
     <div class="dental-office-parent">
         <div class="search-main search-employee">
             <form action="{{ route('clients') }}" method="GET" style="display:flex; align-items:center; width:100%;">
-                <input type="search" name="search" value="{{ request('search') }}" placeholder="Search office, doctor, sales rep, area..." class="dental-office-search">
+                <input type="search" name="search" value="{{ request('search') }}" placeholder="Search by office, doctor, sales rep, area..." class="dental-office-search">
                 <img src="../images/search.svg" alt="" onclick="this.closest('form').submit()" style="cursor:pointer;">
             </form>
         </div>

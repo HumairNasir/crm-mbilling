@@ -9,11 +9,11 @@
             <small style="color: #ccc; font-size: 11px;">Click a state to filter dashboard</small>
         </div>
         <div class="search-main">
-            <input type="search" name="search" id="search" placeholder="Search...">
-            <img src="{{$assets_url}}/images/search.svg" alt="">
+            <!-- <input type="search" name="search" id="search" placeholder="Search...">
+            <img src="{{$assets_url}}/images/search.svg" alt=""> -->
         </div>
         <div>
-            <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter">
+            <!-- <img src="{{$assets_url}}/images/filter.svg" alt="" class="filter"> -->
         </div>
     </div>
     <div class="map-vectors mt-3 border">
