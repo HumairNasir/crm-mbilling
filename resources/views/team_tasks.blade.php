@@ -45,6 +45,47 @@
     .page-item.active .page-link { background-color: #3b82f6; border-color: #3b82f6; color: white; font-weight: 700; }
     .page-item.disabled .page-link { background-color: #0f172a; border-color: #334155; color: #475569; }
     .page-link:hover { background-color: #334155; color: white; border-color: #475569; }
+    /* CUSTOM PREMIUM DROPDOWN */
+    .custom-rep-select {
+        background-color: #1e293b;
+        color: #f8fafc;
+        border: 1px solid #334155;
+        border-radius: 10px; /* Rounded corners for the select box */
+        padding: 12px 45px 12px 15px; /* 45px on the right gives room for the arrow */
+        width: 100%;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        
+        /* Hides the default browser arrow */
+        appearance: none; 
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        
+        /* Adds a custom, clean SVG arrow */
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 15px center; /* Exactly 15px margin from the right edge */
+        background-size: 18px;
+        transition: all 0.3s ease;
+    }
+
+    /* Glow effect when clicked */
+    .custom-rep-select:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+    
+
+    /* Style the dropdown items (Options) */
+    .custom-rep-select option {
+        background-color: #0f172a; /* Dark background for the dropdown list */
+        color: #f8fafc;
+        padding: 15px;
+        font-weight: 500;
+    }
 </style>
 
 <div class="content-main">
@@ -52,15 +93,23 @@
         <div><h3 class="task-page-title">Team Oversight</h3><p class="task-page-subtitle">Monitor and manage your sales team's pipeline in real-time.</p></div>
     </div>
 
-    <div class="rep-scroll-container">
-        @forelse($reps as $rep)
-            <div class="rep-btn" id="rep-btn-{{ $rep->id }}" onclick="selectRep({{ $rep->id }})">
-                <div class="rep-avatar">{{ substr($rep->name, 0, 1) }}</div>
-                {{ $rep->name }}
-            </div>
-        @empty
-            <div class="alert alert-warning w-100">No Sales Representatives found in your territory.</div>
-        @endforelse
+    <div class="rep-dropdown-wrapper" style="margin-bottom: 25px; max-width: 350px;">
+        
+        <label style="color: #9ca3af; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; font-weight: 600;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Select Team Member
+        </label>
+        
+        <select id="repSelectDropdown" class="custom-rep-select" onchange="if(this.value) selectRep(this.value)">
+            <option value="" disabled selected>-- Choose a Representative --</option>
+            
+            @forelse($reps as $rep)
+                <option value="{{ $rep->id }}">{{ $rep->name }}</option>
+            @empty
+                <option value="" disabled>No Sales Representatives found.</option>
+            @endforelse
+            
+        </select>
     </div>
 
     <div id="repTaskContainer">
@@ -143,6 +192,10 @@
         </div>
     </div>
 </div>
+<div id="customToast" style="display: none; position: fixed; top: 30px; right: 30px; z-index: 9999; padding: 15px 25px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-weight: 600; color: white; display: flex; align-items: center; gap: 10px; opacity: 0; transition: opacity 0.3s ease;">
+    <span id="toastIcon"></span>
+    <span id="toastMessage"></span>
+</div>
 
 <script>
     var currentRepId = null;
@@ -163,14 +216,20 @@
     });
 
     // --- 2. SELECT REP ---
+   // --- 2. SELECT REP ---
     function selectRep(repId) {
         currentRepId = repId;
         currentUrl = '/team-tasks/fetch/' + repId;
-        $('.rep-btn').removeClass('active');
-        $('#rep-btn-' + repId).addClass('active');
+        
+        // Sync the dropdown value (in case it's triggered from somewhere else)
+        $('#repSelectDropdown').val(repId);
+
+        // Show loading state
         $('#repTaskContainer').html('<div class="text-center py-5"><div class="spinner-border text-primary"></div><div class="mt-2">Loading tasks...</div></div>');
         $('#taskSearchInput').val(''); // Clear Search
+        
         fetchTasks(false, true);
+        
         if (autoRefreshInterval) clearInterval(autoRefreshInterval);
         autoRefreshInterval = setInterval(function() { 
             var searchValue = $('#taskSearchInput').val();
@@ -230,6 +289,22 @@
             });
         });
     });
+    // Function for pop up
+    function showToast(message, type = 'success') {
+    var toast = $('#customToast');
+    var icon = type === 'success' ? '✅' : '❌';
+    var bg = type === 'success' ? '#10b981' : '#ef4444'; // Green for success, Red for error
+
+    $('#toastIcon').text(icon);
+    $('#toastMessage').text(message);
+    
+    toast.css({'background': bg, 'display': 'flex'}).animate({opacity: 1}, 200);
+
+    // Hide after 3 seconds
+    setTimeout(function() {
+        toast.animate({opacity: 0}, 200, function() { $(this).hide(); });
+    }, 3000);
+    }
 
     // --- 6. CONVERT CLIENT HELPER (Pre-fill Data) ---
     function openConvertModal(el) { 
@@ -268,8 +343,13 @@
             e.preventDefault(); var form = $(this); var btn = form.find('button[type="submit"]'); btn.prop('disabled', true).text('Converting...');
             $.ajax({
                 url: form.attr('action'), type: 'POST', data: form.serialize(),
-                success: function(response) { $('#convertClientModal').modal('hide'); form[0].reset(); btn.prop('disabled', false).text('Confirm Conversion'); if(currentRepId) fetchTasks(true, true); alert('Success!'); },
-                error: function(xhr) { btn.prop('disabled', false).text('Confirm Conversion'); alert('Error converting.'); }
+                success: function(response) { $('#convertClientModal').modal('hide'); form[0].reset(); btn.prop('disabled', false).text('Confirm Conversion'); if(currentRepId) fetchTasks(true, true);
+                    // NEW MODERN POPUP
+                showToast('Office successfully converted to Client!', 'success');
+                 },
+                error: function(xhr) { btn.prop('disabled', false).text('Confirm Conversion');
+                 showToast('Error converting to client. Try again.', 'error');
+                 }
             });
         });
     });
