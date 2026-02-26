@@ -46,7 +46,7 @@ class UserSeeder extends Seeder
             $u = User::create([
                 'name' => $user['name'],
                 'email' => $user['email'],
-                'password' => bcrypt('12345678'),
+                'password' => bcrypt('1234321%$#@!'),
             ]);
             if (isset($user['role'])) {
                 $role = Role::findByName($user['role']);
