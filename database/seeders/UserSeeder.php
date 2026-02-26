@@ -27,21 +27,21 @@ class UserSeeder extends Seeder
                 'role' => 'CountryManager',
                 'email' => 'countrymanager@kriss.com',
             ],
-            // [
-            //     'name' => 'Regional Manager',
-            //     'role' => 'RegionalManager',
-            //     'email' => 'RegionalManager@kriss.com',
-            // ],
-            // [
-            //     'name' => 'Area Manager',
-            //     'role' => 'AreaManager',
-            //     'email' => 'AreaManager@kriss.com',
-            // ],
-            // [
-            //     'name' => 'Sales Representative',
-            //     'role' => 'SalesRepresentative',
-            //     'email' => 'SalesRepresentative@kriss.com',
-            // ],
+            [
+                'name' => 'Regional Manager',
+                'role' => 'RegionalManager',
+                'email' => 'RegionalManager@kriss.com',
+            ],
+            [
+                'name' => 'Area Manager',
+                'role' => 'AreaManager',
+                'email' => 'AreaManager@kriss.com',
+            ],
+            [
+                'name' => 'Sales Representative',
+                'role' => 'SalesRepresentative',
+                'email' => 'SalesRepresentative@kriss.com',
+            ],
         ];
         // foreach ($users as $user) {
         //     $u = User::create([
