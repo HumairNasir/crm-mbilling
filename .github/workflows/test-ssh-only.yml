@@ -1,0 +1,25 @@
+name: TEST SSH Only (No Deploy)
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH Test - ONLY checks folder (no changes)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.CPANEL_HOST }}
+          username: ${{ secrets.CPANEL_USER }}
+          key: ${{ secrets.CPANEL_SSH_KEY }}
+          passphrase: ${{ secrets.CPANEL_SSH_PASSPHRASE }}
+          script: |
+            set -e
+            echo "Connected OK ✅"
+            whoami
+            test -d /home/${{ secrets.CPANEL_USER }}/mbilling-crm-app
+            cd /home/${{ secrets.CPANEL_USER }}/mbilling-crm-app
+            test -f artisan
+            test -f composer.json
+            echo "Folder + Laravel files OK ✅ (NO CHANGES DONE)"
